@@ -156,3 +156,44 @@ void tree_to_expr(const link bt, char *buf, int *pos){
         tree_to_expr(bt->right, buf, pos);
     }
 }
+
+/* ------------------------------------------------------------------ */
+/*  tree_to_infix  —  arbre → chaîne INFIXE  (TP3, NOUVEAU)          */
+/* ------------------------------------------------------------------ */
+/*
+ * Parcours INFIXE : gauche, racine, droite.
+ *
+ * On ajoute des parenthèses autour de chaque sous-expression qui
+ * contient un opérateur, pour qu'il n'y ait aucune ambiguïté.
+ *
+ * Exemple sur l'arbre de "+ * 3 4 5" :
+ *
+ *        +            infixe :  ((3 * 4) + 5)
+ *       / \
+ *      *   5          Pour le nœud '+' :
+ *     / \               → '('
+ *    3   4               → infixe(*)  =  "(3 * 4)"
+ *                        → " + "
+ *                        → infixe(5)  =  "5"
+ *                        → ')'
+ *
+ * Pour une feuille : on écrit juste le chiffre, sans parenthèses.
+ */
+void tree_to_infix(const link bt, char *buf, int *pos){
+    if(is_empty_binary_tree(bt))
+        return;
+
+    char c = get_binary_tree_root(bt);
+
+    if(is_operator(c)){
+        buf[(*pos)++] ='(';
+        tree_to_infix(bt->left, buf, pos);
+        buf[(*pos)++] = ' ';
+        buf[(*pos)++] = c;
+        buf[(*pos)++] = ' ';
+        tree_to_infix(bt->right, buf, pos);
+        buf[(*pos)++] = ')';
+    } else {
+        buf[(*pos)++] = c;
+    }
+}

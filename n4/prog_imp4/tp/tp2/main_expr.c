@@ -33,60 +33,55 @@
 #include "binary_tree.h"
 #include "fonctions.h"
 
-int main(){
-    char expr[256], reconstructed[256];
-
-    /* ---- Étape 1 : lire et afficher l'expression ---- */
+/* ------------------------------------------------------------------ */
+/*  main                                                               */
+/* ------------------------------------------------------------------ */
+int main(void) {
+    char expr[256];
+    char buf_prefixe[256];
+    char buf_infixe[256];
+ 
+    /* Étape 1 : lire l'expression */
     printf("Entrer une expression arithmétique préfixe\n");
-    printf("(ex : + * 3 4 5    ou   / - 8 2 + 1 2)\n");
+    printf("(ex : + * 3 4 5    ou   / - 8 2 + 1 2)\n> ");
     fgets(expr, sizeof(expr), stdin);
-
-    /* Supprimer le '\n' final laissé par fgets */
+ 
     int len = strlen(expr);
-    if(len > 0 && expr[len - 1] == '\n'){
+    if (len > 0 && expr[len - 1] == '\n') {
         expr[len - 1] = '\0';
         len--;
     }
-
-    printf("\n=== Expression lue ===\n");
-    printf("  \"%s\"\n", expr);
-
-    /* ---- Étape 2 : construire et afficher l'arbre syntaxique ---- */
+    printf("\n=== Expression lue ===\n  \"%s\"\n", expr);
+ 
+    /* Étape 2 : construire et afficher l'arbre */
     int pos = 0;
     link ast = parse_expr(expr, &pos);
-
-    printf("\n=== Arbre syntaxique (vue tournée de -90°) ===\n");
-    printf("  (la racine est à gauche, les fils vont vers la droite)\n\n");
+    printf("\n=== Arbre syntaxique ===\n\n");
     show_binary_tree(ast, 0);
-
-    printf("\n  Taille de l'arbre   : %d nœuds\n", size_binary_tree(ast));
-    printf("  Hauteur de l'arbre  : %d\n", height_binary_tree(ast));
-
-    /* ---- Étape 3 : évaluer et afficher le résultat ---- */
-    int result = eval_tree(ast);
-    printf("\n=== Évaluation ===\n");
-    printf("  \"%s\"  =  %d\n", expr, result);
-
-    /* ---- Étape 4 : reconstruire l'expression et vérifier ---- */
+    printf("\n  Taille : %d noeuds   Hauteur : %d\n",
+           size_binary_tree(ast), height_binary_tree(ast));
+ 
+    /* Étape 3 : évaluer */
+    printf("\n=== Evaluation ===\n  %s  =  %d\n", expr, eval_tree(ast));
+ 
+    /* Étape 4 : reconstruire en préfixe */
     int wpos = 0;
-    tree_to_expr(ast, reconstructed, &wpos);
-    reconstructed[wpos] = '\0';
+    tree_to_expr(ast, buf_prefixe, &wpos);
+    buf_prefixe[wpos] = '\0';
+    printf("\n=== Reconstruction prefixe ===\n  \"%s\"\n", buf_prefixe);
+    if (strcmp(expr, buf_prefixe) == 0)
+        printf("  OK : identique a l'original.\n");
+    else
+        printf("  ERREUR : different de l'original !\n");
  
-    printf("\n=== Reconstruction (arbre → expression préfixe) ===\n");
-    printf("  Expression reconstruite : \"%s\"\n", reconstructed);
+    /* Étape 5 (TP3) : reconstruire en infixe */
+    wpos = 0;
+    tree_to_infix(ast, buf_infixe, &wpos);
+    buf_infixe[wpos] = '\0';
+    printf("\n=== Reconstruction infixe (TP3) ===\n  \"%s\"\n", buf_infixe);
  
-    if (strcmp(expr, reconstructed) == 0) {
-        printf("  ✓ Identique à l'expression originale.\n");
-    } else {
-        printf("  ✗ DIFFÉRENTE de l'expression originale !\n");
-        printf("    Originale    : \"%s\"\n", expr);
-        printf("    Reconstruite : \"%s\"\n", reconstructed);
-    }
-
-    /* ---- Étape 5 : libérer la mémoire ---- */
+    /* Étape 6 : libérer la mémoire */
     delete_binary_tree(&ast);
-    printf("\n=== Mémoire libérée. Fin du programme. ===\n");
- 
+    printf("\n=== Memoire liberee. Fin. ===\n");
     return 0;
-
 }
