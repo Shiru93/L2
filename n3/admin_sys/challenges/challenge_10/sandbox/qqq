@@ -1,0 +1,59 @@
+MKDIR(1)                                                                        Commandes de l'utilisateur                                                                       MKDIR(1)
+
+NOM
+       mkdir - Créer des répertoires
+
+SYNOPSIS
+       mkdir [OPTION]... RÉPERTOIRE...
+
+DESCRIPTION
+       Créer les RÉPERTOIREs s'ils n'existent pas.
+
+       Les paramètres obligatoires pour les options de forme longue le sont aussi pour les options de forme courte.
+
+       -m, --mode=MODE
+              utiliser le mode du fichier (comme avec « chmod »), et non au format umask (a=rw)
+
+       -p, --parents
+              pas d'erreur s'il existe, créer des répertoires parents comme il faut, avec des noms de fichier non touchés par l'option -m.
+
+       -v, --verbose
+              afficher un message pour chaque répertoire créé
+
+       -Z     définir le contexte de sécurité SELinux de tous les répertoires créés au type par défaut
+
+       --context[=CTX]
+              comme -Z ou, si CONTEXTE est indiqué, définir le contexte de sécurité SELinux ou SMACK à CONTEXTE
+
+       --help afficher l'aide-mémoire et quitter.
+
+       --version
+              afficher les informations de version et quitter.
+
+AUTEUR
+       Écrit par David MacKenzie.
+
+SIGNALER DES BOGUES
+       Aide en ligne de GNU coreutils : <https://www.gnu.org/software/coreutils/>
+       Signaler toute erreur de traduction à <https://translationproject.org/team/fr.html>
+
+COPYRIGHT
+       Copyright © 2022 Free Software Foundation, Inc. Licence GPLv3+ : GNU GPL version 3 ou ultérieure <https://gnu.org/licenses/gpl.html>
+       Ce programme est un logiciel libre. Vous pouvez le modifier et le redistribuer. Il n'y a AUCUNE GARANTIE dans la mesure autorisée par la loi.
+
+VOIR AUSSI
+       mkdir(2)
+
+       Documentation complète : <https://www.gnu.org/software/coreutils/mkdir>
+       aussi disponible localement à l’aide de la commande : info '(coreutils) mkdir invocation'
+
+TRADUCTION
+       La  traduction  française  de cette page de manuel a été créée par Guilhelm Panaget <guilhelm.panaget@free.fr>, Nicolas François <nicolas.francois@centraliens.net>, Bastien Scher
+       <bastien0705@gmail.com>, David Prévot <david@tilapin.org> et Jean-Philippe MENGUAL <jpmengual@debian.org>
+
+       Cette traduction est une documentation libre ; veuillez vous reporter à la GNU General Public License version 3 ⟨https://www.gnu.org/licenses/gpl-3.0.html⟩ concernant les  condi‐
+       tions de copie et de distribution. Il n'y a aucune RESPONSABILITÉ LÉGALE.
+
+       Si vous découvrez un bogue dans la traduction de cette page de manuel, veuillez envoyer un message à ⟨debian-l10n-french@lists.debian.org⟩.
+
+GNU coreutils 9.1                                                                     Septembre 2022                                                                             MKDIR(1)

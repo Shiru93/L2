@@ -1,0 +1,149 @@
+--------------------- 2022 - 2023 --------------------------
+EXO 1 ----------------------------
+.ORIG x3000
+
+; 1) Mettre à 0 le registre R0
+AND R0, R0, #0
+
+; 2) Mettre la valeur 117 dans R1
+LD R1, VAL_117
+
+; 3) Ajouter 11 au registre R1
+ADD R1, R1, #11
+
+; 4) Copier R1 dans R2
+ADD R2, R1, #0
+
+; 5) Copier les 4 bits de poids faible de R2 dans R3
+; On applique un masque x000F avec un AND
+LD R3, MASK_LOW
+AND R3, R2, R3
+
+; 6) Lire un caractère et le mémoriser dans 'y'
+GETC ; Lecture dans R0
+ST R0, Y ; Stockage dans Y
+
+; 7) Copier 'y' dans 'z' via R4
+LD R4, Y ; Charge Y dans R4
+ST R4, Y ; Charge R4 dans Z
+
+; 8) Copier adresse de 'tab' dans 'p' via R5
+LEA T5, TAB ; R5 = adresse de TAB
+ST R5, P ; Stocke l'adresse dans P
+
+; 9) Mettre dans R1 dans tab[2] en passant par 'p' et R6
+LD R6, P ; Charge l'adresse du tableau depuis P vers R6
+STR R1, R6, #2 ; Stocke R1 à l'adresse (R6 + 2)
+
+; 10) Afficher le caractère contenu dans 'y'
+LD R0, Y 
+OUT 
+
+HALT
+
+; --- DONNEES ---
+VAL_117 .FILL #117
+MASK_LOW .FILL x000F ; Masque pour les 4 bits de poids faible
+Y .BLKW #1
+Z .BLKW #1
+P .BLKW #1 ; Pointeur vers tab
+TAB .BLKW #4 ; Tableau de 4 éléments
+
+.END
+
+EXO 2 ----------------------------------------
+.ORIG x3000
+
+; Demander le caractère 
+IN ; R0 contient le caractère
+ADD R1, R0, #0 ; R1 sauvegarde le caractère pour les calculs
+
+; --- TEST 1 : Est-ce un chiffre ('0' <= char <= '9') ? ---
+LD R2, NEG_0 ; Charge -'0'
+ADD R3, R1, R2 ; R3 = char - '0'
+BRn TEST_AF_MAJ ; Si < 0, c'est avant '0', on teste les lettres
+
+LD R2, NEG_9 ; Charge -'9'
+ADD R3, R1, R2 ; R3 = char - '9'
+BRnz CEST_OUI ; Si <= 0 (donc char <= '9'), c'est un chiffre !
+
+; --- TEST 2 : Est-ce une lettre MAJ ('A' <= char <= 'F') ? ---
+TEST_AF_MAJ
+	LD R2, NEG_A ; Charge -'A'
+	ADD R3, R1, R2 ; R3 = charge - 'A'
+	BRn TEST_AF_MIN ; Si < 0, on teste les minuscules (BONUS)
+
+	LD R2, NEG_F ; Charge -'F'
+	ADD R3, R1, R2
+	BRnz CEST_OUI ; Si <= 0, c'est entre A et F !
+
+; --- TEST 3 (BONUS) : Est-ce une lettre MIN ('a' <= char <= 'f') ? ---
+TEST_AF_MIN
+	LD R2, NEG_a ; Charge -'a'
+	ADD R3, R1, R2
+	BRn CEST_NON ; Si < 0, ce n'est rien de valide
+
+	LD R2, NEG_f ; Charge -'f'
+	ADD R3, R1, R2
+	BRnz CEST_OUI ; Si <= 0, c'est entre a et f
+
+; --- CAS ECHEC ---
+CEST_NON
+	LD R0, CHAR_N ; Charge 'N'
+	OUT
+	BR FIN
+
+; --- CAS SUCCÈS ---
+CEST_OUI
+    LD R0, CHAR_O       ; Charge 'O'
+    OUT
+
+FIN
+    HALT
+
+; --- CONSTANTES ---
+NEG_0   .FILL #-48      ; -'0'
+NEG_9   .FILL #-57      ; -'9'
+NEG_A   .FILL #-65      ; -'A'
+NEG_F   .FILL #-70      ; -'F'
+NEG_a   .FILL #-97      ; -'a' (Bonus)
+NEG_f   .FILL #-102     ; -'f' (Bonus)
+CHAR_O  .FILL x004F     ; 'O'
+CHAR_N  .FILL x004E     ; 'N'
+.END
+
+EXO 3 --------------------------------------------------
+.ORIG x3000
+
+; 1) Demander le caractère à l'utilisateur [cite: 1441]
+    IN                  ; R0 contient le caractère à copier
+    
+; 2) Initialisation des pointeurs et compteurs
+    LD R1, ADDR_TAB     ; R1 = Adresse du début du tableau (C'est un pointeur !)
+                        ; Attention : L'énoncé dit "mémorisé à l'adresse d'étiquette tab"
+                        ; Si 'tab' est le tableau lui-même : LEA R1, TAB
+                        ; Si 'tab' contient l'adresse : LD R1, TAB.
+                        ; L'énoncé "tableau mémorisé à l'adresse d'étiquette tab" suggère LEA.
+    LEA R1, TAB         
+    
+    LD R2, TAILLE       ; R2 = Nombre de cases à remplir
+
+; 3) Vérification de sécurité (Si taille <= 0, on quitte)
+    ADD R2, R2, #0
+    BRnz FIN
+
+; 4) Boucle de remplissage
+LOOP
+    STR R0, R1, #0      ; Écrit le caractère (R0) dans la case pointée par R1
+    ADD R1, R1, #1      ; Incrémente le pointeur (Case suivante)
+    ADD R2, R2, #-1     ; Décrémente le compteur
+    BRp LOOP            ; Si compteur > 0, on continue
+
+FIN
+    HALT
+
+; --- DONNÉES ---
+TAILLE   .FILL #5       ; Taille du tableau (au moins 5 demandée) [cite: 1442]
+TAB      .BLKW #5       ; Réservation de l'espace mémoire pour le tableau
+ADDR_TAB .FILL TAB      ; (Optionnel si on utilise LD au lieu de LEA)
+.END

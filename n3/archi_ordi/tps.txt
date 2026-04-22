@@ -1,0 +1,1259 @@
+------------ TP 1 -----------------
+EXO 3 ----------------
+        .ORIG x3000
+        LD      R0, VAL1
+        ADD     R0, R0, R0
+        LD      R7, VAL2
+        ADD     R7, R7, R7
+        ADD     R2, R0, R7
+        HALT
+VAL1    .FILL #1
+        .BLKW #3
+VAL2    .FILL #-1
+        .END
+        
+EXO 4 -----------------
+        .ORIG x3000
+        LD      R0, VAL1
+        NOT     R1, R0
+        ADD     R2, R1, #1
+        ADD     R3, R0, R1
+        ADD     R4, R0, R2
+        HALT
+VAL1    .FILL #1
+        .BLKW #3
+VAL2    .FILL #-1
+        .END
+
+    
+------------ TP 2 -----------------
+EXO 1 ----------------
+.ORIG x3000
+
+LD R0, OP1    ; Charge OP1 dans R0
+LD R1, OP2    ; Charge OP2 dans R1
+
+; Pour calculer le OR, il faut utiliser l'équivalence
+; X OR Y = NOT ((NOT X) AND (NOT Y))
+NOT R0, R0        ; R0 devient NOT(OP1)
+NOT R1, R1        ; R1 devient NOT(OP2)
+AND R0, R0, R1    ; R0 devient NOT(OP1) AND NOT(OP2)
+NOT R0, R0        ; R0 devient NOT( ... ) -> Donc OP1 OR OP2
+
+; Le résultat est dans R0, on le met dans la case RES
+ST R0, RES        ; On range le résultat
+
+HALT
+
+OP1 .FILL x1234
+OP2 .FILL x00FF
+RES .BLKW #1
+.END
+
+EXO 2 ---------------
+.ORIG x3000
+
+; On charge OP1
+; Cela met à jour les flags N, Z, P automatiquement
+LD R0, OP1
+
+; "Si c'est Zéro, va à l'étiquette CAS_ZERO"
+BRz CAS_ZERO
+
+; --- Ici, on est dans le cas "NON NUL" ---
+LD R1, OP2    ; Charge OP2
+ST R1, RES    ; Range dans RES
+
+; IMPORTANT
+; Il faut sauter par-dessus le code du "cas zéro" pour aller à la fin
+BR FIN
+
+; --- Ici, on est dans le cas "ZERO" ---
+CAS_ZERO
+LD R1, OP3    ; Charge OP3
+ST R1, RES    ; Range dans RES
+
+FIN
+HALT
+
+OP1 .FILL #0
+OP2 .FILL #10
+OP3 .FILL #20
+RES .BLKW #1
+.END
+
+////////
+       .ORIG x3000
+       ;; condition
+       ;; pour tester la valeur de op1 il faut le mettre dans un rgistre
+       LD R0, op1
+       ;; saute si R1 est nul
+       BRZ op1nul
+       ;; R1 n’est pas nul
+       ;; pour transferer une valeur entre deux cases de mémoire
+       ;; il faut poasser par un registre d’appui, on utilise R0
+       LD R0, op2
+       ST R0, res
+       BR end ; saute la branche R1 est nul
+       ;; branche pour le cas R1 est nul
+op1nul LD R0, op3
+       ST R0, res
+       end HALT
+op1    .FILL x00FF
+op2    .FILL x0002
+op3    .FILL x0003
+res    .FILL x0000
+       .END
+
+EXO 3 -------------------
+.orig x3000
+
+; Lecture d'un caractère dans R0 avec IN
+IN
+
+; Affiche le caractère
+OUT
+
+; Lecture d'un caractère dans R0 avec GETC
+GETC
+
+; Affiche le caractère
+OUT
+
+HALT 
+
+.END
+
+/////////
+.ORIG x3000
+
+; 1) Lire et afficher le premier caractère
+IN               ; Le caractère tapé arrive dans R0 et s'affiche tout seul
+
+; 2) Lire le deuxième caractère (sans l'afficher tout de suite)
+GETC             ; Le caractère arrive dans R0. Attention : R0 est écrasé !
+ADD R1, R0, #0   ; Sauvegarde R0 dans R1 pour ne pas le perdre quand on va afficher le retour à la ligne.
+
+; 3) Afficher un "New Line" (Retour à la ligne)
+LD R0, NEWLINE   ; On met le code ASCII du retour à la ligne (10) dans R0
+OUT              ; On l'affiche
+
+; 4) Afficher le deuxième caractère (qu'on avait sauvegardé)
+ADD R0, R1, #0   ; On remet le caractère de R1 vers R0
+OUT              ; On l'affiche
+
+HALT
+NEWLINE .FILL x0A ; Le code ASCII pour "Entrée" (Line Feed) est 10 en décimal ou x0A en hexa.
+.END
+
+EXO 4 ----------------
+.ORIG x3000
+
+; R0 contient le caractère
+ID
+
+; Sauvegarde dans R1
+ADD R1, R0, #0
+
+; --- Test 1 : Est-ce >= 'a' ? ---
+LD R2, NEG_A       ; Charge -'a'
+ADD R3, R0, R2     ; R3 = Caractère - 'a'
+BRn AFFICHE_FIN    ; Si négatif, c'est plus petit que 'a', donc pas une minuscule
+
+; --- Test 2 : Est-ce <= 'z' ? ---
+LD R2, NEG_Z       ; Charge -'z'
+ADD R3, R0, R2     ; R3 = Caractère - 'z'
+BRp AFFICHE_FIN    ; Si positif, c'est plus grand que 'z', donc pas une minuscule
+
+; --- Conversion (c'est une minscule) ---
+LD R2, TO_UPPER    ; Charge -32 (l'écart pour passer en majuscule)
+ADD R0, R0, R2     ; R0 = R0 - 2 
+
+AFFICHE_FIN
+OUT                ; Affiche R0 (soit l'original, soit le modifié
+HALT
+
+; Opposé de 'a'
+NEG_A .FILL #-97
+
+; Opposé de 'z'
+NEG_Z .FILL #-122 
+
+; Différence pour aller vers les majuscules
+TO_UPPER .FILL -32
+
+.END
+
+////////////////
+.ORIG x3000
+
+; Lecture du caractère dans R0
+IN
+
+; Compare R0 avec 'z'
+LD R1, z_min
+NOT R1, R1
+ADD R1, R1, #1
+ADD R1, R0, R1
+BRp fin ; R0 non alphabétique min. car 'z' < R0
+
+; Compare R0 avec 'a'
+LD R1, a_min 
+NOT R1, R1
+ADD R1, R1, #1
+ADD R1, R0, R1
+BRn fin ; R0 non alphabetique min. car ’a’ > R0
+
+; R0 est un caractère minuscule car ’a’ <= R0 <= ’z’
+; R1 == R0 - ’a’ contient la position du caractère dans l’alphabet
+LD R0, A_maj
+ADD R0, R1, R0
+
+; On affiche un message
+fin
+ADD R1, R0, #0 ; R1 := R0 sauvegarde de R0 dans R1
+LEA R0, msg ; Adresse du message à afficher
+PUTS
+ADD R0, R1, #0 ; R0 := R1 établi R0
+OUT ; On affiche le résultat
+HALT
+
+a_min .FILL x61 ; 'a'
+z_min .FILL x7A ; 'z'
+A_maj .FILL x41 ; 'A'
+
+msg .STRINGZ "\nRésultat: "
+
+.END
+
+
+-------------------- TP 3 ------------------------------------
+EXO 1 ------------------------
+.ORIG x3000
+
+; 1. Lire le caractère
+GETC ; R0 contient le caractère (par exemple '5' ou 'a')
+ADD R1, R0, #0 ; Sauvegarde pour affichage éventuel (facultatif)
+
+; 2. Sosutraire x30 (ASCII '0')
+LD R2, NEG_ZERO ; Charge -x30
+ADD R0, R0, R2 ; R0 = caractère - x30
+
+; 3. Test : Est-ce négatif ? (C'était < '0')
+BRn NON_CHIFFRE
+
+; 4. Test : Est-ce > 9 ?
+ADD R3, R0, #-9 ; R3 = Valeur - 9
+BRp NON_CHIFFRE ; Si Positif, c'est > 9, donc pas un chiffre
+
+; --- C'EST UN CHIFFRE ---
+; R0 contient déjà la bonne valeur (0 - 9)grâce à l'étape 2
+BRp FIN
+
+; --- CE N'EST PAS UN CHIFFRE ---
+NON_CHIFFRE
+LD R0, VAL_ERR ; On charge -1 dans R0
+BR FIN
+
+FIN 
+HALT
+
+NEG_ZERO .FILL x-30 ; -48 en décimal
+VAL_ERR .FILL #-1
+.END
+
+//////////////
+	.ORIG x3000
+	IN			; R0 := 'c'
+	LD R1, mzascii		; R0 := x-30
+	ADD R0, R0, R1		; R0 := 'c' - x-30
+	BRN non			; if R0 < 0 pas chiffre
+	ADD R1, R0, #-10	; R0 := R0 - 10
+	BRN ok			; if R0 >= 0 pas chiffre
+non	LD R0, mun		; R0 := -1
+ok	HALT
+mzascii	.FILL x-30		; -'0'  moins zero ascii
+mun	.FILL #-1		; -1	moins un
+	.END
+
+EXO 2
+.ORIG x3000
+
+; Entrée : R0 contient le nombre X
+; Sortie : R0 contient 10*X
+
+ADD R1, R0, R0    ; R1 = 2*X  (On garde ça de côté pour la fin)
+ADD R2, R1, R1    ; R2 = 4*X  (2*X + 2*X)
+ADD R2, R2, R2    ; R2 = 8*X  (4*X + 4*X)
+
+ADD R0, R2, R1    ; R0 = 8*X + 2*X = 10*X
+L'astuce mathématique:
+En binaire, on ne peut pas facilement multiplier par 10. Mais on sait multiplier par 2 (c'est une addition : X + X).
+La formule est : 10X=8X+2X.
+Comme 8=23, multiplier par 8 revient à multiplier par 2 trois fois de suite.
+
+///////////////////////
+;;; multiplication par 10
+;;; utlilise l'équivalence
+;;;   x * 10 = x * 8 + x * 2
+
+	.ORIG x3000
+	LD R0, val		; R0 := val
+	ADD R0, R0, R0		; R0 := val * 2
+	ADD R1, R0, R0		; R1 := val * 4
+	ADD R1, R1, R1		; R1 := val * 8
+	ADD R0, R1, R0		; R0 := val * 8 + val * 2 = val * 10
+	HALT
+val	.FILL #7
+	.END
+
+EXO 3 
+;;;
+;;; lecture d'un nombre décimal de 4 chiffres
+;;;
+;;; version sans boucle
+;;; on écrit quatre fois la lecture du chifffre, sans utiliser une boucle
+
+	.ORIG x3000
+
+	LD R1, mzascii		; R1 := x-30 (opposé du code ASCII de '0')
+
+	;; premier chiffre
+	;;   lit le chiffre et met sa valeur dans R0
+	IN			; R0 := 'c3'
+	ADD R2, R0, R1		; R2 := 'c3' - x-30 == <c3>
+
+	;; deuxième chiffre
+	;;   lit le chiffre, multiplie par 10 la valeur précedente
+	;;   et ajoute le chiffre lu
+	IN			; R0 := 'c2'
+	ADD R0, R0, R1		; R0 := <c2>
+	ADD R2, R2, R2		; R2 := <c3> * 2
+	ADD R3, R2, R2          ; R3 := <c3> * 4
+	ADD R3, R3, R3		; R3 := <c3> * 8
+	ADD R2, R3, R2		; R2 := <c3> * 10
+	ADD R2, R2, R0		; R2 := <c3> * 10 + <c2> == <c3c2>
+
+	;; troisième chiffre
+	;;   lit le chiffre, multiplie par 10 la valeur précedente
+	;;   et ajoute le chiffre lu
+	IN			; R0 := 'c1'
+	ADD R0, R0, R1		; R0 := <c1>
+	ADD R2, R2, R2		; R2 := <c3c2> * 2
+	ADD R3, R2, R2          ; R3 := <c3c2> * 4
+	ADD R3, R3, R3		; R3 := <c3c2> * 8
+	ADD R2, R3, R2		; R2 := <c3c2> * 10
+	ADD R2, R2, R0		; R2 := <c3c2> * 10 + <c1> == <c3c2c1>
+
+	;; quatrième chiffre
+	;;   lit le chiffre, multiplie par 10 la valeur précedente
+	;;   et ajoute le chiffre lu
+	IN			; R0 := 'c0'
+	ADD R0, R0, R1		; R0 := <c0>
+	ADD R2, R2, R2		; R2 := <c3c2c1> * 2
+	ADD R3, R2, R2          ; R3 := <c3c2c1> * 4
+	ADD R3, R3, R3		; R3 := <c3c2c1> * 8
+	ADD R2, R3, R2		; R2 := <c3c2c1> * 10
+	ADD R2, R2, R0		; R2 := <c3c2c1> * 10 + <c0> == <c3c2c1c0>
+	
+	;; met le résultat dans R0
+	ADD R0, R2, #0		; R0 := R2 (le resultat)
+	HALT
+mzascii	.FILL x-30		; -'0'  moins zero ascii
+	.END
+
+EXO 4 --------------------
+;;;
+;;; lecture d'un nombre décimal de 4 chiffres
+;;;
+;;; version sans boucle
+;;; on écrit quatre fois la lecture du chifffre, sans utiliser une boucle
+
+	.ORIG x3000
+
+	LD R1, mzascii		; R1 := x-30 (opposé du code ASCII de '0')
+
+	;; premier chiffre
+	;;   lit le chiffre et met sa valeur dans R0
+	IN			; R0 := 'c3'
+	ADD R2, R0, R1		; R2 := 'c3' - x-30 == <c3>
+
+	;; deuxième chiffre
+	;;   lit le chiffre, multiplie par 10 la valeur précedente
+	;;   et ajoute le chiffre lu
+	IN			; R0 := 'c2'
+	ADD R0, R0, R1		; R0 := <c2>
+	ADD R2, R2, R2		; R2 := <c3> * 2
+	ADD R3, R2, R2          ; R3 := <c3> * 4
+	ADD R3, R3, R3		; R3 := <c3> * 8
+	ADD R2, R3, R2		; R2 := <c3> * 10
+	ADD R2, R2, R0		; R2 := <c3> * 10 + <c2> == <c3c2>
+
+	;; troisième chiffre
+	;;   lit le chiffre, multiplie par 10 la valeur précedente
+	;;   et ajoute le chiffre lu
+	IN			; R0 := 'c1'
+	ADD R0, R0, R1		; R0 := <c1>
+	ADD R2, R2, R2		; R2 := <c3c2> * 2
+	ADD R3, R2, R2          ; R3 := <c3c2> * 4
+	ADD R3, R3, R3		; R3 := <c3c2> * 8
+	ADD R2, R3, R2		; R2 := <c3c2> * 10
+	ADD R2, R2, R0		; R2 := <c3c2> * 10 + <c1> == <c3c2c1>
+
+	;; quatrième chiffre
+	;;   lit le chiffre, multiplie par 10 la valeur précedente
+	;;   et ajoute le chiffre lu
+	IN			; R0 := 'c0'
+	ADD R0, R0, R1		; R0 := <c0>
+	ADD R2, R2, R2		; R2 := <c3c2c1> * 2
+	ADD R3, R2, R2          ; R3 := <c3c2c1> * 4
+	ADD R3, R3, R3		; R3 := <c3c2c1> * 8
+	ADD R2, R3, R2		; R2 := <c3c2c1> * 10
+	ADD R2, R2, R0		; R2 := <c3c2c1> * 10 + <c0> == <c3c2c1c0>
+	
+	;; met le résultat dans R0
+	ADD R0, R2, #0		; R0 := R2 (le resultat)
+	HALT
+mzascii	.FILL x-30		; -'0'  moins zero ascii
+	.END
+
+////////////////////
+;;;
+;;; lecture d'un nombre décimal de max 4 chiffres
+;;;
+
+	.ORIG x3000
+
+	LD R1, mzascii	; R1 := x-30 (opposé du code ASCII de '0')
+	
+	;; initialise le registre du résultat
+	AND R2, R2, #0		; R2 := 0 == n
+	LD R4, nchiffres	; R4 := 4 (le nombre de chiffres)
+boucle	IN			; R0 := 'c'
+	ADD R0, R0, R1		; R0 := 'c' - x-30
+
+	;; vérifie que le caractère lu est un chiffre
+	BRN fin		; saute à fin si R0 < 0 n'est pas un chiffre
+	ADD R5, R0, #-10	; R0 := R0 - 10
+	BRZP fin	; saute à fin si R0 < 0 n'est pas un chiffre
+
+	;; calcule la nouvelle valuer de la suite de chiffre lue
+	;; multiplie par 10 la valeur précédente et ajoute
+	;; le nouveau chiffre
+	ADD R2, R2, R2		; R2 := n * 2
+	ADD R3, R2, R2          ; R3 := n * 4
+	ADD R3, R3, R3		; R3 := n * 8
+	ADD R2, R3, R2		; R2 := n * 10
+	ADD R2, R2, R0		; R2 := n * 10 + <c> == n
+	ADD R4, R4, #-1		; R4 := R4 - 1
+	BRP boucle
+	
+	;; déplace le résultat dans R0 
+fin	ADD R0, R2, #0		; R0 := R2 (le resultat)
+	HALT
+mzascii	.FILL x-30		; -'0'  moins zero ascii
+nchiffres .FILL x4	
+	.END
+
+EXO 3 & 4
+.ORIG x3000
+
+; R0 : Input caractère / Valeur temporaire
+; R1 : Le TOTAL (Résultat final)
+; R2 : Constante -x30
+; R3 : Compteur de chiffres (pour s'arrêter à 4)
+; R4 : Temporaire pour les calculs
+
+    AND R1, R1, #0      ; Initialisation : Total = 0
+    AND R3, R3, #0      ; Reset R3
+    ADD R3, R3, #4      ; Compteur = 4 chiffres max
+    LD  R2, NEG_ASCII_0 ; Charge -x30
+
+BOUCLE
+    ; 1. Lire un caractère
+    GETC
+    OUT                 ; (Optionnel) Affiche ce qu'on tape pour voir
+
+    ; 2. Vérifier si c'est un chiffre (Logique de l'Ex 1)
+    ADD R0, R0, R2      ; Conversion ASCII -> Entier
+    BRn FIN_LECTURE     ; Si < 0, ce n'est pas un chiffre (ex: Entrée, Espace)
+    ADD R4, R0, #-9
+    BRp FIN_LECTURE     ; Si > 9, ce n'est pas un chiffre
+
+    ; --- C'est un chiffre valide ---
+    ; 3. Multiplier le Total actuel (R1) par 10 (Logique de l'Ex 2)
+    ; Attention : On sauvegarde R0 (le chiffre lu) car on va utiliser R0 pour le calcul
+    ADD R5, R0, #0      ; R5 sauvegarde le chiffre lu (ex: 3)
+    
+    ADD R0, R1, #0      ; On met Total dans R0 pour le multiplier
+    ADD R4, R0, R0      ; R4 = 2 * Total
+    ADD R1, R4, R4      ; R1 = 4 * Total
+    ADD R1, R1, R1      ; R1 = 8 * Total
+    ADD R1, R1, R4      ; R1 = 8*Total + 2*Total = 10*Total
+
+    ; 4. Ajouter le nouveau chiffre
+    ADD R1, R1, R5      ; Total = (Total * 10) + Chiffre lu
+
+    ; 5. Gérer la boucle
+    ADD R3, R3, #-1     ; Décrémente le compteur
+    BRp BOUCLE          ; Si compteur > 0, on continue
+
+FIN_LECTURE
+    ; Ici, R1 contient le nombre complet (ex: 1234 en binaire)
+    ; Tu peux faire un HALT ou stocker R1 en mémoire.
+    HALT
+
+NEG_ASCII_0 .FILL x-30
+.END
+
+
+---------------------- TP 4 ----------------------------
+EXO 1 ---------------------
+.ORIG x3000
+
+; 1. Initialisation
+LD R2, TAILLE       ; R2 = Compteur de boucle (Taille du tableau) [cite: 9]
+BRz FIN             ; Sécurité : Si taille = 0, on finit tout de suite
+LEA R1, TAB         ; R1 = Pointeur (Adresse du début du tableau) [cite: 9]
+AND R0, R0, #0      ; R0 = Accumulateur (Somme), initialisé à 0
+
+; 2. Boucle de sommation
+LOOP
+    LDR R3, R1, #0  ; Charge la valeur pointée par R1 dans R3
+    ADD R0, R0, R3  ; Ajoute la valeur à la somme (R0 = R0 + R3)
+    
+    ADD R1, R1, #1  ; Avance le pointeur vers la case suivante
+    ADD R2, R2, #-1 ; Décrémente le compteur
+    BRp LOOP        ; Si compteur > 0, on continue
+
+FIN
+    ST R0, RESULTAT ; Stocke le résultat (optionnel)
+    HALT
+
+; Données
+TAILLE   .FILL #4
+TAB      .FILL #10
+         .FILL #20
+         .FILL #5
+         .FILL #8
+RESULTAT .BLKW #1
+.END
+
+////////////////////
+;;; calcule la somme des éléments d'un tableau mémorisé à
+;;; l'adresse tab, dont la taille est mémorisée à l'adresse taille
+	
+	.ORIG x3000
+	
+	;; ** initilisations **
+	;; on garde dans R1 le pointeur à la prochaine valeur à ajouter
+	;; on l'initialise à la première location du tableau
+	LEA R1, tab		; R1 := tab
+
+	;; on garde dans R2 le nombre de valeurs qui restent à ajouter
+	;; on l'initialise à la taille du tableau
+	LD R2, taille		; R2 := taille
+
+	;; la somme sera calculée dans R0
+	;; on initialise la somme partielle à 0
+	AND R0, R0, #0		; R0 := 0	
+
+	;; ** boucle **
+	;; on commence la boucle en transférant la prochaine
+	;; valeur à ajouter dans R3  		
+loop	LDR R3, R1, #0		; R3 := *R1
+
+	;; on ajoute la valeur à la somme partielle
+	ADD R0, R0, R3		; R0 := R0+R3
+
+	;; on passe à l'élément suivant à ajouter
+	;; on avance le pointeur R1
+	ADD R1, R1, #1
+
+	;; il reste un élément en moins à ajouter
+	ADD R2, R2, #-1
+
+	;; on vérifie s'il reste des éléments à ajouter
+	;; si R2 > 0 on n'a pas fini et il faut itèrer la boucle
+	BRP loop
+	
+	;; le calcul est complet
+	HALT
+
+	;; les données
+taille	.FILL #10
+tab	.FILL #3
+	.FILL #4
+	.FILL #-2
+	.FILL #3
+	.FILL #8
+	.FILL #-9
+	.FILL #4
+	.FILL #7
+	.FILL #-5
+	.FILL #1
+	.END
+
+
+EXO 2 -----------------------------
+.ORIG x3000
+
+; --- PROGRAMME PRINCIPAL ---
+    LEA R1, TAB     ; Paramètre 1 : Adresse du tableau dans R1 [cite: 12]
+    LD  R2, TAILLE  ; Paramètre 2 : Taille dans R2 [cite: 13]
+    
+    JSR SOMME_SUB   ; Appel de la sous-routine
+    
+    ; Au retour, R0 contient la somme 
+    HALT
+
+; --- SOUS-ROUTINE SOMME ---
+SOMME_SUB
+    AND R0, R0, #0  ; Init Somme = 0
+    ADD R2, R2, #0  ; Test si taille est 0 pour mettre à jour les flags
+    BRz RET_SUB     ; Si taille 0, on rentre direct
+
+LOOP_SUB
+    LDR R3, R1, #0  ; Charge valeur courante
+    ADD R0, R0, R3  ; Somme
+    ADD R1, R1, #1  ; Pointeur++
+    ADD R2, R2, #-1 ; Compteur--
+    BRp LOOP_SUB    ; Boucle
+
+RET_SUB
+    RET             ; Retour au programme principal (JMP R7)
+
+; Données
+TAILLE .FILL #5
+TAB    .FILL #1
+       .FILL #2
+       .FILL #3
+       .FILL #4
+       .FILL #5
+.END
+
+/////////////////////////
+;;; calcule la somme des éléments d'un tableau mémorisé à
+;;; l'adresse tab, dont la taille est mémorisée à l'adresse taille
+	
+	.ORIG x3000
+	
+	;; ** on copie les paramètres dans les registres correspondants **
+	;; on garde dans R1 le pointeur à la prochaine valeur à ajouter
+	;; on l'initialise à la première location du tableau
+	LEA R1, tab		; R1 := tab
+
+	;; on garde dans R2 le nombre de valeurs qui restent à ajouter
+	;; on l'initialise à la taille du tableau
+	LD R2, taille		; R2 := taille
+
+	;; on appelle la sous-routine
+	JSR maxtab
+	
+	;; le résultat est dans R0, on le copie dans l'emplacement res
+	ST R0, res
+	HALT
+
+
+
+	
+;;; sous-routine pour le calcule de la somme des éléments d'un tableau
+;;; les paramètres sont passés dans des registres
+;;; - l'adresse du tableau dans R1
+;;; - la taille dans R2
+;;; - le résultat est renvoyé dans R0
+maxtab  ;; la somme sera calculée dans R0
+	;; on initialise la somme partielle à 0
+	AND R0, R0, #0		; R0 := 0	
+
+	;; ** boucle **
+	;; on commence la boucle en transférant la prochaine
+	;; valeur à ajouter dans R3  		
+loop	LDR R3, R1, #0		; R3 := *R1
+	;; on ajoute la valeur à la somme partielle
+	ADD R0, R0, R3		; R0 := R0+R3
+	;; on passe à l'élément suivant à ajouter
+	;; on avance le pointeur R1
+	ADD R1, R1, #1
+	;; il reste un élément en moins à ajouter
+	ADD R2, R2, #-1
+	;; on vérifie s'il reste des éléments à ajouter
+	;; si R2 > 0 on n'a pas fini et il faut itèrer la boucle
+	BRP loop
+	;; le calcul est complet
+	RET
+
+	;; les données
+res	.FILL #0
+taille	.FILL #10
+tab	.FILL #3
+	.FILL #4
+	.FILL #-2
+	.FILL #3
+	.FILL #8
+	.FILL #-9
+	.FILL #4
+	.FILL #7
+	.FILL #-5
+	.FILL #1
+	.END
+
+
+EXO 3 -------------------------
+.ORIG x3000
+
+; --- PARTIE TEST (MAIN) ---
+; Lecture des deux caractères [cite: 18]
+    LEA R1, PAIRE   ; R1 pointe vers notre zone de mémoire
+    
+    IN              ; Lit le 1er caractère (dans R0)
+    STR R0, R1, #0  ; Stocke le 1er char à l'adresse PAIRE
+    
+    IN              ; Lit le 2ème caractère
+    STR R0, R1, #1  ; Stocke le 2ème char à l'adresse PAIRE + 1
+    
+    LEA R0, PAIRE   ; R0 doit contenir l'adresse de la paire pour la routine [cite: 15]
+    JSR SWAP_IF_GT  ; Appel de la routine
+    
+    HALT
+
+; --- SOUS-ROUTINE SWAP ---
+; Entrée : R0 contient l'adresse de la première valeur
+SWAP_IF_GT
+    ; 1. Chargement des valeurs
+    LDR R1, R0, #0  ; R1 = Valeur 1 (A)
+    LDR R2, R0, #1  ; R2 = Valeur 2 (B)
+    
+    ; 2. Comparaison (A - B)
+    NOT R3, R2
+    ADD R3, R3, #1  ; R3 = -B (Complément à 2)
+    ADD R4, R1, R3  ; R4 = A - B
+    
+    ; 3. Décision
+    BRnz NOSWAP     ; Si A <= B (Négatif ou Zéro), on ne fait rien
+    
+    ; 4. Échange (Si A > B) [cite: 16]
+    STR R2, R0, #0  ; Met B dans la première case
+    STR R1, R0, #1  ; Met A dans la deuxième case
+
+NOSWAP
+    RET
+
+; Zone de mémoire pour stocker les 2 valeurs
+PAIRE .BLKW #2
+.END
+
+/////////////////////////
+	.ORIG x3000
+	;; lecture des deux valeurs
+	LEA R1, valeurs		; adresse du vecteur de valeurs
+	IN			; première valeur
+	STR R0, R1, #0
+	IN			; deuxième valeur
+	STR R0, R1, #1
+
+	;; prépartions des parmètres et appelle de la sous-routine
+	LEA R0, valeurs	; l'adresse du vecteur de valeurs est passé dans R0
+	JSR trie2
+	HALT
+
+	;; sous-routine qui trie 2 valeurs consecutives
+	;; @in  : R0 = adressse du vecteur de 2 éléments  valeurs
+	;; @out : valeurs contient les mêmes 2 valeurs mais dans
+	;;        l'ordre croissant, donc après la sous-routine
+	;;        valeurs[0] <= valeurs[1]
+trie2	LDR R1, R0, #0		; R1 := valeurs[0]
+	LDR R2, R0, #1		; R2 := valeurs[1]
+	NOT R3, R1
+	ADD R3, R3, #1		; R3 := -valeurs[0]
+	ADD R3, R2, R3		; R3 := valeurs[1] - valeurs[0] 
+	BRZP fin		; if (valeurs[1] - valeurs[0] >= 0) fait rien
+	;; else swap values car valeurs[0] > valeurs[1]
+	STR R1, R0, #1		; valeurs[1] := R1 (vieux valeur valeurs[0])
+	STR R2, R0, #0		; valeurs[0] := R2 (vieux valeur valeurs[1])
+fin	RET
+
+	;; variables
+valeurs .BLKW #2		; vecteur pour le programme de test
+
+	.END
+
+
+
+---------------------------- TP 5 --------------------------------
+EXO 1 ------------------
+.ORIG x3000
+
+; --- PROGRAMME PRINCIPAL ---
+    ; 1. Initialisation de la pile (nécessaire pour Ex 2, bonne habitude pour Ex 1)
+    LD R6, STACK_ADDR
+
+    ; 2. Afficher le message d'invite
+    LEA R0, MSG_PROMPT
+    PUTS                ; Affiche "Entrez une chaine..."
+
+    ; 3. Appeler la saisie
+    LEA R1, BUFFER      ; R1 pointe vers la zone de stockage
+    JSR SAISIE          ; Appel de la routine
+
+    ; 4. Afficher le résultat
+    LEA R0, MSG_RES
+    PUTS                ; Affiche "Vous avez tape :"
+    LEA R0, BUFFER      ; On charge l'adresse de notre chaîne saisie
+    PUTS                ; On l'affiche
+    
+    HALT
+
+; --- DONNÉES DU MAIN ---
+STACK_ADDR .FILL xFE00  ; Adresse de base de la pile
+MSG_PROMPT .STRINGZ "Entrez une chaine : "
+MSG_RES    .STRINGZ "\nVous avez tape : "
+BUFFER     .BLKW #50    ; Réservation de 50 caractères vides
+
+; --- SOUS-ROUTINE SAISIE ---
+; Entrée : R1 contient l'adresse où stocker la chaîne
+; Registres modifiés : R0, R1
+SAISIE
+    ; Sauvegarde de R7 (car on va utiliser des TRAP)
+    ST R7, SAVE_R7
+
+LOOP_SAISIE
+    ; Lire un caractère
+    GETC                ; R0 <- Caractère
+    OUT                 ; Affiche le caractère (Echo)
+
+    ; Test : Est-ce "Entrée" (ASCII 10 ou x0A) ?
+    ADD R2, R0, #-10
+    BRz FIN_SAISIE      ; Si c'est Entrée, on sort
+
+    ; Stockage
+    STR R0, R1, #0      ; Mem[R1] <- R0
+    ADD R1, R1, #1      ; Avance le pointeur
+    BR LOOP_SAISIE      ; On continue
+
+FIN_SAISIE
+    ; Ajouter le caractère nul '\0' à la fin
+    AND R0, R0, #0      ; R0 = 0
+    STR R0, R1, #0      ; On écrit 0 à la fin de la chaîne
+
+    ; Restauration de R7 et Retour
+    LD R7, SAVE_R7
+    RET
+
+; Variable locale à la routine pour sauver R7
+SAVE_R7 .BLKW #1
+.END
+
+
+//////////////////////////////
+       .ORIG x3000
+;;;
+;;; PROGRAMME PRINCIPAL
+;;;
+
+	;; INITIALISATION DE LA PILE
+	
+        BR main
+pstend:	.FILL	stackend        
+main:	LD 	R6, pstend
+
+	;; CODE DU PROGRAMME PRINCIPAL
+
+        ;; message demandant la saisie d'une chaîne
+        LEA     R0, msg1
+	PUTS
+
+        ;; appel de la routine de lecture d'une chaîne
+	LEA     R1, chn
+	JSR     saisie
+
+        ;; message qui précede l'affichage de la chaîne lue
+	LEA     R0, msg2
+	PUTS
+
+        ;; affiche la chaîme lue
+	LEA     R0, chn
+	PUTS
+
+        ;; affiche un retour chariot
+        LD      R0, CR
+        OUT
+
+        HALT
+
+	;; DONNEES DU PROGRAMME PRINCIPAL
+
+CR:     .FILL   #13             ; retour chariot
+msg1:   .STRINGZ "Entrez une chaine : "
+msg2:   .STRINGZ "Vous avez saisi : "
+chn:    .BLKW   #32
+
+
+;;;
+;;; SOUS-ROUTINES
+;;; 
+
+        ;;-----------------------------------------------------
+        ;; saisie(chn)
+        ;; lecture d'une chaîne saisie par l'utilisateur
+        ;; Entrée : chn = adresse où copier la chaîne lue
+        ;; Sortie : 
+        ;; Registres utilisés : R0, R1, R2, R7
+        ;;           modifiés : R0, R1, R2, R7
+        ;;----------------------------------------------------- 
+
+saisie:
+        ;; Prologue : sauvegarde des registres modifiés
+
+        ADD     R6, R6, #-4
+	STR     R0, R6, #0      ; push R0
+	STR     R1, R6, #1      ; push R1
+	STR     R2, R6, #2      ; push R2
+	STR     R7, R6, #3      ; push R7
+
+        ;; boucle de lecture des caractères de la chaîne
+        ;; le registre R1 est utilisé comme pointeur à
+        ;; l'emplacement où copier le caractère lu
+saisie_boucle:
+
+        ;;  lecture du caractère
+        GETC
+        OUT                     ; affiche le caractère saisi
+
+        ;; vérifie si le caractère lu est un retour chariot
+	LD      R2, CR_neg
+	ADD     R2, R0, R2
+	BRZ     saisie_fin      ; retour chariot, fin de la chaîne
+
+        ;; vérifie si le caractère lu est un saut de ligne
+	LD      R2, LF_neg
+	ADD     R2, R0, R2
+	BRZ     saisie_fin      ; saut de ligne, fin de la chaîne
+
+        ;; ajoute le caractère à la chaîne
+	STR     R0, R1, #0      ; copie le caractère
+	ADD     R1, R1, #1      ; avance le pointeur
+        
+	BR saisie_boucle
+        
+saisie_fin:        
+        ;; ajoute le caractère de fin de chaîne
+        AND     R0, R0, #0
+	STR     R0, R1, #0
+
+        ;; Epilogue : restauration des registres sauvegardés
+
+        LDR     R0, R6, #0      ; pop R0
+	LDR     R1, R6, #1      ; pop R1
+	LDR     R2, R6, #2      ; pop R2
+	LDR     R7, R6, #3      ; pop R7
+	ADD     R6, R6, #4
+
+	RET
+
+	;; DONNEES
+
+CR_neg: .FILL   #-13            ; opposé du code ASCII de retour chariot
+LF_neg: .FILL   #-10            ; opposé du code ASCII de saut de ligne
+
+
+;;; 
+;;; PILE
+;;;
+	
+	;; Pile avec 1024 emplacements
+stack:	.BLKW  	#1024
+stackend:
+
+        .END
+
+
+EXO 2 --------------------------
+; Code à ajouter ou tester séparément
+; Supposons que R6 est déjà initialisé (ex: xFE00)
+
+; --- MAIN TEST EXERCICE 2 ---
+; (On reprend la saisie précédente, la chaîne est dans BUFFER)
+    LEA R0, BUFFER      ; R0 = Source (chaîne normale)
+    LEA R1, BUFFER_INV  ; R1 = Destination (chaîne inversée)
+    JSR REV             ; Appel de la routine
+    
+    ; Affichage
+    LEA R0, MSG_INV
+    PUTS
+    LEA R0, BUFFER_INV
+    PUTS
+    HALT
+
+MSG_INV    .STRINGZ "\nInverse : "
+BUFFER_INV .BLKW #50
+
+; --- SOUS-ROUTINE REV ---
+; R0 : Adresse Source
+; R1 : Adresse Destination
+; R6 : Pointeur de Pile (Stack Pointer)
+
+REV
+    ; 1. SAUVEGARDE CONTEXTE (Push R7, R0, R1)
+    ADD R6, R6, #-1
+    STR R7, R6, #0
+    ADD R6, R6, #-1
+    STR R0, R6, #0
+    ADD R6, R6, #-1
+    STR R1, R6, #0
+
+    ; 2. EMPILER LA SENTINELLE (0)
+    AND R2, R2, #0
+    ADD R6, R6, #-1
+    STR R2, R6, #0      ; On pousse 0 au fond
+
+    ; 3. BOUCLE EMPILEMENT (Lecture source -> Pile)
+PUSH_LOOP
+    LDR R2, R0, #0      ; Lire char source
+    BRz START_POP       ; Si c'est la fin de chaine (\0), on arrête d'empiler
+    
+    ; Push R2
+    ADD R6, R6, #-1
+    STR R2, R6, #0
+    
+    ADD R0, R0, #1      ; Avance pointeur source
+    BR PUSH_LOOP
+
+    ; 4. BOUCLE DEPILEMENT (Pile -> Destination)
+START_POP
+POP_LOOP
+    ; Pop vers R2
+    LDR R2, R6, #0
+    ADD R6, R6, #1
+    
+    ; Test Sentinelle
+    ADD R2, R2, #0      ; Rafraichir les flags
+    BRz FIN_REV         ; Si on tombe sur le 0 qu'on a mis au début, c'est fini !
+    
+    ; Écriture
+    STR R2, R1, #0      ; Écrit char dans dest
+    ADD R1, R1, #1      ; Avance pointeur dest
+    BR POP_LOOP
+
+FIN_REV
+    ; Ajouter le \0 final à la nouvelle chaîne
+    AND R2, R2, #0
+    STR R2, R1, #0
+
+    ; 5. RESTAURATION CONTEXTE (Pop R1, R0, R7)
+    ; Attention : Il faut dépiler dans l'ordre INVERSE de l'empilement
+    LDR R1, R6, #0
+    ADD R6, R6, #1
+    LDR R0, R6, #0
+    ADD R6, R6, #1
+    LDR R7, R6, #0
+    ADD R6, R6, #1
+
+    RET
+
+//////////////////
+       .ORIG x3000
+;;;
+;;; PROGRAMME PRINCIPAL
+;;;
+
+	;; INITIALISATION DE LA PILE
+	
+        BR main
+pstend:	.FILL	stackend        
+main:	LD 	R6, pstend
+
+	;; CODE DU PROGRAMME PRINCIPAL
+
+        ;; message demandant la saisie d’une chaîne
+        LEA     R0, msg1
+	PUTS
+
+        ;; appel de la routine de lecture d'une chaîne
+	LEA     R1, chn1
+	JSR     saisie
+
+        ;; message qui précede l'affichage de la chaîne lue
+	LEA     R0, msg2
+	PUTS
+
+        ;; affiche la chaîme lue
+	LEA     R0, chn1
+	PUTS
+
+        ;; affiche un retour chariot
+        LD      R0, CR
+        OUT
+
+        ;; appel de la routine qui renverse la chaîne
+	LEA     R0, chn1
+	LEA     R1, chn2
+	JSR     rev
+
+        ;; message qui précède l'affichage de la chaîne renversée
+	LEA     R0, msg3
+	PUTS
+        
+        ;; affiche la chaîme renversée
+	LEA     R0, chn2
+	PUTS
+
+        ;; affiche un retour chariot
+        LD      R0, CR
+        OUT
+        
+        HALT
+
+	;; DONNEES DU PROGRAMME PRINCIPAL
+
+CR:     .FILL   #13             ; retour chariot
+chn1    .BLKW #32
+chn2    .BLKW #32
+msg1    .STRINGZ "Entrez une chaine : "
+msg2    .STRINGZ "Vous avez saisi : "
+msg3    .STRINGZ "Son renversé est : "
+
+
+;;;
+;;; SOUS-ROUTINES
+;;; 
+
+        ;;-----------------------------------------------------
+        ;; rev(chn1, chn2)
+        ;; renverse la chaîne chn1 dans une chaîne chn2
+        ;; Entrée : R0 = chn1
+        ;;          R1 = chn2
+        ;; Sortie : 
+        ;; Registres utilisés : R0, R1, R2, R7
+        ;;           modifiés : R0, R1, R2
+        ;;-----------------------------------------------------
+
+rev:
+        ;; Prologue : sauvegarde des registres modifiés
+
+        ADD     R6, R6, #-3
+	STR     R0, R6, #0
+	STR     R1, R6, #1
+	STR     R2, R6, #2 
+
+        ;;  push le caractère '\0'
+	AND     R2, R2, #0
+	ADD     R6, R6, #-1	
+	STR     R2, R6, #0
+
+rev_enpile:
+        ;; empile ch = *R0 si ce n'est pas '\0'
+        LDR     R2, R0, #0      ; R2 = ch
+        ;; si ch == '\0', fin de chaîne 
+	BRZ     rev_depile      ; empilement fini, passe à dépiler
+
+        ;; push ch
+	ADD     R6, R6, #-1	 
+	STR     R2, R6, #0
+
+        ;; passe au caractère suivant et itère
+        ADD     R0, R0, #1      
+
+        BR      rev_enpile
+
+rev_depile:
+        ;; dépile un caractère ch dans R2 et copie tant que ch != '\0'
+        LDR     R2, R6, #0      ; R2 = ch
+	ADD     R6, R6, #1
+
+        ;; ajoute ch à la nouvele chaîne
+	STR     R2, R1, #0      ; *R1 = ch
+
+        ;; si ch == '\0', fin de chaîne 
+        ADD     R2, R2, #0
+        BRZ     rev_fin
+
+        ;; avance le pointeur de la nouvelle chaîne et itère
+        ADD     R1, R1, #1
+
+        BR      rev_depile
+        
+        ;; Epilogue : restauration des registres sauvegardés
+
+rev_fin:
+        LDR     R0, R6, #0 
+	LDR     R1, R6, #1
+	LDR     R2, R6, #2 
+	ADD     R6, R6, #3
+
+        RET
+
+
+        ;;-----------------------------------------------------
+        ;; saisie(chn)
+        ;; lecture d'une chaîne saisie par l'utilisateur
+        ;; Entrée : chn = adresse où copier la chaîne lue
+        ;; Sortie : 
+        ;; Registres utilisés : R0, R1, R2, R7
+        ;;           modifiés : R0, R1, R2, R7
+        ;;-----------------------------------------------------
+
+saisie:
+        ;; Prologue : sauvegarde des registres modifiés
+
+        ADD     R6, R6, #-4
+	STR     R0, R6, #0      ; push R0
+	STR     R1, R6, #1      ; push R1
+	STR     R2, R6, #2      ; push R2
+	STR     R7, R6, #3      ; push R7
+
+        ;; boucle de lecture des caractères de la chaîne
+        ;; le registre R1 est utilisé comme pointeur à
+        ;; l'emplacement où copier le caractère lu
+saisie_boucle:
+
+        ;;  lecture du caractère
+        GETC
+        OUT                     ; affiche le caractère saisi
+
+        ;; vérifie si le caractère lu est un retour chariot
+	LD      R2, CR_neg
+	ADD     R2, R0, R2
+	BRZ     saisie_fin      ; retour chariot, fin de la chaîne
+
+        ;; vérifie si le caractère lu est un saut de ligne
+	LD      R2, LF_neg
+	ADD     R2, R0, R2
+	BRZ     saisie_fin      ; saut de ligne, fin de la chaîne
+
+        ;; ajoute le caractère à la chaîne
+	STR     R0, R1, #0      ; copie le caractère
+	ADD     R1, R1, #1      ; avance le pointeur
+        
+	BR saisie_boucle
+        
+saisie_fin:        
+        ;; ajoute le caractère de fin de chaîne
+        AND     R0, R0, #0
+	STR     R0, R1, #0
+
+        ;; Epilogue : restauration des registres sauvegardés
+
+        LDR     R0, R6, #0      ; pop R0
+	LDR     R1, R6, #1      ; pop R1
+	LDR     R2, R6, #2      ; pop R2
+	LDR     R7, R6, #3      ; pop R7
+	ADD     R6, R6, #4
+
+	RET
+
+	;; DONNEES
+
+CR_neg: .FILL   #-13            ; opposé du code ASCII de retour chariot
+LF_neg: .FILL   #-10            ; opposé du code ASCII de saut de ligne
+
+
+;;; 
+;;; PILE
+;;;
+	
+	;; Pile avec 1024 emplacements
+stack:	.BLKW  	#1024
+stackend:
+
+        .END

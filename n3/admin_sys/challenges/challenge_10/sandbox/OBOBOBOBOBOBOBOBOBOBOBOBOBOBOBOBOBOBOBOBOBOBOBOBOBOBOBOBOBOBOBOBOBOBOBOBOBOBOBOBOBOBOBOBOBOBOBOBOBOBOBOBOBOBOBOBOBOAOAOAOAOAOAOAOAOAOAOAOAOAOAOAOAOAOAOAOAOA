@@ -1,0 +1,175 @@
+[4mHOSTNAME[24m(1)                Linux Programmer's Manual                [4mHOSTNAME[24m(1)
+
+[1mNAME[0m
+       hostname - show or set the system's host name
+       domainname - show or set the system's NIS/YP domain name
+       ypdomainname - show or set the system's NIS/YP domain name
+       nisdomainname - show or set the system's NIS/YP domain name
+       dnsdomainname - show the system's DNS domain name
+
+[1mSYNOPSIS[0m
+       [1mhostname  [22m[[1m-a|--alias[22m] [[1m-d|--domain[22m] [[1m-f|--fqdn|--long[22m] [[1m-A|--all-fqdns[22m]
+       [[1m-i|--ip-address[22m] [[1m-I|--all-ip-addresses[22m] [[1m-s|--short[22m] [[1m-y|--yp|--nis[22m]
+       [1mhostname [22m[[1m-b|--boot[22m] [[1m-F|--file filename[22m] [[1mhostname[22m]
+       [1mhostname [22m[[1m-h|--help[22m] [[1m-V|--version[22m]
+
+       [1mdomainname [22m[[1mnisdomain[22m] [[1m-F file[22m]
+       [1mypdomainname [22m[[1mnisdomain[22m] [[1m-F file[22m]
+       [1mnisdomainname [22m[[1mnisdomain[22m] [[1m-F file[22m]
+
+       [1mdnsdomainname[0m
+
+[1mDESCRIPTION[0m
+       [1mHostname [22mis used to display the system's DNS name, and to display or set
+       its hostname or NIS domain name.
+
+   [1mGET NAME[0m
+       When called without any arguments,  the  program  displays  the  current
+       names:
+
+       [1mhostname  [22mwill  print the name of the system as returned by the [1mgethost‐[0m
+       [1mname[22m(2) function.
+
+       [1mdomainname [22mwill print the NIS domainname of the system.  [1mdomainname [22muses
+       the [1mgethostname[22m(2) function, while [1mypdomainname  [22mand  [1mnisdomainname  [22muse
+       the [1mgetdomainname[22m(2).
+
+       [1mdnsdomainname  [22mwill  print  the domain part of the FQDN (Fully Qualified
+       Domain Name). The complete FQDN of the system is returned with  [1mhostname[0m
+       [1m--fqdn [22m(but see the warnings in section [1mTHE FQDN [22mbelow).
+
+   [1mSET NAME[0m
+       When  called  with  one argument or with the [1m--file [22moption, the commands
+       set the host name or the NIS/YP domain name.  [1mhostname [22muses the [1msethost‐[0m
+       [1mname[22m(2) function, while all of the three  [1mdomainname[22m,  [1mypdomainname  [22mand
+       [1mnisdomainname  [22muse  [1msetdomainname[22m(2).  Note, that this is effective only
+       until the next reboot.  Edit /etc/hostname for permanent change.
+
+       Note, that only the super-user can change the names.
+
+       It is not possible to set the FQDN or the DNS domain name with the  [1mdns‐[0m
+       [1mdomainname [22mcommand (see [1mTHE FQDN [22mbelow).
+
+       The host name is usually set once at system startup in [4m/etc/init.d/host‐[0m
+       [4mname.sh[24m  (normally  by reading the contents of a file which contains the
+       host name, e.g.  [4m/etc/hostname[24m).
+
+   [1mTHE FQDN[0m
+       The FQDN (Fully Qualified Domain Name) of the system is  the  name  that
+       the  [1mresolver[22m(3) returns for the host name, such as, [4mursula.example.com[24m.
+       It is usually the hostname followed by the DNS domain name (the part af‐
+       ter the first dot).  You can check the FQDN using [1mhostname --fqdn [22mor the
+       domain name using [1mdnsdomainname[22m.
+
+       You cannot change the FQDN with [1mhostname [22mor [1mdnsdomainname[22m.
+
+       The recommended method of setting the FQDN is to make the hostname be an
+       alias for the fully qualified name using [4m/etc/hosts[24m, DNS,  or  NIS.  For
+       example,  if  the  hostname  was  "ursula",  one  might  have  a line in
+       [4m/etc/hosts[24m which reads
+
+              127.0.1.1    ursula.example.com ursula
+
+       Technically: The FQDN is the name [1mgetaddrinfo[22m(3) returns  for  the  host
+       name  returned by [1mgethostname[22m(2).  The DNS domain name is the part after
+       the first dot.
+
+       Therefore it depends on the configuration of the  resolver  (usually  in
+       [4m/etc/host.conf[24m)  how you can change it. Usually the hosts file is parsed
+       before DNS or  NIS,  so  it  is  most  common  to  change  the  FQDN  in
+       [4m/etc/hosts[24m.
+
+       If  a  machine has multiple network interfaces/addresses or is used in a
+       mobile environment, then it may either have multiple FQDNs/domain  names
+       or none at all. Therefore avoid using [1mhostname --fqdn[22m, [1mhostname --domain[0m
+       and [1mdnsdomainname[22m.  [1mhostname --ip-address [22mis subject to the same limita‐
+       tions so it should be avoided as well.
+
+[1mOPTIONS[0m
+       [4m-a,[24m [4m--alias[0m
+              Display the alias name of the host (if used). This option is dep‐
+              recated and should not be used anymore.
+
+       [4m-A,[24m [4m--all-fqdns[0m
+              Displays  all  FQDNs  of  the machine. This option enumerates all
+              configured network addresses on  all  configured  network  inter‐
+              faces,  and  translates  them to DNS domain names. Addresses that
+              cannot be translated (i.e. because they do not have an  appropri‐
+              ate  reverse IP entry) are skipped. Note that different addresses
+              may resolve to the same name, therefore the  output  may  contain
+              duplicate entries. Do not make any assumptions about the order of
+              the output.
+
+       [4m-b,[24m [4m--boot[0m
+              Always set a hostname; this allows the file specified by [4m-F[24m to be
+              non-existent  or empty, in which case the default hostname [4mlocal‐[0m
+              [4mhost[24m will be used if none is yet set.
+
+       [4m-d,[24m [4m--domain[0m
+              Display the name of the DNS domain.  Don't use  the  command  [1mdo‐[0m
+              [1mmainname  [22mto get the DNS domain name because it will show the NIS
+              domain name and not the DNS domain name.  Use  [1mdnsdomainname  [22min‐
+              stead.  See the warnings in section [1mTHE FQDN [22mabove, and avoid us‐
+              ing this option.
+
+       [4m-f,[24m [4m--fqdn,[24m [4m--long[0m
+              Display the FQDN (Fully Qualified Domain Name). A  FQDN  consists
+              of  a short host name and the DNS domain name. Unless you are us‐
+              ing bind or NIS for host lookups you can change the FQDN and  the
+              DNS  domain  name  (which  is part of the FQDN) in the [4m/etc/hosts[0m
+              file. See the warnings in section [1mTHE FQDN [22mabove and use [1mhostname[0m
+              [1m--all-fqdns [22minstead wherever possible.
+
+       [4m-F,[24m [4m--file[24m [4mfilename[0m
+              Read the host name  from  the  specified  file.  Comments  (lines
+              starting with a `#') are ignored.
+
+       [4m-i,[24m [4m--ip-address[0m
+              Display  the network address(es) of the host name. Note that this
+              works only if the host name can be resolved. Avoid using this op‐
+              tion; use [1mhostname --all-ip-addresses [22minstead.
+
+       [4m-I,[24m [4m--all-ip-addresses[0m
+              Display all network addresses of the host. This option enumerates
+              all configured addresses on all network interfaces. The  loopback
+              interface  and IPv6 link-local addresses are omitted. Contrary to
+              option [4m-i[24m, this option does not depend on name resolution. Do not
+              make any assumptions about the order of the output.
+
+       [4m-s,[24m [4m--short[0m
+              Display the short host name. This is the host  name  cut  at  the
+              first dot.
+
+       [4m-V,[24m [4m--version[0m
+              Print  version  information  on standard output and exit success‐
+              fully.
+
+       [4m-y,[24m [4m--yp,[24m [4m--nis[0m
+              Display the NIS domain name. If a parameter is given  (or  [1m--file[0m
+              [1mname [22m) then root can also set a new NIS domain.
+
+       [4m-h,[24m [4m--help[0m
+              Print a usage message and exit.
+
+[1mNOTES[0m
+       The  address  families  [1mhostname [22mtries when looking up the FQDN, aliases
+       and network addresses of the host are determined by the configuration of
+       your resolver.  For instance, on GNU Libc systems, the resolver  can  be
+       instructed  to  try  IPv6  lookups  first  by  using the [1minet6 [22moption in
+       [1m/etc/resolv.conf[22m.
+
+[1mFILES[0m
+       [1m/etc/hostname [22mHistorically this file was supposed to  only  contain  the
+       hostname and not the full canonical FQDN. Nowadays most software is able
+       to  cope  with  a  full FQDN here. This file is read at boot time by the
+       system initialization scripts to set the hostname.
+
+       [1m/etc/hosts [22mUsually, this is where one sets the domain name  by  aliasing
+       the host name to the FQDN.
+
+[1mAUTHORS[0m
+       Peter Tobias, <tobias@et-inf.fho-emden.de>
+       Bernd Eckenfels, <net-tools@lina.inka.de> (NIS and manpage).
+       Michael Meskes, <meskes@debian.org>
+
+net-tools                          2009-09-16                       [4mHOSTNAME[24m(1)

@@ -1,0 +1,53 @@
+# 1. Comment écrire en C, compiler et exécuter un Hello, World! sur ma propre machine ?
+
+
+# 2. Quel éditeur de texte j’utilise pour écrire des programmes en C sur ma propre machine ? Et en salle TP ? (Pas de bonne ou mauvaise réponse, mais vous devez vous poser la question)
+Sur ma propre machine j'utilise VsCode ou Eclipse et en salle de TP VsCode ou nano (parfois gedit)
+
+# 3. Quels drapeaux de compilation sont indispensables dans ce cours ? Lesquels sont fortement conseillés ? À quoi servent-il ?
+
+
+# 4. Comment utiliser valgrind ? À quoi cela sert-il ?
+
+
+# 5. Qu’est-ce qu’un bit et un octet (byte) ?
+
+
+# 6. Que signifie « la machine est byte addressable » ?
+
+
+# 7. Quelle est la différence entre les entiers signés et les entiers non signés ?
+Les entiers signés peuvent représenter des valeurs positives et négatives tandis que les entiers non signés peuvent représenter seulement des valeurs positives
+
+# 8. Quelle est la taille d’un char ? Les char sont-il signés ou non signés ?
+La taille d'un char est de 1 octet
+Ca dépend de la machine, ça peut être signé ou non signé par défaut
+
+# 9. Quelle est la taille d’un int ? Les int sont-il signés ou non signés ?
+Généralement 4 octets sur les architectures modernes comme x86_64 mais peuvent être différents selon les machines
+Il est signé par défaut
+
+# 10. Combien de valeurs peut-on représenter sur 8 bits ? sur 16 bits ? sur 32 bits ?
+8 bits : 2⁸ = 256 valeurs
+16 bits : 2¹⁶ = 65 536 valeurs
+32 bits : 2³² ≈ 4×10⁹ (environ 4 milliards) valeurs
+
+# 11. Est-ce que je connais toutes les puissances de 2 jusqu’à 2¹⁰ ?
+2¹⁰ = 1024 (environ 10³)
+
+# 12. Comment donner une valeur décimale approchée d’une grande puissance de 2 (par exemple 2³²) ?
+Pour une valeur approchée de 2³², on utilise (2¹⁰)³ x 2² ≈ (10³)³ x 4 = 4 x 10⁹
+
+# 13. Comment convertir un entier en décimal en binaire ? en hexadécimal ?
+
+
+# 14. Comment passer du binaire à l’hexadécimal et réciproquement ?
+
+
+# 15. Quels sont les types entiers de taille et signitude fixes en C99 ?
+
+
+# 16. Qu’est-ce que le boutisme (endianness) ? Quelle est la différence entre une architecture petit-boutiste (little-endian) et une architecture gros-boutiste (big-endian) ?
+
+
+# 17. Révisions sur les pointeurs : est-ce que je connais les opérateurs & et * ?

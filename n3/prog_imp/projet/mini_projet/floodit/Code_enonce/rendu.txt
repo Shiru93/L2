@@ -1,0 +1,20 @@
+Ziya EMRE Groupe 3 Numéro Etudiant : 12212738
+J'ai fais le projet seul
+
+Voici une représentation de la vitesse pour chaque exercices
+Dim  Temps_Naif  Temps_Rapide  Max_Bordure  Max_Bordure_Zone
+10   0.000055    0.000031      0.000027     0.000061
+20   0.000164    0.000074      0.000038     0.000109
+30   0.000728    0.000137      0.000024     0.000245
+40   0.001429    0.000256      0.000054     0.000516
+50   0.002194    0.000404      0.000058     0.000660
+60   0.002817    0.000560      0.000087     0.000928
+70   0.001722    0.000674      0.000058     0.001260
+80   0.003931    0.000863      0.000053     0.001689
+90   0.007309    0.001170      0.000207     0.001979
+100  0.008917    0.001512      0.000188     0.002392
+
+Je rajouterais le fichier .csv contenant ce tableau dans le rendu
+Pour l'afficher correctement il faut taper la commande suivante : column -t -s ';' resultats.csv
+
+Je mettrais aussi le graphique dans le rendu

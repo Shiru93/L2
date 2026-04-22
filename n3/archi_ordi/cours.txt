@@ -1,0 +1,245 @@
+	I. L'Architecture LC-3 (Le Matériel)
+1. Les Registres (Tes "Mains")
+
+Le processeur ne peut pas calculer directement dans la mémoire. Il doit tout charger dans des registres.
+
+    R0 à R7 (Registres Généraux) : Tu les utilises pour tout (calculs, compteurs, pointeurs).
+
+    PC (Program Counter) : Contient l'adresse de la prochaine instruction à exécuter.
+
+IR (Instruction Register) : Contient l'instruction en cours d'exécution.
+
+PSR (Program Status Register) : Contient les infos d'état, notamment les Codes de Condition (N, Z, P).
+
+2. Les Codes de Condition (CC : N, Z, P)
+
+C'est CRUCIAL pour les conditions (BR).
+
+    Ce sont 3 drapeaux (bits) : N (Negative), Z (Zero), P (Positive).
+
+    Règle d'or : Ils sont mis à jour automatiquement à chaque fois qu'une valeur est écrite dans un registre par :
+
+        Des instructions de calcul : ADD, AND, NOT.
+
+        Des instructions de chargement : LD, LDI, LDR, LEA.
+
+    Attention : ST, STR, STI et BR ne modifient pas les flags.
+
+3. La Mémoire
+
+    Adresses de x0000 à xFFFF.
+
+Chaque case fait 16 bits.
+
+II. Le Jeu d'Instructions (Ta Boîte à Outils)
+1. Calculs et Logique
+
+    ADD (Addition) :
+
+        ADD R1, R2, R3 → R1 = R2 + R3.
+
+        ADD R1, R2, #-5 → R1 = R2 - 5.
+
+        Limite : Le nombre immédiat (#-5) doit tenir sur 5 bits (entre -16 et +15).
+
+AND (ET bit-à-bit) :
+
+    AND R1, R2, R3 ou AND R1, R2, #0 (utile pour mettre un registre à zéro)..
+
+    Utilisé pour les "masques" (forcer des bits à 0).
+
+NOT (Inverse) :
+
+    NOT R1, R2 → Inverse tous les bits de R2 et stocke dans R1.
+
+    Usage : Pour faire une soustraction (A - B), on fait A + NOT(B) + 1.
+
+2. Déplacements de Données (Load / Store)
+
+C'est là que se font 80% des erreurs. Comprends bien la nuance :
+
+    LD / ST (Adressage Direct - Label) : 
+
+    LD R0, LABEL : Charge le contenu de l'étiquette LABEL dans R0.
+
+    ST R0, LABEL : Sauvegarde R0 dans l'étiquette LABEL.
+
+    Contrainte : Le LABEL doit être proche (offset de 9 bits).
+
+LDR / STR (Adressage Basé - Tableaux/Piles) :
+
+    C'est l'adressage "Pointeur".
+
+    LDR R0, R1, #0 : Va à l'adresse contenue dans R1, ajoute 0, et charge la valeur trouvée dans R0.
+
+    STR R0, R1, #1 : Va à l'adresse (R1 + 1) et écrit le contenu de R0.
+
+    Usage : Parcourir des tableaux ou gérer la pile.
+
+LEA (Load Effective Address) :
+
+        LEA R0, LABEL : Ne charge pas le contenu, mais l'adresse du label dans R0.
+
+        Usage : Initialiser un pointeur pour un tableau ou une chaîne de caractères (PUTS).
+
+3. Contrôle du Flux
+
+    BR (Branch - Conditionnel) : 
+
+    Regarde les flags N, Z, P (mis à jour par l'instruction précédente).
+
+    BRz LABEL (si zéro), BRn LABEL (si négatif), BRp LABEL (si positif), BRzp (si ≥0).
+
+    BRnzp LABEL (ou BR) est un saut inconditionnel.
+
+JMP (Jump) :
+
+    JMP R1 : Saute à l'adresse contenue dans R1.
+
+        RET : C'est un alias pour JMP R7.
+
+III. Les "Design Patterns" des TP (Recettes de Cuisine)
+
+Voici les algorithmes exacts que tu as vus en TP, expliqués pour les reproduire.
+1. Manipulation ASCII et Conversion (TP 3)
+
+    Les chiffres '0' à '9' en ASCII valent x30 à x39 (48 à 57 décimal).
+
+    ASCII vers Entier : Soustraire x30.
+
+        Code : LD R2, NEG_30 puis ADD R0, R0, R2.
+
+    Entier vers ASCII : Ajouter x30.
+
+    Minuscule vers Majuscule (TP 2) : Soustraire 32 (ou x20)..
+
+2. Multiplication par une constante (TP 3)
+
+Le LC-3 n'a pas d'instruction MUL.
+
+    Par 2 : ADD R0, R0, R0 (Décalage à gauche).
+
+    Par 10 : Formule 10x=8x+2x.
+
+        Calculer 2x (une addition). Sauvegarder.
+
+        Calculer 4x (addition du résultat 2x sur lui-même).
+
+        Calculer 8x (addition du résultat 4x sur lui-même).
+
+        Additionner (8x)+(2x).
+
+3. Lecture d'un nombre à plusieurs chiffres (TP 3/4)
+
+Algorithme "Horner" :
+
+    Init TOTAL = 0.
+
+    Lire un caractère.
+
+    Convertir en entier (- x30).
+
+    TOTAL = (TOTAL * 10) + Chiffre.
+
+    Répéter.
+
+4. Parcours de Tableau (TP 4)
+
+Pour sommer un tableau :
+
+    Pointeur : LEA R1, DEBUT_TAB (R1 contient l'adresse).
+
+    Compteur : LD R2, TAILLE.
+
+    Boucle :
+
+        LDR R3, R1, #0 (Lire la valeur pointée).
+
+        ADD R0, R0, R3 (Ajouter à la somme).
+
+        ADD R1, R1, #1 (Avancer le pointeur).
+
+        ADD R2, R2, #-1 (Décrémenter compteur).
+
+        BRp BOUCLE (Tant que compteur > 0).
+
+5. Les Sous-Routines et le Piège de R7 (TP 5)
+
+C'est le point qui fait rater l'examen.
+
+    Appel : JSR MA_ROUTINE. Le LC-3 sauvegarde automatiquement l'adresse de retour dans R7.
+
+    Retour : RET (équivalent à JMP R7).
+
+    LE DANGER : Si dans ta routine tu appelles une autre routine ou un TRAP (GETC, OUT, PUTS), le processeur va écrire la nouvelle adresse de retour dans R7, écrasant l'ancienne.
+
+    LA SOLUTION : Sauvegarder R7 dès l'entrée de la routine, et le restaurer juste avant le RET.
+
+    Extrait de code
+
+ROUTINE
+    ST R7, SAVE_R7   ; Sauvegarde
+    ; ... code avec des TRAP ...
+    LD R7, SAVE_R7   ; Restauration
+    RET
+SAVE_R7 .BLKW 1
+
+6. La Pile (Stack) (TP 5)
+
+Utilisée pour inverser des données ou sauvegarder des registres.
+
+    Pointeur : On utilise R6 par convention.
+
+    Empiler (PUSH) : "D'abord on descend, ensuite on écrit".
+    Extrait de code
+
+ADD R6, R6, #-1   ; Décrémente le pointeur
+STR R0, R6, #0    ; Écrit la valeur
+
+Dépiler (POP) : "D'abord on lit, ensuite on remonte".
+Extrait de code
+
+LDR R0, R6, #0    ; Lit la valeur
+ADD R6, R6, #1    ; Incrémente le pointeur
+
+Sentinelle : Pour inverser une chaîne, on pousse un 0 au fond de la pile. On empile les lettres. Au dépilement, quand on retrouve le 0, on sait qu'on a fini.
+
+IV. Aide-Mémoire Syntaxe & TRAP
+
+Les Directives Assembleur
+
+    .ORIG x3000 : Début du programme.
+
+    .END : Fin du fichier source.
+
+    .FILL #10 ou .FILL xA : Réserve 1 mot avec une valeur précise.
+
+    .BLKW #5 : Réserve 5 mots vides (Block Word).
+
+    .STRINGZ "Salut" : Réserve l'espace pour la chaîne + le caractère nul \0.
+
+Les TRAP (Appels Système)
+
+    GETC (TRAP x20) : Lit 1 char dans R0 (pas d'écho écran).
+
+    OUT (TRAP x21) : Affiche le char de R0.
+
+    PUTS (TRAP x22) : Affiche la chaîne pointée par R0 (s'arrête au \0).
+
+    IN (TRAP x23) : Affiche invite + Lit 1 char + Affiche le char.
+
+    HALT (TRAP x25) : Arrête le processeur.
+
+V. Check-list de Survie pour demain
+
+    Nombres : N'oublie jamais le # pour les décimaux (ADD R0, R0, #1).
+
+    Etiquettes : Vérifie que tu ne confonds pas le chiffre 0 et la lettre O.
+
+    Boucles : Vérifie tes conditions (BRp ou BRz). Est-ce que tu décrémentes bien ton compteur ?
+
+    Sous-routines : "J'utilise un TRAP dans ma routine ? -> Je sauvegarde R7."
+
+    Pile : "J'ai fait 3 PUSH ? -> Je dois faire 3 POP." (R6 doit revenir à sa position initiale).
+
+    Débogage : Si ça ne marche pas, utilise le bouton "Step" du simulateur et regarde les registres changer un par un. Regarde surtout les flags (CC) après un ADD ou un LD.

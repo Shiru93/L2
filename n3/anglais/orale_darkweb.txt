@@ -1,0 +1,172 @@
+Surface Web : ~4%
+c'est la partie visible et indexé des moteurs de recherche
+indexé veut dire que le site est repertorié par Google par exemple (en gros on peut le trouver en tapant le nom dans la barre de recherche)
+Seul les contenus fait pour être publique sont visibles et indexé par les moteurs de recherche (comme la page d'acceuil d'instagram par exemple)
+
+Deep Web : ~90%
+Ensemble de ce qui n'est pas indexé par les moteurs de recherche
+Tout le contenu caché derrière les pages de connexion par exemple
+C'est tout ce qui est privé et protégé
+
+Dark Web : ~6%
+Contenu accesible uniquement via un Darknet
+Un Darknet est un réseau distinct de l'internet traditionnel créé pour offrir une couche supplémentaire d'anonymat et de sécurité
+Pour être plus précis, un Darknet c'est un sous-réseau d'internet utilisant des protocoles spécifiques intégrant nativement des fonctions d'anonymisation
+Pour pénétrer au Darknet, il faut soit des logiciels soit avoir une configuration spécifique de son navigateur (le plus connu est Tor)
+C'est vraiment très simple d'aller sur le Darknet
+
+C'est terriblement pénible de naviguer sur le Darkweb :
+ - c'est lent
+ - les sites mettent du temps à charger
+ - beaucoup de site ne fonctionnent plus, sont moches, mal optimisés
+
+Comment Tor nous rend anonyme ?
+    Quand on navigue sur un navigateur classique :
+        - on communique directement avec le site
+        - le site voit notre adresse IP
+        - ton fournisseur d'accès à internet voit tout :
+            - le site que tu visites
+            - l'heure et le durée
+            - la quantité de données échangées
+            - ton adresse IP et celle du site
+
+    Quand on navique sur Tor :
+        - il va envoyer ton message à d'autres serveurs un peu partout dans le monde avant qu'il n'arrive au site
+        - c'est ce qu'on appelle des relais : ce sont des serveurs mis en place par différentes personnes et organisations comme les universités, le MIT, des groupes activistes comme RiseUp et pleins d'autres bénévoles (on compte près de 6k relais)
+        - notre demande est chiffrée en plusieurs couches, comme un oignon. Chaque relais ne peut déchiffrer qu'une seule couche, révèlant uniquement l'adresse du prochain relais :
+            - Le 1er relais (noeud d'entrée) sait que vous vous connectez à Tor, mais, il ne connaît pas votre destination finale
+            - Le relais du milieu ne connaît ni votre IP d'origine ni la destination finale
+            - Le dernier relais (noeud de sortie) voit la destination finale (le site web), mais il ne sait pas de qui provient la demande d'origine
+        
+        Ainsi, personne dans la chaîne ne possède l'information complète (qui vous êtes et o`u vous allez), assurant l'anonymat
+
+Que trouve-t-on sur le Dark Web ?
+    - Marketplaces (Marchés noirs) :
+        - C'est ce qu'on trouve le plus facilement
+        - On peut y acheter toutes sortes de choses illégales :
+            - drogues
+            - faux papiers (carte d'identité, permis, etc...)
+            - comptes volés
+            - cartes bancaires piratées
+            - des armes à feu (y compris des roquettes)
+            - etc...
+        - Hacking :
+            - c'est plus un "repère à criminel" qu'à hackeurs
+            - on trouve des offres de piratage (compte insta, téléphones, etc...)
+            - on peut ruiner la vie de quelqu'un
+            - il y a aussi des malwares et des failles "zéro-day" à vendre, mais beaucoup sont des arnaques
+            - acheter c'est risqué car on ne peut pas se plaindre à la police
+        -  Contenus horrifiques :
+            - Mythes et Pièges :
+                - Red Rooms (torture en direct)
+                - sites proposant des tueurs à gages
+            - Violence Extrême :
+                - il est vraiment facile (en 2h ~ 3h de navigation) de trouver des vidéos d'une atrocité inimaginable envers des humains, des animaux ou des enfants
+            - Trafic d'Organes :
+                - sites proposant des greffes (coeurs, poumons) soulevant des questions évidentes sur la provenance des Organes
+            - Pédocriminalité :
+                - il est beaucoup trop facile de trouver du contenu pédocriminel tellement son ampleur est gigantesque (il est plus facile de tomber dessus que sur des tuto de hacking par exemple)
+                - ce sont des abus réels et filmées, parfois avec le visage des adultes visible
+                - il est déconseillé de poster des photos ou vidéos de ses enfants sur les réseaux sociaux car elles peuvent être récupérées et vendus sur le Darkweb
+
+Le bon côté :
+    Le Darkweb n'est pas utilisé seulement pas des criminels
+    Il sert aussi de refuge pour la liberté d'expression
+    Dans les pays répressifs o`u exprimer son opinion peut coûter la vie, le Darkweb permet aux dissidents et aux lanceurs d'alerte de communiquer anonymement
+
+En conclusion, le problème n'est pas l'outil, mais ce que l'être humain est capable de faire lorsque l'anonymat lui est garanti
+Le Darkweb n'est pas un monde parallèle, c'est le reflet sans filtre de notre propre monde
+
+
+Bonjour tout le monde
+Le darkweb est un sujet qui passionne mais qu'est-ce que c'est exactement ?
+On entend le terme de Deepweb, de Darkweb ou encore de Darknet
+Mais ces trois termes sont-ils réellement pareils ? Quels différences existent-ils entre ces 3 appellations ?
+Tout d'abord faut voir le web comme un iceberg
+La partie visiblee de l'iceberg est le Surface Web et qui représente 4% du web
+Autrement dit, c'est la partie visible et indexé des moteurs de recherche
+Pour rappel, indexé veut dire que le site est repertorié par Google par exemple, en gros on peut le trouver en tapant le nom dans la barre de recherche
+Seul les contenus fait pour être publique sont visibles et indexé par les moteurs de recherche, comme la page d'acceuil d'instagram par exemple
+Je pense que j'ai pas besoin de m'attarder plus longtemps sur le sujet
+
+Maintenant, passons sur la partie cachée de l'iceberg
+Et pour cela, on va parler du Deepweb, qui représente 90% du web
+Le Deepweb regroupe tout ce qui n'est pas indexé par les moteurs de recherche
+Tout le contenu caché derrière les pages de connexion par exemple
+C'est tout ce qui est privé et protégé
+C'est-à-dire, notre pseudo et mdp d'un site web, etc...
+
+Sauf que cette partie de l'iceberg ne contient pas seulement le Deepweb, mais également le Darkweb
+Déjà il faut savoir que l'accès au contenu du Darkweb se fait seulement via un Darknet
+Un Darknet c'est quoi ?
+Un Darknet est un réseau distinct de l'internet traditionnel créé pour offrir une couche supplémentaire d'anonymat et de sécurité
+Pour être plus précis, un Darknet c'est un sous-réseau d'internet utilisant des protocoles spécifiques intégrant nativement des fonctions d'anonymisation
+Pour pénétrer au Darknet, il faut soit des logiciels soit avoir une configuration spécifique de son navigateur dont le plus connu est Tor
+Comme vous l'avez certaienement compris, il est très simple d'aller sur le Darknet
+Cependant, il faut aussi savoir que c'est terriblement pénible de naviguer sur le Darkweb
+En plus d'être lent, les sites mettent du temps à charger et beaucoup de site ne fonctionnent plus, sont moches, mal optimisés
+
+Mais avant de parler du contenu du Darkweb, retournons sur Tor et sur comment Tor nous rend anonyme
+Quand on navigue sur un navigateur classique, on communique directement avec le site
+Le site voit notre adresse IP et ton fournisseur d'accès à internet voit tout, c'est-à-dire, le site que tu visites, l'heure et le durée, la quantité de données échangées et ton adresse IP ainsi celle du site
+
+Quand on navique sur Tor, il va envoyer ton message à d'autres serveurs un peu partout dans le monde avant qu'il n'arrive au site
+C'est ce qu'on appelle des relais : ce sont des serveurs mis en place par différentes personnes et organisations comme les universités, le MIT, des groupes activistes comme RiseUp et pleins d'autres bénévoles 
+On compte près de 6k relais
+De ce fait, notre demande est chiffrée en plusieurs couches, comme un oignon. 
+Chaque relais ne peut déchiffrer qu'une seule couche, révèlant uniquement l'adresse du prochain relais :
+Le 1er relais, qui est le noeud d'entrée, sait que vous vous connectez à Tor, mais, il ne connaît pas votre destination finale
+Le relais du milieu ne connaît ni votre IP d'origine ni la destination finale
+Le dernier relais, aussi appelé noeud de sortie, voit la destination finale (le site web), mais il ne sait pas de qui provient la demande d'origine
+Ainsi, personne dans la chaîne ne possède l'information complète : qui vous êtes et o`u vous allez, assurant l'anonymat
+
+Mais que peut-on trouver sur le Darkweb concrêtement ?
+D'ailleurs c'est ce qu'on trouve le plus facilement
+On peut y acheter toutes sortes de choses illégales tels que des drogues, des faux papiers comme carte d'identité ou permis, des comptes volés, des cartes bancaires piratées, des armes à feu, y compris des roquettes, etc...
+
+Le Darkweb nous propose aussi des services de hacking mais c'est plus un "repère à criminel" qu'à hackeurs
+On y trouve notamment des offres de piratage (compte insta, téléphones, etc...)
+On peut ruiner la vie de quelqu'un
+Il y a aussi des malwares et des failles "zéro-day" à vendre, mais beaucoup sont des arnaques
+Mais bien sûr, acheter c'est risqué car on ne peut pas se plaindre à la police
+
+Comment parler du Darkweb sans parler du contenu horrifique qui peut être proposé ?
+On y trouve des Red Rooms, soit des torture en direct et des sites proposant des tueurs à gages
+Il est aussi facile de trouver des vidéos d'une atrocité inimaginable envers des humains, des animaux ou des enfants, seule 2h ~ 3h de navigation peuvent suffir
+On y trouve aussi des sites proposant des greffes de coeurs et de poumons soulevant des questions évidentes sur la provenance des organes
+Maintenant on y vient à l'un des contenus, si ce n'est le suscite le plus de colère et de dégoûts, la pédocriminalité
+Il est beaucoup trop facile de trouver du contenu pédocriminel tellement son ampleur est gigantesque 
+Il est plus facile de tomber dessus que sur des tuto de hacking par exemple
+Ce sont des abus réels et filmées, parfois avec le visage des adultes visible
+Je vous déconseille de poster des photos ou vidéos de vos enfants sur les réseaux sociaux car elles peuvent être récupérées et vendus sur le Darkweb
+
+Cependant, le Darkweb n'est pas utilisé seulement pas des criminels
+Il sert aussi de refuge pour la liberté d'expression
+Dans les pays répressifs o`u exprimer son opinion peut coûter la vie, le Darkweb permet aux dissidents et aux lanceurs d'alerte de communiquer anonymement
+
+En conclusion, le problème n'est pas l'outil, mais ce que l'être humain est capable de faire lorsque l'anonymat lui est garanti
+Le Darkweb n'est pas un monde parallèle, c'est le reflet sans filtre de notre propre monde
+
+Hello everyone,
+
+The Dark Web is a fascinating subject, but what is it exactly? We hear the terms Deep Web, Dark Web, or Darknet. But are these three terms really the same? What differences are there between these 3 names?
+
+First of all, you have to see the web as an iceberg. The visible part of the iceberg is the Surface Web, which represents 4% of the web. In other words, it's the visible and indexed part of search engines. As a reminder, "indexed" means the site is listed by Google, for example. Basically, we can find it by typing the name into the search bar. Only content made to be public is visible and indexed by search engines, like the Instagram homepage, for example. I don't think I need to dwell on this subject any longer.
+
+Now, let's move on to the hidden part of the iceberg. And for that, we'll talk about the Deep Web, which represents 90% of the web. The Deep Web includes everything that is not indexed by search engines. All the content hidden behind login pages, for example. It's everything that is private and protected. Meaning, our username and password for a website, etc...
+
+However, this part of the iceberg doesn't only contain the Deep Web, but also the Dark Web. First, you should know that access to Dark Web content is only possible via a Darknet. What is a Darknet? A Darknet is a distinct network from the traditional internet, created to offer an additional layer of anonymity and security. To be more precise, a Darknet is a sub-network of the internet that uses specific protocols natively integrating anonymization functions. To access the Darknet, you need either software or a specific configuration of your browser, the most famous of which is Tor. As you've probably understood, it is very simple to go on the Darknet. However, you must also know that it is terribly tedious to navigate the Dark Web. Besides being slow, sites take a long time to load, and many sites no longer work, are ugly, and poorly optimized.
+
+But before talking about the content of the Dark Web, let's go back to Tor and how Tor makes us anonymous. When we browse on a standard browser, we communicate directly with the site. The site sees our IP address, and your internet service provider (ISP) sees everything: meaning, the site you visit, the time and duration, the amount of data exchanged, and your IP address as well as the site's.
+
+When we browse on Tor, it will send your message to other servers all over the world before it reaches the site. These are called relays: they are servers set up by different people and organizations like universities, MIT, activist groups like RiseUp, and many other volunteers. There are nearly 6,000 relays. As a result, our request is encrypted in several layers, like an onion. Each relay can only decrypt one layer, revealing only the address of the next relay: The 1st relay, which is the entry node, knows you are connecting to Tor, but it does not know your final destination. The middle relay knows neither your original IP nor the final destination. The last relay, also called the exit node, sees the final destination (the website), but it does not know who the original request came from. Thus, no one in the chain has the complete information: who you are and where you are going, ensuring anonymity.
+
+But what can we actually find on the Dark Web? In fact, this is what is easiest to find. You can buy all sorts of illegal things there, such as drugs, fake documents (like ID cards or driver's licenses), stolen accounts, hacked credit cards, firearms, including rockets, etc...
+
+The Dark Web also offers hacking services, but it's more of a "den for criminals" than for hackers. You can notably find hacking offers (Insta accounts, phones, etc...) You can ruin someone's life. There are also malwares and "zero-day" exploits for sale, but many are scams. But of course, buying is risky because you can't complain to the police.
+
+How can we talk about the Dark Web without mentioning the horrific content that can be offered? You can find "Red Rooms" (which are live torture) and sites offering hitmen. It is also easy to find videos of unimaginable atrocity towards humans, animals, or children; just 2 to 3 hours of browsing can be enough. You also find sites offering heart and lung transplants, raising obvious questions about the origin of the organs. Now we come to one of the types of content that causes the most anger and disgust, if not the most: child abuse content. It is far too easy to find child abuse content, as its scale is gigantic. It is easier to stumble upon it than on hacking tutorials, for example. This is real, filmed abuse, sometimes with the adults' faces visible. I advise you not to post photos or videos of your children on social media, as they can be retrieved and sold on the Dark Web.
+
+However, the Dark Web is not only used by criminals. It also serves as a refuge for freedom of expression. In repressive countries where expressing one's opinion can cost you your life, the Dark Web allows dissidents and whistleblowers to communicate anonymously.
+
+In conclusion, the problem isn't the tool, but what human beings are capable of doing when guaranteed anonymity. The Dark Web is not a parallel world; it is the unfiltered reflection of our own world.

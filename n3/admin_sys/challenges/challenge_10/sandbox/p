@@ -1,0 +1,60 @@
+PASSWD(5)                                                                     File Formats and Configuration                                                                    PASSWD(5)
+
+NOM
+       passwd - fichier des mots de passe
+
+DESCRIPTION
+       /etc/passwd contains one line for each user account, with seven fields delimited by colons (« : »). These fields are:
+
+       •   nom de connexion de l'utilisateur (« login »)
+
+       •   un mot de passe chiffré optionnel
+
+       •   l'identifiant numérique de l'utilisateur
+
+       •   l'identifiant numérique du groupe de l'utilisateur
+
+       •   le nom complet de l'utilisateur ou un champ de commentaires
+
+       •   le répertoire personnel de l'utilisateur
+
+       •   l'interpréteur de commandes de l'utilisateur (optionnel)
+
+       If the password field is a lower-case « x », then the encrypted password is actually stored in the shadow(5) file instead; there must be a corresponding line in the /etc/shadow
+       file, or else the user account is invalid.
+
+       The encrypted password field may be empty, in which case no password is required to authenticate as the specified login name. However, some applications which read the
+       /etc/passwd file may decide not to permit any access at all if the password field is blank.
+
+       A password field which starts with an exclamation mark means that the password is locked. The remaining characters on the line represent the password field before the password
+       was locked.
+
+       Refer to crypt(3) for details on how this string is interpreted.
+
+       If the password field contains some string that is not a valid result of crypt(3), for instance ! or *, the user will not be able to use a unix password to log in (but the user
+       may log in the system by other means).
+
+       The comment field, also known as the gecos field, is used by various system utilities, such as finger(1). The use of an ampersand here will be replaced by the capitalised login
+       name when the field is used or displayed by such system utilities.
+
+       The home directory field provides the name of the initial working directory. The login program uses this information to set the value of the $HOME environmental variable.
+
+       The command interpreter field provides the name of the user's command language interpreter, or the name of the initial program to execute. The login program uses this information
+       to set the value of the $SHELL environmental variable. If this field is empty, it defaults to the value /bin/sh.
+
+FICHIERS
+       /etc/passwd
+           Informations sur les comptes des utilisateurs.
+
+       /etc/shadow
+           un mot de passe chiffré optionnel
+
+       /etc/passwd-
+           Fichier de sauvegarde de /etc/passwd.
+
+           Notez que ce fichier est utilisé par les outils de la suite d'outils shadow, mais pas par tous les outils de gestion d'utilisateurs et de mot de passes.
+
+VOIR AUSSI
+       crypt(3), getent(1), getpwnam(3), login(1), passwd(1), pwck(8), pwconv(8), pwunconv(8), shadow(5), su(1), sulogin(8).
+
+shadow-utils 4.13                                                                       07/04/2025                                                                              PASSWD(5)
