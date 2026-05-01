@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correction complète — TPs Système</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --warn: #e3b341;
+    --code-bg: #0d1117;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 40px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  header h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  header p { color: var(--text-dim); margin-top: 4px; font-size: 0.9rem; }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 40px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 101px;
+    z-index: 99;
+  }
+  nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  nav a:hover { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 40px; }
+
+  /* ── TP SECTIONS ── */
+  .tp-section {
+    margin-bottom: 80px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .tp-header {
+    padding: 24px 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tp-header.tp0 { background: linear-gradient(90deg, #0f2027 0%, #203a43 100%); }
+  .tp-header.tp1 { background: linear-gradient(90deg, #1a1a2e 0%, #16213e 100%); }
+  .tp-header.tp3 { background: linear-gradient(90deg, #0f3443 0%, #34e89e11 100%); }
+  .tp-header.tp4 { background: linear-gradient(90deg, #2d1b33 0%, #11082a 100%); }
+  .tp-header.tp5 { background: linear-gradient(90deg, #1a2a1a 0%, #0d3b0d 100%); }
+  .tp-header.tp6 { background: linear-gradient(90deg, #2a1a0d 0%, #3b2000 100%); }
+  .tp-header.tp7 { background: linear-gradient(90deg, #1a0d2a 0%, #2d0050 100%); }
+  .tp-header.tp9 { background: linear-gradient(90deg, #0d2a2a 0%, #003b3b 100%); }
+  .tp-header.tp10 { background: linear-gradient(90deg, #2a0d0d 0%, #3b0000 100%); }
+
+  .tp-badge {
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .tp-header h2 { font-size: 1.25rem; font-weight: 600; color: var(--text); }
+  .tp-header .theme-tag {
+    margin-left: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tp-body { padding: 30px; display: flex; flex-direction: column; gap: 36px; }
+
+  /* ── EXERCICE CARD ── */
+  .exercise {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .exercise-header {
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .exercise-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+  .filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent5);
+    background: rgba(255, 166, 87, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 166, 87, 0.2);
+  }
+  .status-ok {
+    font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+    background: rgba(63, 185, 80, 0.15); color: var(--accent2);
+    border: 1px solid rgba(63, 185, 80, 0.3);
+  }
+  .status-fix {
+    font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+    background: rgba(243, 156, 18, 0.15); color: var(--warn);
+    border: 1px solid rgba(243, 156, 18, 0.3);
+  }
+  .status-todo {
+    font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px;
+    background: rgba(247, 129, 102, 0.15); color: var(--accent3);
+    border: 1px solid rgba(247, 129, 102, 0.3);
+  }
+
+  .exercise-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* ── EXPLICATION SECTIONS ── */
+  .explain { color: var(--text-dim); font-size: 0.92rem; line-height: 1.8; }
+  .explain strong { color: var(--text); }
+  .explain code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--accent4);
+  }
+
+  .note {
+    background: rgba(88, 166, 255, 0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 0.87rem;
+    color: var(--text-dim);
+  }
+  .note strong { color: var(--accent); }
+  .note code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    color: var(--accent4);
+    background: var(--surface2);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  .warn-box {
+    background: rgba(227, 179, 65, 0.08);
+    border-left: 3px solid var(--warn);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    font-size: 0.87rem;
+    color: var(--text-dim);
+  }
+  .warn-box strong { color: var(--warn); }
+  .warn-box code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    color: var(--accent4);
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-label {
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .code-label::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+  }
+  .code-label.corrected::before { background: var(--accent5); }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow-x: auto;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.65;
+  }
+
+  /* ── Syntax colors ── */
+  .kw  { color: #ff7b72; } /* keywords */
+  .ty  { color: #ffa657; } /* types */
+  .fn  { color: #d2a8ff; } /* functions */
+  .cm  { color: #8b949e; font-style: italic; } /* comments */
+  .str { color: #a5d6ff; } /* strings */
+  .nu  { color: #79c0ff; } /* numbers */
+  .pp  { color: #ff7b72; } /* preprocessor */
+  .var { color: #e6edf3; } /* variables */
+  .op  { color: #ff7b72; } /* operators */
+  .ok  { color: #3fb950; } /* added/ok lines */
+  .diff-add { background: rgba(63, 185, 80, 0.1); display: block; }
+  .diff-rem { background: rgba(247, 129, 102, 0.1); display: block; color: #8b949e; text-decoration: line-through; }
+
+  /* ── FUNCTION TABLE ── */
+  .func-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+  .func-table th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .func-table td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .func-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent4);
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+  .func-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* ── SCHEMA ASCII ── */
+  .schema {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Correction complète — TPs Système</h1>
+  <p>TP0 → TP10 · Programmation système en C · Explication détaillée de chaque fonction</p>
+</header>
+
+<nav>
+  <a href="#tp0">TP0</a>
+  <a href="#tp1">TP1</a>
+  <a href="#tp3">TP3</a>
+  <a href="#tp4">TP4</a>
+  <a href="#tp5">TP5</a>
+  <a href="#tp6">TP6</a>
+  <a href="#tp7">TP7</a>
+  <a href="#tp9">TP9</a>
+  <a href="#tp10">TP10</a>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════ TP0 ═══ -->
+<section class="tp-section" id="tp0">
+  <div class="tp-header tp0">
+    <span class="tp-badge">TP0</span>
+    <h2>Entrées/Sorties, Arguments, Répertoires, Mémoire dynamique</h2>
+    <span class="theme-tag">argc/argv · environ · opendir · malloc/realloc</span>
+  </div>
+  <div class="tp-body">
+
+    <!-- mon_echo.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Clone de <code>echo</code></h3>
+        <span class="filename">mon_echo.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Reproduire la commande <code>echo</code> : afficher tous les arguments passés en ligne de commande séparés par des espaces, suivi d'un retour à la ligne.</p>
+
+        <div class="code-label">Code commenté ligne par ligne</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">int</span> argc, <span class="ty">char</span> *argv[]) {
+
+    <span class="cm">/* argv[0] = nom du programme (ex: "./mon_echo")
+     * argv[1], argv[2]... = les vrais arguments
+     * On avance argv pour sauter argv[0] */</span>
+    argv++;  <span class="cm">// argv pointe maintenant sur argv[1]</span>
+
+    <span class="kw">while</span> (*argv != <span class="nu">NULL</span>) {       <span class="cm">// tant qu'il reste un argument</span>
+
+        <span class="kw">while</span> (**argv != <span class="str">'\0'</span>) {  <span class="cm">// parcourir les caractères du mot</span>
+            <span class="fn">putchar</span>(**argv);    <span class="cm">// afficher le caractère courant</span>
+            (*argv)++;           <span class="cm">// avancer dans le mot (char suivant)</span>
+        }
+
+        <span class="fn">putchar</span>(<span class="str">' '</span>);   <span class="cm">// espace entre les mots</span>
+        argv++;         <span class="cm">// passer au mot suivant</span>
+    }
+
+    <span class="fn">putchar</span>(<span class="str">'\n'</span>);  <span class="cm">// retour à la ligne final</span>
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+
+        <table class="func-table">
+          <tr><th>Concept</th><th>Explication</th></tr>
+          <tr><td>argv++</td><td>Avance le pointeur argv pour ignorer argv[0] (nom du programme). Maintenant *argv == argv[1], le premier vrai argument.</td></tr>
+          <tr><td>*argv != NULL</td><td>Le tableau argv est terminé par un pointeur NULL. C'est la sentinelle de fin.</td></tr>
+          <tr><td>**argv</td><td>Double déréférencement : *argv = pointeur vers le mot (char*), **argv = caractère courant de ce mot.</td></tr>
+          <tr><td>(*argv)++</td><td>Les parenthèses sont essentielles ! Sans elles, argv++ avancerait le tableau, pas le pointeur vers le char.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- environ.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Afficher les variables d'environnement</h3>
+        <span class="filename">environ.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Afficher toutes les variables d'environnement (comme <code>env</code>). La variable globale <code>environ</code> est un <code>char**</code> terminé par NULL, exactement comme argv.</p>
+
+        <div class="code-label">Code commenté</div>
+        <pre><span class="kw">extern</span> <span class="ty">char</span> **environ;  <span class="cm">// tableau de "NOM=valeur\0", terminé par NULL</span>
+                          <span class="cm">// extern = déclaré ailleurs (dans la libc)</span>
+
+<span class="kw">while</span> (*environ != <span class="nu">NULL</span>) {
+    <span class="kw">while</span> (**environ != <span class="str">'\0'</span>) {
+        <span class="fn">putchar</span>(**environ);
+        (*environ)++;        <span class="cm">// même technique que mon_echo</span>
+    }
+    <span class="fn">putchar</span>(<span class="str">' '</span>);
+    environ++;
+}
+<span class="fn">putchar</span>(<span class="str">'\n'</span>);</pre>
+
+        <div class="note"><strong>⚠️ Attention :</strong> Ce code modifie les pointeurs dans le tableau <code>environ</code> lui-même (via <code>(*environ)++</code>), ce qui est destructif. En production, il faudrait plutôt utiliser <code>printf("%s\n", *environ)</code> ou <code>fputs</code>.</div>
+      </div>
+    </div>
+
+    <!-- exo1.c / mon_ls.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Clone de <code>ls</code></h3>
+        <span class="filename">exo1.c · mon_ls.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain"><strong>exo1.c</strong> : version basique de ls. <strong>mon_ls.c</strong> : version avec options <code>-a</code> (tout afficher, y compris fichiers cachés) et <code>-i</code> (afficher l'inode).</p>
+
+        <div class="code-label">Fonctions clés</div>
+        <pre><span class="cm">/* opendir / readdir / closedir : API POSIX pour lister un répertoire */</span>
+
+<span class="ty">void</span> <span class="fn">ls</span>(<span class="kw">const</span> <span class="ty">char</span> *chemin, <span class="ty">int</span> options) {
+    DIR *d = <span class="fn">opendir</span>(chemin);  <span class="cm">// ouvre le répertoire → flux de lecture</span>
+    <span class="kw">struct</span> dirent *ent;
+
+    <span class="kw">if</span> (!d) { <span class="fn">perror</span>(<span class="str">"opendir"</span>); <span class="kw">return</span>; }
+
+    <span class="kw">while</span> ((ent = <span class="fn">readdir</span>(d))) {  <span class="cm">// lit l'entrée suivante (NULL si fin)</span>
+        <span class="kw">switch</span> (options) {
+        <span class="kw">case</span> <span class="nu">3</span>:  <span class="cm">// -a et -i : afficher tout + numéro d'inode</span>
+            <span class="fn">printf</span>(<span class="str">"%lu : %s\n"</span>, (unsigned long)ent->d_ino, ent->d_name);
+            <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="nu">2</span>:  <span class="cm">// -a seul : afficher tout (y compris .hidden)</span>
+            <span class="fn">printf</span>(<span class="str">"%s\n"</span>, ent->d_name);
+            <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="nu">1</span>:  <span class="cm">// -i seul : inode, mais cacher les . et ..</span>
+            <span class="kw">if</span> (ent->d_name[<span class="nu">0</span>] != <span class="str">'.'</span>)
+                <span class="fn">printf</span>(<span class="str">"%lu : %s\n"</span>, (unsigned long)ent->d_ino, ent->d_name);
+            <span class="kw">break</span>;
+        <span class="kw">case</span> <span class="nu">0</span>:  <span class="cm">// sans option : cacher les . et ..</span>
+            <span class="kw">if</span> (ent->d_name[<span class="nu">0</span>] != <span class="str">'.'</span>)
+                <span class="fn">printf</span>(<span class="str">"%s\n"</span>, ent->d_name);
+            <span class="kw">break</span>;
+        }
+    }
+    <span class="fn">closedir</span>(d);  <span class="cm">// libère les ressources !</span>
+}</pre>
+
+        <table class="func-table">
+          <tr><th>Fonction</th><th>Rôle</th></tr>
+          <tr><td>opendir(path)</td><td>Ouvre un flux de lecture vers un répertoire. Retourne NULL en cas d'erreur (chemin inexistant, permission refusée...)</td></tr>
+          <tr><td>readdir(d)</td><td>Retourne le prochain <code>struct dirent</code> (une entrée du répertoire). Retourne NULL quand il n'y en a plus.</td></tr>
+          <tr><td>ent->d_name</td><td>Nom de l'entrée (fichier ou dossier) sous forme de chaîne.</td></tr>
+          <tr><td>ent->d_ino</td><td>Numéro d'inode de l'entrée (identifiant unique sur le système de fichiers).</td></tr>
+          <tr><td>closedir(d)</td><td>Ferme le flux. Toujours appeler pour éviter les fuites de descripteurs.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- rev.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Clone de <code>rev</code> (inverser les lignes)</h3>
+        <span class="filename">rev.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Lire stdin caractère par caractère, accumuler les chars dans un buffer dynamique. Quand on rencontre <code>\n</code>, afficher le buffer à l'envers et recommencer. Le buffer grandit avec <code>realloc</code> si nécessaire.</p>
+
+        <div class="code-label">Code annoté</div>
+        <pre><span class="ty">int</span> taille_max = <span class="nu">80</span>;       <span class="cm">// taille initiale du buffer</span>
+<span class="ty">int</span> index = <span class="nu">0</span>;             <span class="cm">// nombre de chars dans le buffer</span>
+
+<span class="ty">char</span> *buffer = <span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="ty">char</span>) * taille_max);
+<span class="kw">if</span> (!buffer) { <span class="fn">perror</span>(<span class="str">"malloc"</span>); <span class="kw">return</span> <span class="nu">1</span>; }
+
+<span class="kw">while</span> ((c = <span class="fn">getchar</span>()) != <span class="nu">EOF</span>) {
+
+    <span class="kw">if</span> (c == <span class="str">'\n'</span>) {
+        <span class="cm">// Afficher le buffer à l'envers</span>
+        <span class="kw">for</span> (<span class="ty">int</span> i = index - <span class="nu">1</span>; i >= <span class="nu">0</span>; i--)
+            <span class="fn">putchar</span>(buffer[i]);
+        <span class="fn">putchar</span>(<span class="str">'\n'</span>);
+        index = <span class="nu">0</span>;  <span class="cm">// réinitialiser (on ne réalloue pas, on réutilise)</span>
+
+    } <span class="kw">else</span> {
+        <span class="kw">if</span> (index >= taille_max) {  <span class="cm">// buffer plein → agrandir</span>
+            taille_max *= <span class="nu">2</span>;       <span class="cm">// doubler la capacité (stratégie amortie O(1))</span>
+            <span class="ty">char</span> *nouveau = <span class="fn">realloc</span>(buffer, taille_max * <span class="kw">sizeof</span>(<span class="ty">char</span>));
+            <span class="kw">if</span> (!nouveau) {
+                <span class="fn">perror</span>(<span class="str">"realloc"</span>);
+                <span class="fn">free</span>(buffer);  <span class="cm">// libérer l'ancien buffer !</span>
+                <span class="kw">return</span> <span class="nu">1</span>;
+            }
+            buffer = nouveau;  <span class="cm">// realloc peut déplacer la mémoire</span>
+        }
+        buffer[index++] = c;  <span class="cm">// stocker le char</span>
+    }
+}
+<span class="fn">free</span>(buffer);  <span class="cm">// libérer à la fin</span></pre>
+
+        <div class="warn-box"><strong>⚠️ Piège classique :</strong> Ne jamais faire <code>buffer = realloc(buffer, ...)</code> directement. Si <code>realloc</code> retourne NULL (échec), l'ancien buffer est perdu et non libéré → fuite mémoire. Toujours utiliser une variable temporaire (<code>nouveau</code>).</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TP1 ═══ -->
+<section class="tp-section" id="tp1">
+  <div class="tp-header tp1">
+    <span class="tp-badge">TP1</span>
+    <h2>Processus — fork, wait, exec</h2>
+    <span class="theme-tag">fork · wait · getpid · parallélisme par processus</span>
+  </div>
+  <div class="tp-body">
+
+    <!-- mousse_au_chocolat.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice 1 — Mousse au chocolat (version séquentielle)</h3>
+        <span class="filename">mousse_au_chocolat.c</span>
+        <span class="status-ok">✓ Version de référence séquentielle</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Version de base : les tâches s'exécutent <strong>l'une après l'autre</strong> dans le même processus. Pas de parallélisme — sert de point de départ pour l'exercice 2.</p>
+        <div class="schema">Ordre d'exécution :
+casser_chocolat() → faire_fondre_chocolat() → separer_blanc_jaune() ×6
+→ battre_blancs_neige() → melanger_jaunes_choco() → incorporer_blancs_neige()</div>
+      </div>
+    </div>
+
+    <!-- exo2.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice 2 — Mousse au chocolat parallèle (avec fork)</h3>
+        <span class="filename">exo2.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Exploiter le parallélisme : certaines tâches sont indépendantes et peuvent se faire en même temps. L'arbre de fork crée des processus enfants pour les tâches parallélisables.</p>
+
+        <div class="schema">Architecture des processus :
+
+PÈRE (main)
+├── fork() → FILS_1
+│   ├── fork() ×6 → petits-fils (separer_blanc_jaune ×6 en parallèle)
+│   ├── wait() ×6 (attendre tous les petits-fils)
+│   └── battre_blancs_neige()      ← après que tous les blancs soient séparés
+│
+└── fork() → FILS_2
+    ├── casser_chocolat()
+    └── faire_fondre_chocolat()    ← en parallèle avec FILS_1
+
+PÈRE : wait() × 2 (attendre FILS_1 et FILS_2)
+→ melanger_jaunes_choco()
+→ incorporer_blancs_neige()        ← en dernier, dépend des deux</div>
+
+        <div class="code-label">Code commenté</div>
+        <pre><span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    <span class="ty">int</span> i;
+
+    <span class="kw">switch</span>(<span class="fn">fork</span>()) {        <span class="cm">// 1er fork : créer FILS_1 (blancs)</span>
+    <span class="kw">case</span> -<span class="nu">1</span>:
+        <span class="fn">perror</span>(<span class="str">"fork"</span>); <span class="kw">return</span> <span class="nu">1</span>;
+
+    <span class="kw">case</span> <span class="nu">0</span>:                  <span class="cm">// ← FILS_1 : s'occupe des blancs</span>
+        <span class="kw">for</span> (i = <span class="nu">0</span>; i < <span class="nu">6</span>; ++i) {
+            <span class="kw">switch</span>(<span class="fn">fork</span>()) {  <span class="cm">// fork 6 petits-fils pour séparer les blancs</span>
+            <span class="kw">case</span> -<span class="nu">1</span>: <span class="fn">perror</span>(<span class="str">"fork"</span>); <span class="kw">return</span> <span class="nu">1</span>;
+            <span class="kw">case</span> <span class="nu">0</span>:            <span class="cm">// ← petit-fils : sépare 1 blanc</span>
+                <span class="fn">separer_blanc_jaune</span>();
+                <span class="kw">return</span> <span class="nu">0</span>;     <span class="cm">// IMPORTANT : le fils doit terminer !</span>
+            }
+        }
+        <span class="kw">while</span>(<span class="fn">wait</span>(<span class="nu">NULL</span>) != -<span class="nu">1</span>); <span class="cm">// attendre tous les petits-fils</span>
+        <span class="fn">battre_blancs_neige</span>();
+        <span class="kw">return</span> <span class="nu">0</span>;             <span class="cm">// FILS_1 termine</span>
+
+    <span class="kw">default</span>:                 <span class="cm">// ← PÈRE : fork un 2ème fils pour le chocolat</span>
+        <span class="kw">switch</span>(<span class="fn">fork</span>()) {    <span class="cm">// 2ème fork : FILS_2</span>
+        <span class="kw">case</span> -<span class="nu">1</span>: <span class="fn">perror</span>(<span class="str">"fork"</span>); <span class="kw">return</span> <span class="nu">1</span>;
+        <span class="kw">case</span> <span class="nu">0</span>:              <span class="cm">// ← FILS_2 : chocolat</span>
+            <span class="fn">casser_chocolat</span>();
+            <span class="fn">faire_fondre_chocolat</span>();
+            <span class="kw">return</span> <span class="nu">0</span>;       <span class="cm">// FILS_2 termine</span>
+        }
+    }
+
+    <span class="cm">// PÈRE : attendre la fin des 2 fils</span>
+    <span class="kw">while</span>(<span class="fn">wait</span>(<span class="nu">NULL</span>) != -<span class="nu">1</span>);
+
+    <span class="cm">// Tout est prêt → finaliser</span>
+    <span class="fn">melanger_jaunes_choco</span>();
+    <span class="fn">incorporer_blancs_neige</span>();
+    <span class="fn">printf</span>(<span class="str">"PID %d : la mousse est terminée !\n"</span>, <span class="fn">getpid</span>());
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+
+        <table class="func-table">
+          <tr><th>Appel système</th><th>Rôle</th></tr>
+          <tr><td>fork()</td><td>Crée une copie exacte du processus courant. Retourne 0 au fils, le PID du fils au père, -1 en cas d'erreur.</td></tr>
+          <tr><td>wait(NULL)</td><td>Bloque jusqu'à la terminaison d'un fils quelconque. Retourne son PID, ou -1 s'il n'y a plus de fils.</td></tr>
+          <tr><td>getpid()</td><td>Retourne le PID du processus courant.</td></tr>
+          <tr><td>return 0 (dans le fils)</td><td>Indispensable ! Sans ça, le fils continue d'exécuter le code du père → comportement indéfini.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- exemple_wait_tp1.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Exemple de wait avec 3 processus</h3>
+        <span class="filename">exemple_wait_tp1.c</span>
+        <span class="status-fix">⚠️ Bug : 3 appels à wait() mais seulement 2 fils</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Le père crée 2 fils puis fait 3 <code>wait()</code>. Le 3ème <code>wait()</code> ne trouvera plus de fils → retourne -1 et le message <code>"−1 a terminé"</code> s'affiche, ce qui est trompeur.</p>
+
+        <div class="code-label">Version corrigée</div>
+        <pre><span class="ty">pid_t</span> p;
+p = <span class="fn">wait</span>(<span class="nu">NULL</span>);
+<span class="kw">if</span> (p > <span class="nu">0</span>) <span class="fn">printf</span>(<span class="str">"%d a terminé\n"</span>, p);
+p = <span class="fn">wait</span>(<span class="nu">NULL</span>);
+<span class="kw">if</span> (p > <span class="nu">0</span>) <span class="fn">printf</span>(<span class="str">"%d a terminé\n"</span>, p);
+<span class="cm">// Plus de 3ème wait(), ou vérifier le retour !</span>
+<span class="fn">printf</span>(<span class="str">"Tout le monde a terminé.\n"</span>);</pre>
+      </div>
+    </div>
+
+    <!-- mon_stat.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — mon_stat (afficher les métadonnées d'un fichier)</h3>
+        <span class="filename">mon_stat.c</span>
+        <span class="status-todo">✗ À compléter (fichier vide)</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Utiliser l'appel système <code>stat()</code> pour afficher les informations d'un fichier (taille, permissions, inode, dates...) comme la commande <code>stat</code>.</p>
+
+        <div class="code-label corrected">Correction complète</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;stdint.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;stdlib.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;sys/stat.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;sys/sysmacros.h&gt;</span>  <span class="cm">// major(), minor()</span>
+<span class="kw">#include</span> <span class="str">&lt;time.h&gt;</span>
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">int</span> argc, <span class="ty">char</span> *argv[]) {
+    <span class="kw">if</span> (argc < <span class="nu">2</span>) {
+        <span class="fn">fprintf</span>(stderr, <span class="str">"Usage: %s &lt;fichier&gt;\n"</span>, argv[<span class="nu">0</span>]);
+        <span class="kw">return</span> <span class="nu">1</span>;
+    }
+
+    <span class="kw">struct</span> stat s;
+    <span class="kw">if</span> (<span class="fn">stat</span>(argv[<span class="nu">1</span>], &s) == -<span class="nu">1</span>) {
+        <span class="fn">perror</span>(<span class="str">"stat"</span>);
+        <span class="kw">return</span> <span class="nu">2</span>;
+    }
+
+    <span class="fn">printf</span>(<span class="str">"Fichier    : %s\n"</span>, argv[<span class="nu">1</span>]);
+    <span class="fn">printf</span>(<span class="str">"Inode      : %lu\n"</span>, (unsigned long)s.st_ino);
+    <span class="fn">printf</span>(<span class="str">"Liens      : %lu\n"</span>, (unsigned long)s.st_nlink);
+    <span class="fn">printf</span>(<span class="str">"UID        : %u\n"</span>, s.st_uid);
+    <span class="fn">printf</span>(<span class="str">"GID        : %u\n"</span>, s.st_gid);
+    <span class="fn">printf</span>(<span class="str">"Taille     : %ld octets\n"</span>, (long)s.st_size);
+    <span class="fn">printf</span>(<span class="str">"Bloc size  : %ld\n"</span>, (long)s.st_blksize);
+    <span class="fn">printf</span>(<span class="str">"Blocs      : %lld\n"</span>, (long long)s.st_blocks);
+
+    <span class="cm">/* Permissions : st_mode contient type + droits */</span>
+    <span class="fn">printf</span>(<span class="str">"Mode       : %04o\n"</span>, s.st_mode & <span class="nu">07777</span>);
+
+    <span class="cm">/* Type de fichier */</span>
+    <span class="kw">if</span>      (<span class="fn">S_ISREG</span>(s.st_mode))  <span class="fn">printf</span>(<span class="str">"Type       : fichier régulier\n"</span>);
+    <span class="kw">else if</span> (<span class="fn">S_ISDIR</span>(s.st_mode))  <span class="fn">printf</span>(<span class="str">"Type       : répertoire\n"</span>);
+    <span class="kw">else if</span> (<span class="fn">S_ISLNK</span>(s.st_mode))  <span class="fn">printf</span>(<span class="str">"Type       : lien symbolique\n"</span>);
+    <span class="kw">else if</span> (<span class="fn">S_ISCHR</span>(s.st_mode))  <span class="fn">printf</span>(<span class="str">"Type       : périphérique char\n"</span>);
+    <span class="kw">else if</span> (<span class="fn">S_ISBLK</span>(s.st_mode))  <span class="fn">printf</span>(<span class="str">"Type       : périphérique bloc\n"</span>);
+
+    <span class="cm">/* Dates (ctime convertit time_t en chaîne lisible) */</span>
+    <span class="fn">printf</span>(<span class="str">"Modifié    : %s"</span>, <span class="fn">ctime</span>(&s.st_mtime));
+    <span class="fn">printf</span>(<span class="str">"Accédé     : %s"</span>, <span class="fn">ctime</span>(&s.st_atime));
+    <span class="fn">printf</span>(<span class="str">"Changé     : %s"</span>, <span class="fn">ctime</span>(&s.st_ctime));
+
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+
+        <table class="func-table">
+          <tr><th>Champ</th><th>Signification</th></tr>
+          <tr><td>st_ino</td><td>Numéro d'inode (identifiant unique du fichier sur le FS)</td></tr>
+          <tr><td>st_mode</td><td>Type du fichier + permissions (bits rwxrwxrwx) — utiliser S_ISREG(), S_ISDIR()... pour le type</td></tr>
+          <tr><td>st_nlink</td><td>Nombre de liens physiques pointant vers cet inode</td></tr>
+          <tr><td>st_size</td><td>Taille en octets (pour les fichiers réguliers)</td></tr>
+          <tr><td>st_mtime</td><td>Date de dernière modification du contenu</td></tr>
+          <tr><td>st_atime</td><td>Date de dernier accès (lecture)</td></tr>
+          <tr><td>st_ctime</td><td>Date de dernier changement des métadonnées (chmod, rename...)</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TP3 ═══ -->
+<section class="tp-section" id="tp3">
+  <div class="tp-header tp3">
+    <span class="tp-badge">TP3</span>
+    <h2>exec, Threads POSIX, Calcul parallèle</h2>
+    <span class="theme-tag">execlp · pthread · clock_gettime · répartition de charge</span>
+  </div>
+  <div class="tp-body">
+
+    <!-- exemple_execlp.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Exemple execlp</h3>
+        <span class="filename">exemple_execlp.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <pre><span class="kw">switch</span> (<span class="fn">fork</span>()) {
+<span class="kw">case</span> -<span class="nu">1</span>: <span class="fn">perror</span>(<span class="str">"fork"</span>); <span class="kw">return</span> <span class="nu">1</span>;
+<span class="kw">case</span> <span class="nu">0</span>:
+    <span class="cm">/* execlp("ls", "ls", "-l", "/usr", NULL)
+     * arg0 = "ls"     : nom de la commande (convention argv[0])
+     * arg1 = "-l"     : 1er argument
+     * arg2 = "/usr"   : 2ème argument
+     * NULL            : sentinelle de fin obligatoire ! */</span>
+    <span class="fn">execlp</span>(<span class="str">"ls"</span>, <span class="str">"ls"</span>, <span class="str">"-l"</span>, <span class="str">"/usr"</span>, <span class="nu">NULL</span>);
+    <span class="cm">/* Si on arrive ici, execlp a échoué */</span>
+    <span class="fn">perror</span>(<span class="str">"exec"</span>); <span class="kw">return</span> <span class="nu">1</span>;
+}
+<span class="fn">wait</span>(<span class="nu">NULL</span>);
+<span class="fn">printf</span>(<span class="str">"Commande ls terminée.\n"</span>);</pre>
+
+        <div class="note"><strong>execlp vs execl :</strong> <code>execlp</code> recherche le programme dans le <code>PATH</code> (comme le shell). <code>execl</code> nécessite le chemin absolu. <strong>exec remplace</strong> le processus courant — il ne revient jamais en cas de succès !</div>
+      </div>
+    </div>
+
+    <!-- pi_trapèzes.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Calcul de π par la méthode des trapèzes</h3>
+        <span class="filename">pi_trapèzes.c</span>
+        <span class="status-fix">⚠️ Version séquentielle — à paralléliser avec pthreads</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Calcule π en intégrant f(x) = √(1−x²) sur [0,1] par la méthode des trapèzes. La valeur est 4 × ∫₀¹ √(1−x²) dx = π. Version parallèle avec N threads qui se partagent les tranches.</p>
+
+        <div class="code-label corrected">Version parallèle avec pthreads</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;math.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;pthread.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;time.h&gt;</span>
+
+<span class="pp">#ifndef N_TRANCHES</span>
+<span class="pp">#define N_TRANCHES (1 &lt;&lt; 27)</span>
+<span class="pp">#endif</span>
+<span class="pp">#define PAS (1.0 / N_TRANCHES)</span>
+<span class="pp">#ifndef NB_THREADS</span>
+<span class="pp">#define NB_THREADS 4</span>
+<span class="pp">#endif</span>
+
+<span class="kw">struct</span> tranche { <span class="ty">long</span> debut; <span class="ty">long</span> fin; <span class="ty">double</span> resultat; };
+
+<span class="ty">double</span> <span class="fn">f</span>(<span class="ty">double</span> x) { <span class="kw">return</span> <span class="fn">sqrt</span>(<span class="nu">1</span> - x * x); }
+
+<span class="cm">/* Chaque thread calcule la somme de trapèzes pour sa tranche */</span>
+<span class="ty">void</span> *<span class="fn">calculer_tranche</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">struct</span> tranche *t = arg;
+    <span class="ty">double</span> res = <span class="nu">0.0</span>;
+    <span class="kw">for</span> (<span class="ty">long</span> i = t->debut; i < t->fin; i++) {
+        <span class="ty">double</span> x = i * PAS;
+        res += (f(x) + f(x + PAS)) / <span class="nu">2.0</span>;
+    }
+    t->resultat = res;
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    pthread_t th[NB_THREADS];
+    <span class="kw">struct</span> tranche tranches[NB_THREADS];
+    <span class="ty">long</span> chunk = N_TRANCHES / NB_THREADS;  <span class="cm">// tranches pour chaque thread</span>
+
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < NB_THREADS; i++) {
+        tranches[i].debut = i * chunk;
+        tranches[i].fin   = (i == NB_THREADS - <span class="nu">1</span>) ? N_TRANCHES : (i+<span class="nu">1</span>) * chunk;
+        <span class="fn">pthread_create</span>(&th[i], <span class="nu">NULL</span>, calculer_tranche, &tranches[i]);
+    }
+
+    <span class="ty">double</span> total = <span class="nu">0.0</span>;
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < NB_THREADS; i++) {
+        <span class="fn">pthread_join</span>(th[i], <span class="nu">NULL</span>);
+        total += tranches[i].resultat;  <span class="cm">// accumulation après join (pas de race)</span>
+    }
+
+    <span class="fn">printf</span>(<span class="str">"pi = %.10f\n"</span>, <span class="nu">4.0</span> * total * PAS);
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+        <table class="func-table">
+          <tr><th>Concept</th><th>Explication</th></tr>
+          <tr><td>struct tranche</td><td>Chaque thread a sa propre structure : ses bornes de travail et son résultat local. Pas de partage → pas de race condition.</td></tr>
+          <tr><td>pthread_create</td><td>Lance un thread qui exécute la fonction donnée avec l'argument donné.</td></tr>
+          <tr><td>pthread_join</td><td>Attendre la fin d'un thread. Analogue à wait() pour les processus.</td></tr>
+          <tr><td>Accumulation après join</td><td>On additionne les résultats <strong>après</strong> avoir attendu tous les threads → aucun risque de lire un résultat partiel.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- produit_matrices.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Produit de matrices en parallèle</h3>
+        <span class="filename">produit_matrices.c</span>
+        <span class="status-fix">⚠️ Version séquentielle — à paralléliser par lignes</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Calculer R = A × B pour des matrices N×N. La version séquentielle utilise 3 boucles imbriquées O(N³). La parallélisation évidente : chaque thread calcule certaines lignes de R.</p>
+
+        <div class="code-label corrected">Version parallèle (chaque thread = une ligne)</div>
+        <pre><span class="kw">struct</span> args_ligne { <span class="ty">int</span> ligne; };  <span class="cm">// argument de chaque thread</span>
+
+<span class="ty">void</span> *<span class="fn">calculer_ligne</span>(<span class="ty">void</span> *arg) {
+    <span class="ty">int</span> i = ((<span class="kw">struct</span> args_ligne *)arg)->ligne;
+    <span class="ty">int</span> j, k;
+    <span class="kw">for</span> (j = <span class="nu">0</span>; j < N; j++) {
+        R[i][j] = <span class="nu">0</span>;
+        <span class="kw">for</span> (k = <span class="nu">0</span>; k < N; k++)
+            R[i][j] += A[i][k] * B[k][j];
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    pthread_t th[N];
+    <span class="kw">struct</span> args_ligne args[N];
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++) {
+        args[i].ligne = i;
+        <span class="fn">pthread_create</span>(&th[i], <span class="nu">NULL</span>, calculer_ligne, &args[i]);
+    }
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++)
+        <span class="fn">pthread_join</span>(th[i], <span class="nu">NULL</span>);
+    <span class="cm">/* A et B sont en lecture seule → pas de race condition */</span>
+    <span class="cm">/* Chaque thread écrit dans une ligne différente de R → pas de race */</span>
+}</pre>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TP4 ═══ -->
+<section class="tp-section" id="tp4">
+  <div class="tp-header tp4">
+    <span class="tp-badge">TP4</span>
+    <h2>Threads et Race Conditions — mutex, sémaphores</h2>
+    <span class="theme-tag">pthread_mutex · sem_t · race condition · rendez-vous</span>
+  </div>
+  <div class="tp-body">
+
+    <!-- million.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Le million incrémenté (race condition)</h3>
+        <span class="filename">million.c</span>
+        <span class="status-fix">⚠️ Race condition — résultat non déterministe</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">1000 threads incrémentent chacun 1000 fois une variable globale. En théorie : résultat = 1 000 000. En pratique : <strong>bien moins</strong>, car <code>++incremente_moi</code> n'est pas atomique — c'est en réalité 3 opérations (LOAD, ADD, STORE) et des threads peuvent se les voler.</p>
+
+        <div class="warn-box"><strong>⚠️ Race condition :</strong> Thread A lit 42, Thread B lit 42, A écrit 43, B écrit 43 → on a perdu 1 incrémentation ! Ce bug est non déterministe et difficile à reproduire.</div>
+
+        <div class="code-label corrected">Correction avec mutex</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;pthread.h&gt;</span>
+<span class="kw">#define</span> N <span class="nu">1000</span>
+
+<span class="ty">int</span> incremente_moi = <span class="nu">0</span>;
+pthread_mutex_t verrou = PTHREAD_MUTEX_INITIALIZER;  <span class="cm">// mutex global</span>
+
+<span class="ty">void</span> *<span class="fn">bosser</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++) {
+        <span class="fn">pthread_mutex_lock</span>(&verrou);    <span class="cm">// ← section critique : début</span>
+        ++incremente_moi;
+        <span class="fn">pthread_mutex_unlock</span>(&verrou);  <span class="cm">// ← section critique : fin</span>
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    pthread_t th[N];
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++)
+        <span class="fn">pthread_create</span>(&th[i], <span class="nu">NULL</span>, bosser, <span class="nu">NULL</span>);
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++)
+        <span class="fn">pthread_join</span>(th[i], <span class="nu">NULL</span>);
+    <span class="fn">printf</span>(<span class="str">"incremente_moi = %d\n"</span>, incremente_moi);  <span class="cm">// maintenant = 1 000 000</span>
+    <span class="fn">pthread_mutex_destroy</span>(&verrou);
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+
+        <table class="func-table">
+          <tr><th>Fonction</th><th>Rôle</th></tr>
+          <tr><td>pthread_mutex_lock(m)</td><td>Prend le verrou. Si déjà pris par un autre thread → bloque jusqu'à libération.</td></tr>
+          <tr><td>pthread_mutex_unlock(m)</td><td>Libère le verrou. Un thread en attente peut alors le prendre.</td></tr>
+          <tr><td>PTHREAD_MUTEX_INITIALIZER</td><td>Macro pour initialiser un mutex statique (alternative à pthread_mutex_init).</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- dependance.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Tâches avec dépendances (parallélisation)</h3>
+        <span class="filename">dependance.c</span>
+        <span class="status-fix">⚠️ Version séquentielle — à paralléliser en respectant les dépendances</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">5 tâches A, B, C, D, E avec des dépendances. A et B sont indépendantes, C dépend de A et B, D dépend de C, E dépend de D.</p>
+
+        <div class="schema">Graphe de dépendances :
+
+   A ──┐
+        ├──► C ──► D ──► E
+   B ──┘
+
+   A et B : lancés simultanément (pthread)
+   C : doit attendre A ET B → sémaphores (valeur initiale 0, post par A et B, wait ×2 par C)
+   D : attend C
+   E : attend D</div>
+
+        <div class="code-label corrected">Correction avec sémaphores</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;pthread.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;semaphore.h&gt;</span>
+
+sem_t sem_a_fini, sem_b_fini, sem_c_fini, sem_d_fini;
+
+<span class="ty">void</span> *<span class="fn">run_a</span>(<span class="ty">void</span> *arg) {
+    <span class="fn">tache_a</span>();
+    <span class="fn">sem_post</span>(&sem_a_fini);  <span class="cm">// signaler la fin de A</span>
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+<span class="ty">void</span> *<span class="fn">run_b</span>(<span class="ty">void</span> *arg) {
+    <span class="fn">tache_b</span>();
+    <span class="fn">sem_post</span>(&sem_b_fini);  <span class="cm">// signaler la fin de B</span>
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+<span class="ty">void</span> *<span class="fn">run_c</span>(<span class="ty">void</span> *arg) {
+    <span class="fn">sem_wait</span>(&sem_a_fini);  <span class="cm">// attendre A</span>
+    <span class="fn">sem_wait</span>(&sem_b_fini);  <span class="cm">// attendre B</span>
+    <span class="fn">tache_c</span>();
+    <span class="fn">sem_post</span>(&sem_c_fini);
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+<span class="ty">void</span> *<span class="fn">run_d</span>(<span class="ty">void</span> *arg) {
+    <span class="fn">sem_wait</span>(&sem_c_fini);
+    <span class="fn">tache_d</span>();
+    <span class="fn">sem_post</span>(&sem_d_fini);
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+<span class="ty">void</span> *<span class="fn">run_e</span>(<span class="ty">void</span> *arg) {
+    <span class="fn">sem_wait</span>(&sem_d_fini);
+    <span class="fn">tache_e</span>();
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    <span class="fn">sem_init</span>(&sem_a_fini, <span class="nu">0</span>, <span class="nu">0</span>);  <span class="cm">// valeur initiale 0 = personne n'a fini</span>
+    <span class="fn">sem_init</span>(&sem_b_fini, <span class="nu">0</span>, <span class="nu">0</span>);
+    <span class="fn">sem_init</span>(&sem_c_fini, <span class="nu">0</span>, <span class="nu">0</span>);
+    <span class="fn">sem_init</span>(&sem_d_fini, <span class="nu">0</span>, <span class="nu">0</span>);
+
+    pthread_t ta, tb, tc, td, te;
+    <span class="fn">pthread_create</span>(&ta, <span class="nu">NULL</span>, run_a, <span class="nu">NULL</span>);
+    <span class="fn">pthread_create</span>(&tb, <span class="nu">NULL</span>, run_b, <span class="nu">NULL</span>);
+    <span class="fn">pthread_create</span>(&tc, <span class="nu">NULL</span>, run_c, <span class="nu">NULL</span>);  <span class="cm">// bloquera sur sem_wait</span>
+    <span class="fn">pthread_create</span>(&td, <span class="nu">NULL</span>, run_d, <span class="nu">NULL</span>);
+    <span class="fn">pthread_create</span>(&te, <span class="nu">NULL</span>, run_e, <span class="nu">NULL</span>);
+
+    <span class="fn">pthread_join</span>(ta, <span class="nu">NULL</span>); <span class="fn">pthread_join</span>(tb, <span class="nu">NULL</span>);
+    <span class="fn">pthread_join</span>(tc, <span class="nu">NULL</span>); <span class="fn">pthread_join</span>(td, <span class="nu">NULL</span>);
+    <span class="fn">pthread_join</span>(te, <span class="nu">NULL</span>);
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <!-- rendez_vous_a_2 -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Rendez-vous à 2 (synchronisation)</h3>
+        <span class="filename">rendez_vous_a_2_non-sync.c</span>
+        <span class="status-fix">⚠️ Non synchronisé — les compteurs ne s'attendent pas</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Deux threads comptent de 0 à 100. Objectif : à chaque pas, les deux threads doivent <strong>se retrouver ensemble</strong> — l'un n'avance pas sans l'autre. C'est le problème du rendez-vous à 2.</p>
+
+        <div class="code-label corrected">Correction avec 2 sémaphores (barrière à 2)</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;semaphore.h&gt;</span>
+
+sem_t sem1, sem2;  <span class="cm">// sem1 : th2 attend th1 — sem2 : th1 attend th2</span>
+
+<span class="ty">void</span> *<span class="fn">compteur1</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i <= <span class="nu">100</span>; i++) {
+        <span class="fn">prendre_du_temps_pour_compter</span>();
+        <span class="fn">printf</span>(<span class="str">"a : %d\n"</span>, i);
+        <span class="fn">sem_post</span>(&sem1);  <span class="cm">// signaler à th2 que th1 est prêt</span>
+        <span class="fn">sem_wait</span>(&sem2);  <span class="cm">// attendre que th2 soit également prêt</span>
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">void</span> *<span class="fn">compteur2</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i <= <span class="nu">100</span>; i++) {
+        <span class="fn">prendre_du_temps_pour_compter</span>();
+        <span class="fn">printf</span>(<span class="str">"b : %d\n"</span>, i);
+        <span class="fn">sem_post</span>(&sem2);  <span class="cm">// signaler à th1 que th2 est prêt</span>
+        <span class="fn">sem_wait</span>(&sem1);  <span class="cm">// attendre th1</span>
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    <span class="fn">sem_init</span>(&sem1, <span class="nu">0</span>, <span class="nu">0</span>);  <span class="fn">sem_init</span>(&sem2, <span class="nu">0</span>, <span class="nu">0</span>);
+    pthread_t th1, th2;
+    <span class="fn">pthread_create</span>(&th1, <span class="nu">NULL</span>, compteur1, <span class="nu">NULL</span>);
+    <span class="fn">pthread_create</span>(&th2, <span class="nu">NULL</span>, compteur2, <span class="nu">NULL</span>);
+    <span class="fn">pthread_join</span>(th1, <span class="nu">NULL</span>); <span class="fn">pthread_join</span>(th2, <span class="nu">NULL</span>);
+    <span class="fn">sem_destroy</span>(&sem1); <span class="fn">sem_destroy</span>(&sem2);
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+
+        <table class="func-table">
+          <tr><th>Fonction sémaphore</th><th>Comportement</th></tr>
+          <tr><td>sem_init(&s, 0, val)</td><td>Initialise s à val. Le 2ème arg 0 = sémaphore local (non partagé entre processus).</td></tr>
+          <tr><td>sem_wait(&s)</td><td>Décrémente s. Si s == 0, <strong>bloque</strong> jusqu'à ce qu'un autre thread fasse sem_post.</td></tr>
+          <tr><td>sem_post(&s)</td><td>Incrémente s. Réveille un thread en attente si s était 0.</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TP5 ═══ -->
+<section class="tp-section" id="tp5">
+  <div class="tp-header tp5">
+    <span class="tp-badge">TP5</span>
+    <h2>Synchronisation avancée — Barrières, Mutex, Danseurs</h2>
+    <span class="theme-tag">barrière · mutex · rendez-vous à N · producteur-consommateur</span>
+  </div>
+  <div class="tp-body">
+
+    <!-- barriere -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Barrière (chiffres et alphabet)</h3>
+        <span class="filename">barriere_non-sync.c</span>
+        <span class="status-fix">⚠️ Pas de barrière — l'ordre chiffre/lettre n'est pas garanti</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">N threads, chacun affiche son chiffre puis sa lettre. Objectif : tous les chiffres doivent être affichés <strong>avant</strong> toute lettre. Solution : une barrière (tous les threads attendent avant de continuer).</p>
+
+        <div class="code-label corrected">Correction avec barrière POSIX</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;pthread.h&gt;</span>
+<span class="pp">#define N 5</span>
+
+pthread_barrier_t barriere;
+
+<span class="ty">void</span> *<span class="fn">chiffres_et_alphabet</span>(<span class="ty">void</span> *arg) {
+    <span class="ty">int</span> i = *(<span class="ty">int</span> *)arg;
+
+    <span class="fn">printf</span>(<span class="str">"%d\n"</span>, i);          <span class="cm">// phase 1 : afficher le chiffre</span>
+
+    <span class="cm">/* BARRIÈRE : attendre que tous les N threads aient affiché leur chiffre */</span>
+    <span class="fn">pthread_barrier_wait</span>(&barriere);
+
+    <span class="fn">printf</span>(<span class="str">"%c\n"</span>, <span class="str">'A'</span> + i);  <span class="cm">// phase 2 : afficher la lettre</span>
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    <span class="fn">pthread_barrier_init</span>(&barriere, <span class="nu">NULL</span>, N);  <span class="cm">// N threads doivent wait() avant de passer</span>
+    pthread_t th[N]; <span class="ty">int</span> nums[N];
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++) {
+        nums[i] = i;
+        <span class="fn">pthread_create</span>(&th[i], <span class="nu">NULL</span>, chiffres_et_alphabet, &nums[i]);
+    }
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++) <span class="fn">pthread_join</span>(th[i], <span class="nu">NULL</span>);
+    <span class="fn">pthread_barrier_destroy</span>(&barriere);
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+
+        <div class="note"><strong>pthread_barrier :</strong> Quand N threads ont appelé <code>pthread_barrier_wait</code>, ils sont <strong>tous débloqués simultanément</strong>. C'est le point de synchronisation collectif.</div>
+      </div>
+    </div>
+
+    <!-- belmondo.c -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Belmondo &amp; De Funès (accès concurrent au texte)</h3>
+        <span class="filename">belmondo.c</span>
+        <span class="status-fix">⚠️ Race condition sur data->i et mélange d'affichage</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Deux threads (de_funes et belmondo) partagent un index <code>data->i</code> pour avancer dans le texte à tour de rôle. Problème : les deux lisent/modifient <code>data->i</code> sans protection → race condition + mélange d'affichage.</p>
+
+        <div class="code-label corrected">Sections critiques à protéger</div>
+        <pre><span class="ty">void</span> *<span class="fn">de_funes</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">struct</span> data *data = arg;
+    <span class="kw">while</span> (<span class="nu">1</span>) {
+        <span class="cm">/* ─── SECTION CRITIQUE : accès à data->i et data->texte ─── */</span>
+        <span class="fn">pthread_mutex_lock</span>(&data->verrou_i);
+        <span class="ty">char</span> *tirade = data->texte[data->i];
+        <span class="kw">if</span> (tirade == <span class="nu">NULL</span>) { <span class="fn">pthread_mutex_unlock</span>(&data->verrou_i); <span class="kw">break</span>; }
+        <span class="ty">int</span> delai = data->durees[data->i] * <span class="nu">.5e6</span> / <span class="fn">strlen</span>(tirade);
+        data->i++;  <span class="cm">// incrémenter sous verrou !</span>
+        <span class="fn">pthread_mutex_unlock</span>(&data->verrou_i);
+        <span class="cm">/* ─────────────────────────────────────────────────────────── */</span>
+
+        <span class="cm">/* Préparer le texte en MAJUSCULES (opération locale, pas de partage) */</span>
+        <span class="ty">char</span> a_lire[<span class="nu">100</span>];
+        <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; tirade[i]; i++) {
+            a_lire[i] = tirade[i] + (tirade[i] == <span class="str">' '</span> ? <span class="nu">0</span> : <span class="str">'A'</span>-<span class="str">'a'</span>);
+            <span class="fn">microsleep</span>(delai);
+        }
+        a_lire[<span class="fn">strlen</span>(tirade)] = <span class="nu">0</span>;
+
+        <span class="cm">/* ─── SECTION CRITIQUE : affichage non mélangé ─── */</span>
+        <span class="fn">pthread_mutex_lock</span>(&data->verrou_affichage);
+        <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; a_lire[i]; i++) { <span class="fn">putchar</span>(a_lire[i]); <span class="fn">microsleep</span>(delai); }
+        <span class="fn">putchar</span>(<span class="str">'\n'</span>);
+        <span class="fn">pthread_mutex_unlock</span>(&data->verrou_affichage);
+        <span class="cm">/* ──────────────────────────────────────────────── */</span>
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+<span class="cm">/* belmondo() : même structure, mais double les lettres au lieu de les mettre en maj */</span></pre>
+      </div>
+    </div>
+
+    <!-- danseurs -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Danseurs (rendez-vous meneur/suiveur)</h3>
+        <span class="filename">danseurs_non_sync.c</span>
+        <span class="status-fix">⚠️ Race condition sur numero_meneur / numero_suiveur</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Meneurs et suiveurs doivent se trouver <strong>en même temps</strong> pour danser ensemble. Sans synchronisation, un meneur peut lire le numéro d'un suiveur qui n'est pas encore prêt (ou l'inverse).</p>
+
+        <div class="code-label corrected">Correction avec 2 sémaphores (rendez-vous classique)</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;semaphore.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;pthread.h&gt;</span>
+
+<span class="cm">/* Sémaphores de rendez-vous :
+ * sem_meneur_pret : le meneur a mis à jour numero_meneur
+ * sem_suiveur_pret : le suiveur a mis à jour numero_suiveur */</span>
+sem_t sem_meneur_pret, sem_suiveur_pret;
+sem_t sem_meneur_peut_repartir, sem_suiveur_peut_repartir;
+<span class="ty">int</span> numero_suiveur = -<span class="nu">1</span>, numero_meneur = -<span class="nu">1</span>;
+pthread_mutex_t mutex_rv = PTHREAD_MUTEX_INITIALIZER;
+
+<span class="ty">void</span> *<span class="fn">meneur</span>(<span class="ty">void</span> *indice) {
+    <span class="ty">int</span> mon_indice = *(<span class="ty">int</span> *)indice;
+    <span class="kw">for</span> (;;) {
+        <span class="fn">se_preparer</span>();
+        <span class="cm">/* Écrire son numéro et signaler */</span>
+        <span class="fn">pthread_mutex_lock</span>(&mutex_rv);
+        numero_meneur = mon_indice;
+        <span class="fn">sem_post</span>(&sem_meneur_pret);     <span class="cm">// je suis prêt</span>
+        <span class="fn">sem_wait</span>(&sem_suiveur_pret);    <span class="cm">// attendre le suiveur</span>
+        <span class="ty">int</span> partenaire = numero_suiveur;
+        <span class="fn">pthread_mutex_unlock</span>(&mutex_rv);
+        <span class="fn">meneur_danser</span>(mon_indice, partenaire);
+        <span class="fn">sem_post</span>(&sem_meneur_peut_repartir);
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+<span class="ty">void</span> *<span class="fn">suiveur</span>(<span class="ty">void</span> *indice) {
+    <span class="ty">int</span> mon_indice = *(<span class="ty">int</span> *)indice;
+    <span class="kw">for</span> (;;) {
+        <span class="fn">se_preparer</span>();
+        <span class="fn">pthread_mutex_lock</span>(&mutex_rv);
+        numero_suiveur = mon_indice;
+        <span class="fn">sem_post</span>(&sem_suiveur_pret);
+        <span class="fn">sem_wait</span>(&sem_meneur_pret);
+        <span class="ty">int</span> partenaire = numero_meneur;
+        <span class="fn">pthread_mutex_unlock</span>(&mutex_rv);
+        <span class="fn">suiveur_danser</span>(mon_indice, partenaire);
+        <span class="fn">sem_post</span>(&sem_suiveur_peut_repartir);
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}</pre>
+      </div>
+    </div>
+
+    <!-- rendez_vous_a_N -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Rendez-vous à N (barrière manuelle avec sémaphores)</h3>
+        <span class="filename">rendez_vous_a_N_non_sync.c</span>
+        <span class="status-fix">⚠️ Les N threads ne se synchronisent pas entre chaque pas</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">N threads compteurs doivent avancer en synchronisation : tous affichent leur valeur i, puis tous attendent avant de passer à i+1.</p>
+
+        <div class="code-label corrected">Correction avec barrière réutilisable</div>
+        <pre><span class="pp">#define N 5</span>
+pthread_barrier_t barriere;
+
+<span class="ty">void</span> *<span class="fn">compteur</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">struct</span> pour_compter *pc = arg;
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i <= <span class="nu">100</span>; i++) {
+        <span class="fn">prendre_du_temps_pour_compter</span>();
+        <span class="fn">printf</span>(<span class="str">"%s%c : %d\n"</span>, i%<span class="nu">2</span> ? <span class="str">"\033[m"</span> : <span class="str">"\033[31m"</span>, <span class="str">'a'</span>+pc->i, i);
+
+        <span class="cm">/* Barrière : tout le monde attend ici avant de continuer */</span>
+        <span class="fn">pthread_barrier_wait</span>(&barriere);
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">int</span> <span class="fn">main</span>(<span class="ty">void</span>) {
+    <span class="fn">pthread_barrier_init</span>(&barriere, <span class="nu">NULL</span>, N);
+    pthread_t th[N]; <span class="kw">struct</span> pour_compter p_c[N];
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++) {
+        p_c[i].i = i;
+        <span class="fn">pthread_create</span>(&th[i], <span class="nu">NULL</span>, compteur, &p_c[i]);
+    }
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < N; i++) <span class="fn">pthread_join</span>(th[i], <span class="nu">NULL</span>);
+    <span class="fn">pthread_barrier_destroy</span>(&barriere);
+    <span class="kw">return</span> <span class="nu">0</span>;
+}</pre>
+      </div>
+    </div>
+
+    <!-- space_invaders -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Space Invaders (calcul + affichage en parallèle)</h3>
+        <span class="filename">space_invaders.c</span>
+        <span class="status-fix">⚠️ Séquentiel — calcul et affichage devraient être en parallèle</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Idée : un thread calcule le prochain état de l'écran pendant que l'autre affiche l'état courant (double buffering). Nécessite 2 sémaphores pour la coordination.</p>
+
+        <div class="code-label corrected">Architecture producteur-consommateur</div>
+        <pre><span class="kw">#include</span> <span class="str">&lt;pthread.h&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;semaphore.h&gt;</span>
+
+<span class="ty">int</span> ecran[<span class="nu">2</span>][HAUTEUR][LARGEUR];  <span class="cm">// double buffer</span>
+<span class="ty">int</span> buf_calcul = <span class="nu">0</span>, buf_affich = <span class="nu">1</span>;
+
+sem_t sem_calcul_pret;   <span class="cm">// 0 → afficheur attend que le calcul soit fait</span>
+sem_t sem_affich_fini;   <span class="cm">// 0 → calculateur attend que l'affichage soit fini</span>
+
+<span class="ty">void</span> *<span class="fn">thread_calcul</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">for</span> (<span class="ty">int</span> n = <span class="nu">0</span>; n < NUM_ITER; n++) {
+        <span class="fn">sem_wait</span>(&sem_affich_fini);   <span class="cm">// attendre que l'afficheur ait fini</span>
+        <span class="cm">/* Calculer le prochain état dans ecran[buf_calcul] */</span>
+        <span class="fn">microsleep</span>(DELAI);
+        <span class="cm">/* ─── swap des buffers ─── */</span>
+        buf_affich = buf_calcul; buf_calcul = <span class="nu">1</span> - buf_calcul;
+        <span class="fn">sem_post</span>(&sem_calcul_pret);   <span class="cm">// signaler à l'afficheur</span>
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}
+
+<span class="ty">void</span> *<span class="fn">thread_affich</span>(<span class="ty">void</span> *arg) {
+    <span class="kw">for</span> (<span class="ty">int</span> n = <span class="nu">0</span>; n < NUM_ITER; n++) {
+        <span class="fn">sem_wait</span>(&sem_calcul_pret);   <span class="cm">// attendre le calcul</span>
+        <span class="cm">/* Afficher ecran[buf_affich] */</span>
+        <span class="fn">effacer_lignes</span>(HAUTEUR);
+        <span class="fn">microsleep</span>(DELAI);
+        <span class="fn">sem_post</span>(&sem_affich_fini);   <span class="cm">// signaler la fin de l'affichage</span>
+    }
+    <span class="kw">return</span> <span class="nu">NULL</span>;
+}</pre>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TP6 ═══ -->
+<section class="tp-section" id="tp6">
+  <div class="tp-header tp6">
+    <span class="tp-badge">TP6</span>
+    <h2>Entrées/Sorties bas niveau — open, read, write</h2>
+    <span class="theme-tag">open · read · write · close · descripteurs de fichiers</span>
+  </div>
+  <div class="tp-body">
+
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Création de fichiers (open/write)</h3>
+        <span class="filename">create.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <pre><span class="cm">/* open() : ouvre ou crée un fichier → retourne un fd (file descriptor)
+ * fd = entier ≥ 0 (0=stdin, 1=stdout, 2=stderr, 3+ = fichiers ouverts) */</span>
+
+<span class="ty">int</span> fd1 = <span class="fn">open</span>(<span class="str">"lol1"</span>, O_CREAT | O_WRONLY | O_TRUNC, <span class="nu">0666</span>);
+<span class="cm">//          ↑      ↑         ↑         ↑            ↑
+//       fichier  créer   écriture   tronquer   permissions (masqué par umask)</span>
+
+<span class="ty">int</span> fd2 = <span class="fn">open</span>(<span class="str">"lol2"</span>, O_CREAT | O_WRONLY | O_APPEND, <span class="nu">0600</span>);
+<span class="cm">//                                          ↑
+//                                     append = écrire à la fin (pas écraser)</span>
+
+<span class="kw">if</span> (fd1 < <span class="nu">0</span> || fd2 < <span class="nu">0</span>) { <span class="fn">perror</span>(<span class="str">"open"</span>); <span class="kw">return</span> <span class="nu">2</span>; }
+
+<span class="ty">char</span> lol[<span class="nu">6</span>] = <span class="str">"lol !\n"</span>;
+<span class="fn">write</span>(fd1, lol, <span class="nu">6</span>);  <span class="cm">// écrire 6 octets dans fd1</span>
+<span class="fn">write</span>(fd2, lol, <span class="nu">6</span>);
+
+<span class="fn">close</span>(fd1);  <span class="cm">// TOUJOURS fermer les fd ouverts !</span>
+<span class="fn">close</span>(fd2);</pre>
+
+        <table class="func-table">
+          <tr><th>Flag open()</th><th>Signification</th></tr>
+          <tr><td>O_CREAT</td><td>Créer le fichier s'il n'existe pas</td></tr>
+          <tr><td>O_WRONLY</td><td>Ouvrir en écriture seule</td></tr>
+          <tr><td>O_RDONLY</td><td>Ouvrir en lecture seule</td></tr>
+          <tr><td>O_RDWR</td><td>Lecture et écriture</td></tr>
+          <tr><td>O_TRUNC</td><td>Vider le fichier à l'ouverture (remettre à zéro)</td></tr>
+          <tr><td>O_APPEND</td><td>Écrire toujours à la fin du fichier (atomique)</td></tr>
+          <tr><td>0666</td><td>Permissions Unix rw-rw-rw- (sera filtrée par umask)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Lecture d'un fichier (open/read)</h3>
+        <span class="filename">open_read.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <pre><span class="ty">int</span> fd = <span class="fn">open</span>(<span class="str">"lol.txt"</span>, O_RDONLY);  <span class="cm">// ouvrir en lecture</span>
+<span class="ty">ssize_t</span> n;   <span class="cm">// signed size type : peut contenir -1 (erreur) !</span>
+<span class="ty">char</span> buffer[BUFSZ];
+
+<span class="kw">if</span> (fd < <span class="nu">0</span>) { <span class="fn">perror</span>(<span class="str">"open"</span>); <span class="kw">return</span> <span class="nu">1</span>; }
+
+<span class="fn">printf</span>(<span class="str">"Descripteur de fichier : %d\n"</span>, fd);  <span class="cm">// souvent fd = 3</span>
+
+n = <span class="fn">read</span>(fd, buffer, <span class="nu">1</span>);  <span class="cm">// lire au max 1 octet → avance le curseur de 1</span>
+<span class="fn">printf</span>(<span class="str">"n = %ld\n"</span>, n);        <span class="cm">// n = 1 si succès, 0 si fin de fichier, -1 si erreur</span>
+<span class="fn">printf</span>(<span class="str">"octet 0 : %c\n"</span>, buffer[<span class="nu">0</span>]);
+
+n = <span class="fn">read</span>(fd, buffer, <span class="nu">1</span>);  <span class="cm">// lire l'octet SUIVANT (le curseur a avancé)</span>
+<span class="fn">printf</span>(<span class="str">"octet 1 : %c\n"</span>, buffer[<span class="nu">0</span>]);
+
+<span class="fn">close</span>(fd);</pre>
+        <div class="note"><strong>Position courante :</strong> Chaque <code>read()</code> avance automatiquement la position de lecture dans le fichier. Pas besoin de chercher la position manuellement pour une lecture séquentielle. Pour sauter, utiliser <code>lseek()</code>.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TP7 ═══ -->
+<section class="tp-section" id="tp7">
+  <div class="tp-header tp7">
+    <span class="tp-badge">TP7</span>
+    <h2>Tubes (Pipes) — Communication inter-processus</h2>
+    <span class="theme-tag">pipe · dup2 · fork · IPC</span>
+  </div>
+  <div class="tp-body">
+
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Tube père→fils, conversion majuscules</h3>
+        <span class="filename">exemple_tube1.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Le père lit stdin et écrit dans le tube. Le fils lit le tube et convertit en majuscules avant d'écrire sur stdout.</p>
+
+        <div class="schema">Flux de données :
+
+stdin → PÈRE → tube[1] ──────► tube[0] → FILS → MAJUSCULES → stdout
+
+tube[0] = extrémité lecture (= entrée standard, index 0)
+tube[1] = extrémité écriture (= sortie standard, index 1)</div>
+
+        <div class="code-label">Code commenté</div>
+        <pre><span class="ty">int</span> tube[<span class="nu">2</span>];
+<span class="kw">if</span> (<span class="fn">pipe</span>(tube) < <span class="nu">0</span>) { <span class="fn">perror</span>(<span class="str">"pipe"</span>); <span class="fn">exit</span>(<span class="nu">1</span>); }
+<span class="cm">// tube[0] = fd de lecture, tube[1] = fd d'écriture</span>
+
+<span class="kw">if</span> (<span class="fn">fork</span>() == <span class="nu">0</span>) {
+    <span class="cm">/* ─── FILS : lecteur du tube ─── */</span>
+    <span class="fn">close</span>(tube[<span class="nu">1</span>]);  <span class="cm">// fermer l'extrémité écriture (non utilisée)</span>
+    <span class="fn">lire_ecrire_majuscule</span>(tube[<span class="nu">0</span>], <span class="nu">1</span>);
+    <span class="fn">close</span>(tube[<span class="nu">0</span>]);
+    <span class="kw">return</span> <span class="nu">0</span>;
+}
+
+<span class="cm">/* ─── PÈRE : écrivain du tube ─── */</span>
+<span class="fn">close</span>(tube[<span class="nu">0</span>]);  <span class="cm">// fermer l'extrémité lecture (non utilisée)</span>
+<span class="ty">ssize_t</span> n;
+<span class="ty">char</span> buffer[BUFSZ];
+<span class="kw">while</span> ((n = <span class="fn">read</span>(<span class="nu">0</span>, buffer, BUFSZ)) > <span class="nu">0</span>)  <span class="cm">// lire stdin</span>
+    <span class="fn">write</span>(tube[<span class="nu">1</span>], buffer, n);              <span class="cm">// écrire dans le tube</span>
+<span class="fn">close</span>(tube[<span class="nu">1</span>]);  <span class="cm">// fermer → le fils verra EOF et terminera</span>
+<span class="fn">wait</span>(<span class="nu">NULL</span>);</pre>
+
+        <table class="func-table">
+          <tr><th>Règle</th><th>Pourquoi</th></tr>
+          <tr><td>Fermer tube[1] dans le fils</td><td>Si le fils garde tube[1] ouvert, close(tube[1]) du père ne provoquera jamais EOF côté lecture — boucle infinie !</td></tr>
+          <tr><td>Fermer tube[0] dans le père</td><td>Bonne pratique + libère le fd. Pas critique ici mais indispensable si le père veut détecter que le fils a lu tout.</td></tr>
+        </table>
+
+        <div class="code-label">Fonction lire_ecrire_majuscule</div>
+        <pre><span class="ty">void</span> <span class="fn">lire_ecrire_majuscule</span>(<span class="ty">int</span> fdin, <span class="ty">int</span> fdout) {
+    <span class="ty">char</span> buffer[BUFSZ];
+    <span class="ty">ssize_t</span> n;
+    <span class="kw">while</span> ((n = <span class="fn">read</span>(fdin, buffer, BUFSZ)) > <span class="nu">0</span>) {
+        <span class="kw">for</span> (<span class="ty">size_t</span> i = <span class="nu">0</span>; i < n; i++)
+            buffer[i] = <span class="fn">toupper</span>(buffer[i]);  <span class="cm">// conversion char par char</span>
+        <span class="fn">write</span>(fdout, buffer, n);
+    }
+    <span class="cm">// n == 0 quand le père a fermé tube[1] → EOF → on sort de la boucle</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- nb_secret -->
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Exercice — Nombre secret (jeu de devinettes)</h3>
+        <span class="filename">nb_secret.c · nb_secret_inverse.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain"><strong>nb_secret.c</strong> : le serveur choisit un nombre, l'utilisateur devine. <strong>nb_secret_inverse.c</strong> : l'ordinateur devine par dichotomie (recherche binaire), l'utilisateur répond <code>&gt;</code>, <code>&lt;</code> ou <code>=</code>.</p>
+
+        <div class="code-label">nb_secret_inverse.c — Recherche binaire</div>
+        <pre><span class="ty">int</span> gauche = <span class="nu">0</span>, droite = MAX - <span class="nu">1</span>, n;
+<span class="kw">do</span> {
+    n = (gauche + droite) / <span class="nu">2</span>;  <span class="cm">// milieu de l'intervalle</span>
+    <span class="fn">printf</span>(<span class="str">"%d\n"</span>, n);
+    <span class="fn">scanf</span>(<span class="str">" %c"</span>, &c);  <span class="cm">// espace avant %c pour ignorer \n précédent</span>
+    <span class="kw">if</span> (c == <span class="str">'&lt;'</span>) droite = n;  <span class="cm">// secret < n → chercher à gauche</span>
+    <span class="kw">if</span> (c == <span class="str">'&gt;'</span>) gauche = n;  <span class="cm">// secret > n → chercher à droite</span>
+} <span class="kw">while</span> (c != <span class="str">'='</span>);</pre>
+
+        <div class="note"><strong>Connexion tube TP7 :</strong> En reliant <code>nb_secret</code> et <code>nb_secret_inverse</code> par un double tube (<code>nb_secret | nb_secret_inverse | nb_secret</code>), les deux programmes peuvent jouer automatiquement l'un contre l'autre !</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ TP9 ═══ -->
+<section class="tp-section" id="tp9">
+  <div class="tp-header tp9">
+    <span class="tp-badge">TP9</span>
+    <h2>Réseau UDP — Protocole INCP</h2>
+    <span class="theme-tag">socket · UDP · DGRAM · htonl · sendto · recvfrom</span>
+  </div>
+  <div class="tp-body">
+
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Protocole INCP (Incrementation Protocol) — UDP</h3>
+        <span class="filename">client_udp_incp.c · serveur_udp_incp.c</span>
+        <span class="status-ok">✓ Correct</span>
+      </div>
+      <div class="exercise-body">
+        <p class="explain">Le client envoie un entier au serveur UDP, le serveur répond avec l'entier+1. Simple mais illustre toute la mécanique des sockets UDP (sans connexion).</p>
+
+        <div class="schema">Flux UDP INCP :
+
+CLIENT                           SERVEUR
+  │                                 │
+  │  socket(AF_INET, SOCK_DGRAM)   │  socket() + bind(port 1234)
+  │                                 │
+  │  scanf(n)                       │
+  │  n = htonl(n)  ← big-endian    │
+  │──── sendto(n, 4 octets) ──────►│
+  │                                 │  recvfrom()
+  │                                 │  n = ntohl(n)    ← little-endian
+  │                                 │  n = n + 1
+  │                                 │  n = htonl(n)
+  │◄─── sendto(n, 4 octets) ───────│
+  │  recvfrom()                     │
+  │  n = ntohl(n)                   │
+  │  printf(n)                      │</div>
+
+        <div class="code-label">Client — explications ligne par ligne</div>
+        <pre><span class="cm">/* 1. Créer une socket UDP IPv4 */</span>
+<span class="ty">int</span> sock = <span class="fn">socket</span>(AF_INET, SOCK_DGRAM, <span class="nu">0</span>);
+<span class="cm">//          ↑         ↑         ↑
+//       IPv4      UDP (sans connexion)  protocole auto</span>
+
+<span class="cm">/* 2. Configurer l'adresse du serveur */</span>
+<span class="kw">struct</span> sockaddr_in sa = {
+    .sin_family = AF_INET,
+    .sin_port = <span class="fn">htons</span>(PORT_INCP),    <span class="cm">// htons = Host To Network Short</span>
+};                                    <span class="cm">// convertit en big-endian réseau</span>
+<span class="fn">inet_pton</span>(AF_INET, argv[<span class="nu">1</span>], &sa.sin_addr); <span class="cm">// "192.168.1.1" → binaire</span>
+
+<span class="cm">/* 3. Envoyer (pas de connect() en UDP !) */</span>
+<span class="ty">uint32_t</span> n;
+<span class="fn">scanf</span>(<span class="str">"%"</span> SCNu32, &n);  <span class="cm">// lire l'entier</span>
+n = <span class="fn">htonl</span>(n);           <span class="cm">// convertir en big-endian (32 bits)</span>
+<span class="fn">sendto</span>(sock, &n, <span class="nu">4</span>, <span class="nu">0</span>, (struct sockaddr *)&sa, <span class="kw">sizeof</span>(sa));
+
+<span class="cm">/* 4. Recevoir la réponse */</span>
+<span class="fn">recvfrom</span>(sock, &n, <span class="nu">4</span>, <span class="nu">0</span>, (struct sockaddr *)&sa, &sl);
+n = <span class="fn">ntohl</span>(n);           <span class="cm">// convertir de big-endian en little-endian local</span>
+<span class="fn">printf</span>(<span class="str">"%"</span> PRIu32 <span class="str">"\n"</span>, n);</pre>
+
+        <div class="code-label">Serveur — bind obligatoire pour recevoir</div>
+        <pre><span class="cm">/* Le serveur DOIT bind() pour réserver son port */</span>
+<span class="kw">struct</span> sockaddr_in sa = {
+    .sin_family = AF_INET,
+    .sin_port = <span class="fn">htons</span>(PORT_INCP),
+    .sin_addr.s_addr = <span class="fn">htonl</span>(INADDR_ANY)  <span class="cm">// écouter sur toutes les interfaces</span>
+};
+<span class="fn">bind</span>(sock, (<span class="kw">struct</span> sockaddr *)&sa, <span class="kw">sizeof</span>(sa));
+
+<span class="cm">/* Recevoir + traiter + répondre */</span>
+<span class="kw">struct</span> sockaddr_in addr_clt;
+<span class="ty">socklen_t</span> sl = <span class="kw">sizeof</span>(addr_clt);
+<span class="fn">recvfrom</span>(sock, &n, <span class="nu">4</span>, <span class="nu">0</span>, (<span class="kw">struct</span> sockaddr *)&addr_clt, &sl);
+n = <span class="fn">ntohl</span>(n) + <span class="nu">1</span>;      <span class="cm">// incrémenter</span>
+n = <span class="fn">htonl</span>(n);
+<span class="fn">sendto</span>(sock, &n, <span class="nu">4</span>, <span class="nu">0</span>, (<span class="kw">struct</span> sockaddr *)&addr_clt, sl);</pre>
+
+        <table class="func-table">
+          <tr><th>Fonction réseau</th><th>Rôle</th></tr>
+          <tr><td>htons / ntohs</td><td>Host To Network Short (16 bits) / inverse — conversion boutisme pour les ports</td></tr>
+          <tr><td>htonl / ntohl</td><td>Host To Network Long (32 bits) — conversion boutisme pour les données</td></tr>
+          <tr><td>inet_pton</td><td>Convertit une adresse IP texte ("1.2.3.4") en binaire réseau (big-endian)</td></tr>
+          <tr><td>sendto</td><td>Envoie un datagramme UDP à une adresse précise. Pas besoin de connect() avant.</td></tr>
+          <tr><td>recvfrom</td><td>Reçoit un datagramme et remplit la sockaddr de l'expéditeur (utile pour répondre).</td></tr>
+          <tr><td>bind</td><td>Indispensable côté serveur pour réserver un port connu. Facultatif côté client (port éphémère auto).</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ TP10 ═══ -->
+<section class="tp-section" id="tp10">
+  <div class="tp-header tp10">
+    <span class="tp-badge">TP10</span>
+    <h2>Réseau TCP — Protocole QuizzP</h2>
+    <span class="theme-tag">TCP · STREAM · accept · connect · lecture exacte</span>
+  </div>
+  <div class="tp-body">
+
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Infrastructure — question.c / sys_utils.c</h3>
+        <span class="filename">question.c · sys_utils.c</span>
+        <span class="status-ok">✓ Correct — bien implémentés</span>
+      </div>
+      <div class="exercise-body">
+
+        <table class="func-table">
+          <tr><th>Fonction</th><th>Rôle</th></tr>
+          <tr><td>creer_question(enonce)</td><td>Alloue une struct question, copie l'énoncé, initialise un tableau de propositions de capacité CAP_DFT=10.</td></tr>
+          <tr><td>ajouter_prop(q, prop)</td><td>Ajoute une proposition. Réalloue le tableau si cap_props est atteinte (doublement).</td></tr>
+          <tr><td>detruire_question(q)</td><td>Libère toutes les chaînes de propositions, puis le tableau, puis la structure.</td></tr>
+          <tr><td>init_banque_questions(f)</td><td>Lit le fichier questionnaire.txt en 2 passes : 1ère pour compter, 2ème pour remplir. Parse les balises "question" / "reponse".</td></tr>
+          <tr><td>exact_read(fd, buf, n)</td><td>Lit <em>exactement</em> n octets (peut appeler read() plusieurs fois). Indispensable pour TCP où read() peut retourner moins que demandé.</td></tr>
+          <tr><td>malloc_or_exit(n)</td><td>malloc qui quitte le programme avec perror() en cas d'échec. Simplifie les vérifications.</td></tr>
+          <tr><td>saisir_entre_bornes(inf, sup)</td><td>Boucle jusqu'à obtenir un entier valide dans [inf, sup]. Vide le buffer en cas de saisie invalide.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Serveur QuizzP — à compléter</h3>
+        <span class="filename">serveur_quizz.c</span>
+        <span class="status-todo">✗ Fonctions vides à implémenter</span>
+      </div>
+      <div class="exercise-body">
+
+        <div class="schema">Architecture TCP Quizz :
+
+SERVEUR                                CLIENT
+socket(TCP) + bind(6666) + listen()
+                                     socket(TCP)
+accept() ◄──── SYN ──────────────── connect(ip, 6666)
+   ↓ fd_echange créé
+echanger_avec_client(fd_echange, q):
+  write(énoncé + propositions) ──►  lire + afficher question
+  ◄── read(numéro_réponse) ────── saisir_entre_bornes(1, nb_props)
+  comparer avec ind_rep
+  write(résultat) ─────────────►  lire + afficher "correct/faux"
+close(fd_echange)                   close(sock)</div>
+
+        <div class="code-label corrected">init_sock_ecoute() — Correction</div>
+        <pre><span class="ty">int</span> <span class="fn">init_sock_ecoute</span>() {
+    <span class="cm">/* 1. Créer une socket TCP IPv4 */</span>
+    <span class="ty">int</span> sock = <span class="fn">socket</span>(AF_INET, SOCK_STREAM, <span class="nu">0</span>);
+    <span class="cm">//                          ↑
+    //                    TCP (avec connexion)</span>
+    <span class="kw">if</span> (sock < <span class="nu">0</span>) <span class="fn">perror_exit</span>(<span class="str">"socket"</span>);
+
+    <span class="cm">/* Option pour réutiliser l'adresse immédiatement après arrêt du serveur */</span>
+    <span class="ty">int</span> opt = <span class="nu">1</span>;
+    <span class="fn">setsockopt</span>(sock, SOL_SOCKET, SO_REUSEADDR, &opt, <span class="kw">sizeof</span>(opt));
+
+    <span class="cm">/* 2. Bind sur toutes les interfaces, port 6666 */</span>
+    <span class="kw">struct</span> sockaddr_in sa = {
+        .sin_family      = AF_INET,
+        .sin_port        = <span class="fn">htons</span>(PORT_QUIZZP),
+        .sin_addr.s_addr = <span class="fn">htonl</span>(INADDR_ANY)
+    };
+    <span class="kw">if</span> (<span class="fn">bind</span>(sock, (<span class="kw">struct</span> sockaddr *)&sa, <span class="kw">sizeof</span>(sa)) < <span class="nu">0</span>)
+        <span class="fn">perror_exit</span>(<span class="str">"bind"</span>);
+
+    <span class="cm">/* 3. Écouter (mettre en file d'attente jusqu'à 10 connexions) */</span>
+    <span class="kw">if</span> (<span class="fn">listen</span>(sock, <span class="nu">10</span>) < <span class="nu">0</span>)
+        <span class="fn">perror_exit</span>(<span class="str">"listen"</span>);
+
+    <span class="fn">printf</span>(<span class="str">"Serveur en écoute sur le port %d\n"</span>, PORT_QUIZZP);
+    <span class="kw">return</span> sock;
+}</pre>
+
+        <div class="code-label corrected">connection_au_client() — Correction</div>
+        <pre><span class="ty">int</span> <span class="fn">connection_au_client</span>(<span class="ty">int</span> sock) {
+    <span class="kw">struct</span> sockaddr_in addr_clt;
+    <span class="ty">socklen_t</span> sl = <span class="kw">sizeof</span>(addr_clt);
+
+    <span class="cm">/* accept() bloque jusqu'à l'arrivée d'un client
+     * Crée un NOUVEAU fd pour cet échange spécifique
+     * sock (écoute) reste disponible pour de nouveaux clients */</span>
+    <span class="ty">int</span> se = <span class="fn">accept</span>(sock, (<span class="kw">struct</span> sockaddr *)&addr_clt, &sl);
+    <span class="kw">if</span> (se < <span class="nu">0</span>) { <span class="fn">perror</span>(<span class="str">"accept"</span>); <span class="kw">return</span> -<span class="nu">1</span>; }
+
+    <span class="ty">char</span> ip_clt[INET_ADDRSTRLEN];
+    <span class="fn">inet_ntop</span>(AF_INET, &addr_clt.sin_addr, ip_clt, <span class="kw">sizeof</span>(ip_clt));
+    <span class="fn">printf</span>(<span class="str">"Connexion de %s:%d\n"</span>, ip_clt, <span class="fn">ntohs</span>(addr_clt.sin_port));
+
+    <span class="kw">return</span> se;  <span class="cm">// fd d'échange avec CE client</span>
+}</pre>
+
+        <div class="code-label corrected">echanger_avec_client() — Correction</div>
+        <pre><span class="ty">void</span> <span class="fn">echanger_avec_client</span>(<span class="ty">int</span> fd, <span class="kw">const</span> <span class="kw">struct</span> question *q) {
+    <span class="cm">/* ─── 1. Envoyer la question ─── */</span>
+    <span class="cm">/* Envoyer le nombre de propositions (uint16_t = 2 octets) */</span>
+    <span class="ty">uint16_t</span> nb = <span class="fn">htons</span>(q->nb_props);
+    <span class="fn">write</span>(fd, &nb, <span class="kw">sizeof</span>(nb));
+
+    <span class="cm">/* Envoyer la longueur de l'énoncé + l'énoncé */</span>
+    <span class="ty">uint16_t</span> len_enonce = <span class="fn">htons</span>(<span class="fn">strlen</span>(q->enonce) + <span class="nu">1</span>);
+    <span class="fn">write</span>(fd, &len_enonce, <span class="kw">sizeof</span>(len_enonce));
+    <span class="fn">write</span>(fd, q->enonce, <span class="fn">ntohs</span>(len_enonce));
+
+    <span class="cm">/* Envoyer chaque proposition */</span>
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < q->nb_props; i++) {
+        <span class="ty">uint16_t</span> len_prop = <span class="fn">htons</span>(<span class="fn">strlen</span>(q->propositions[i]) + <span class="nu">1</span>);
+        <span class="fn">write</span>(fd, &len_prop, <span class="kw">sizeof</span>(len_prop));
+        <span class="fn">write</span>(fd, q->propositions[i], <span class="fn">ntohs</span>(len_prop));
+    }
+
+    <span class="cm">/* ─── 2. Recevoir la réponse du client ─── */</span>
+    <span class="ty">uint16_t</span> rep;
+    <span class="fn">exact_read</span>(fd, &rep, <span class="kw">sizeof</span>(rep));
+    rep = <span class="fn">ntohs</span>(rep);
+
+    <span class="cm">/* ─── 3. Envoyer le verdict ─── */</span>
+    <span class="ty">uint8_t</span> correct = (rep == q->ind_rep + <span class="nu">1</span>) ? <span class="nu">1</span> : <span class="nu">0</span>;
+    <span class="fn">write</span>(fd, &correct, <span class="kw">sizeof</span>(correct));
+    <span class="cm">// 1 = bonne réponse, 0 = mauvaise</span>
+}</pre>
+
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-header">
+        <h3>Client QuizzP — à compléter</h3>
+        <span class="filename">client_quizz.c</span>
+        <span class="status-todo">✗ Fonctions vides à implémenter</span>
+      </div>
+      <div class="exercise-body">
+
+        <div class="code-label corrected">connection_au_serveur() — Correction</div>
+        <pre><span class="ty">int</span> <span class="fn">connection_au_serveur</span>(<span class="kw">const</span> <span class="ty">char</span> *addr_ipv4) {
+    <span class="cm">/* 1. Créer la socket TCP */</span>
+    <span class="ty">int</span> sock = <span class="fn">socket</span>(AF_INET, SOCK_STREAM, <span class="nu">0</span>);
+    <span class="kw">if</span> (sock < <span class="nu">0</span>) <span class="fn">perror_exit</span>(<span class="str">"socket"</span>);
+
+    <span class="cm">/* 2. Configurer l'adresse du serveur */</span>
+    <span class="kw">struct</span> sockaddr_in sa = {
+        .sin_family = AF_INET,
+        .sin_port   = <span class="fn">htons</span>(PORT_QUIZZP)
+    };
+    <span class="kw">if</span> (<span class="fn">inet_pton</span>(AF_INET, addr_ipv4, &sa.sin_addr) != <span class="nu">1</span>) {
+        <span class="fn">fprintf</span>(stderr, <span class="str">"Adresse IPv4 invalide : %s\n"</span>, addr_ipv4);
+        <span class="fn">exit</span>(<span class="nu">1</span>);
+    }
+
+    <span class="cm">/* 3. Connexion TCP (handshake SYN/SYN-ACK/ACK) */</span>
+    <span class="kw">if</span> (<span class="fn">connect</span>(sock, (<span class="kw">struct</span> sockaddr *)&sa, <span class="kw">sizeof</span>(sa)) < <span class="nu">0</span>)
+        <span class="fn">perror_exit</span>(<span class="str">"connect"</span>);
+
+    <span class="fn">printf</span>(<span class="str">"Connecté au serveur %s:%d\n"</span>, addr_ipv4, PORT_QUIZZP);
+    <span class="kw">return</span> sock;
+}</pre>
+
+        <div class="code-label corrected">echanger_avec_serveur() — Correction</div>
+        <pre><span class="ty">void</span> <span class="fn">echanger_avec_serveur</span>(<span class="ty">int</span> sock) {
+    <span class="cm">/* ─── 1. Recevoir le nombre de propositions ─── */</span>
+    <span class="ty">uint16_t</span> nb_props;
+    <span class="fn">exact_read</span>(sock, &nb_props, <span class="kw">sizeof</span>(nb_props));
+    nb_props = <span class="fn">ntohs</span>(nb_props);
+
+    <span class="cm">/* ─── 2. Recevoir et afficher l'énoncé ─── */</span>
+    <span class="ty">uint16_t</span> len_enonce;
+    <span class="fn">exact_read</span>(sock, &len_enonce, <span class="kw">sizeof</span>(len_enonce));
+    len_enonce = <span class="fn">ntohs</span>(len_enonce);
+    <span class="ty">char</span> *enonce = <span class="fn">malloc_or_exit</span>(len_enonce);
+    <span class="fn">exact_read</span>(sock, enonce, len_enonce);
+    <span class="fn">printf</span>(<span class="str">"Question : %s\n"</span>, enonce);
+    <span class="fn">free</span>(enonce);
+
+    <span class="cm">/* ─── 3. Recevoir et afficher les propositions ─── */</span>
+    <span class="kw">for</span> (<span class="ty">int</span> i = <span class="nu">0</span>; i < nb_props; i++) {
+        <span class="ty">uint16_t</span> len_prop;
+        <span class="fn">exact_read</span>(sock, &len_prop, <span class="kw">sizeof</span>(len_prop));
+        len_prop = <span class="fn">ntohs</span>(len_prop);
+        <span class="ty">char</span> *prop = <span class="fn">malloc_or_exit</span>(len_prop);
+        <span class="fn">exact_read</span>(sock, prop, len_prop);
+        <span class="fn">printf</span>(<span class="str">"%d. %s\n"</span>, i + <span class="nu">1</span>, prop);
+        <span class="fn">free</span>(prop);
+    }
+
+    <span class="cm">/* ─── 4. Saisir et envoyer la réponse ─── */</span>
+    <span class="ty">uint16_t</span> rep = <span class="fn">saisir_entre_bornes</span>(<span class="nu">1</span>, nb_props);
+    <span class="ty">uint16_t</span> rep_net = <span class="fn">htons</span>(rep);
+    <span class="fn">write</span>(sock, &rep_net, <span class="kw">sizeof</span>(rep_net));
+
+    <span class="cm">/* ─── 5. Recevoir le verdict ─── */</span>
+    <span class="ty">uint8_t</span> verdict;
+    <span class="fn">exact_read</span>(sock, &verdict, <span class="kw">sizeof</span>(verdict));
+    <span class="fn">printf</span>(verdict ? <span class="str">"✓ Bonne réponse !\n"</span> : <span class="str">"✗ Mauvaise réponse.\n"</span>);
+}</pre>
+
+        <table class="func-table">
+          <tr><th>TCP vs UDP</th><th>Différence clé</th></tr>
+          <tr><td>connect() côté client</td><td>Indispensable en TCP pour établir la connexion. Pas besoin en UDP.</td></tr>
+          <tr><td>listen() + accept()</td><td>Côté serveur TCP : listen() déclare le serveur prêt, accept() bloque jusqu'à une connexion et crée un nouveau fd.</td></tr>
+          <tr><td>exact_read() vs read()</td><td>En TCP, read() peut retourner moins d'octets que demandé (fragmentation réseau). exact_read() boucle jusqu'à lire exactement N octets.</td></tr>
+          <tr><td>sock_écoute vs sock_échange</td><td>Le fd retourné par accept() est DISTINCT du fd d'écoute. Le fd d'écoute reste disponible pour de nouveaux clients.</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Correction complète · TPs Système · <em>Explications en français</em>
+</footer>
+
+</body>
+</html>

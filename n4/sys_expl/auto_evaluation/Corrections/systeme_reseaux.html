@@ -1,0 +1,2470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Système & Réseaux — Fiches de révision</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --bg2: #16161c;
+    --bg3: #1e1e28;
+    --border: #2e2e40;
+    --accent: #5b8dee;
+    --accent2: #e05b8d;
+    --accent3: #5be0a0;
+    --accent4: #e0c05b;
+    --text: #e8e8f0;
+    --text2: #8888aa;
+    --text3: #5555770;
+    --code-bg: #12121a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 0;
+  }
+
+  .course-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .main-title {
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--text) 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-top: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tab:hover { color: var(--text); }
+
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab[data-section="summary"].active { color: var(--accent3); border-bottom-color: var(--accent3); }
+
+  /* MAIN */
+  main { padding: 40px; max-width: 920px; margin: 0 auto; }
+
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    color: var(--text2);
+  }
+
+  /* Q&A CARDS */
+  .qa-list { display: flex; flex-direction: column; gap: 0; }
+
+  .qa-item {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+  }
+
+  .qa-item:last-child { border-bottom: none; }
+
+  .question {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .q-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(91,141,238,0.1);
+    border: 1px solid rgba(91,141,238,0.25);
+    padding: 3px 7px;
+    border-radius: 4px;
+    min-width: 34px;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .toggle-icon {
+    font-size: 18px;
+    color: var(--text2);
+    transition: transform 0.2s;
+    margin-top: 1px;
+  }
+
+  .qa-item.open .toggle-icon { transform: rotate(45deg); color: var(--accent); }
+
+  .answer {
+    display: none;
+    margin-left: 48px;
+    padding: 16px;
+    background: var(--bg3);
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .qa-item.open .answer { display: block; animation: fadeIn 0.2s ease; }
+
+  .answer p { margin-bottom: 10px; }
+  .answer p:last-child { margin-bottom: 0; }
+
+  .answer ul, .answer ol {
+    padding-left: 20px;
+    margin-bottom: 10px;
+  }
+
+  .answer li { margin-bottom: 5px; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent4);
+  }
+
+  .code-block {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    border-radius: 6px;
+    margin: 10px 0;
+    overflow-x: auto;
+    line-height: 1.8;
+    color: var(--accent4);
+    white-space: pre;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 5px;
+  }
+
+  .tag-important { background: rgba(224,91,141,0.15); color: var(--accent2); border: 1px solid rgba(224,91,141,0.3); }
+  .tag-tip { background: rgba(91,224,160,0.12); color: var(--accent3); border: 1px solid rgba(91,224,160,0.25); }
+  .tag-warning { background: rgba(224,192,91,0.12); color: var(--accent4); border: 1px solid rgba(224,192,91,0.25); }
+
+  /* SUMMARY STYLES */
+  .summary-grid { display: flex; flex-direction: column; gap: 28px; }
+
+  .summary-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .summary-card-header {
+    padding: 16px 20px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .summary-card-icon {
+    font-size: 20px;
+    width: 36px;
+    text-align: center;
+  }
+
+  .summary-card-title {
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .summary-card-body {
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .summary-card-body h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin: 16px 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .summary-card-body h4:first-child { margin-top: 0; }
+
+  .summary-card-body p { margin-bottom: 10px; color: var(--text2); }
+  .summary-card-body p:last-child { margin-bottom: 0; }
+  .summary-card-body ul { padding-left: 18px; color: var(--text2); }
+  .summary-card-body li { margin-bottom: 5px; }
+  .summary-card-body strong { color: var(--text); }
+
+  .expand-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(91,141,238,0.1);
+    border: 1px solid rgba(91,141,238,0.3);
+    color: var(--accent);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .expand-all-btn:hover { background: rgba(91,141,238,0.2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="course-title">L2 Informatique — Sorbonne Paris Nord</div>
+      <div class="main-title">Système &amp; Réseaux — Fiches de révision</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('ae0')">AE0 · C &amp; Binaire</button>
+    <button class="tab" onclick="showSection('ae1')">AE1 · Processus</button>
+    <button class="tab" onclick="showSection('ae2')">AE2 · Signaux &amp; Exec</button>
+    <button class="tab" onclick="showSection('ae3')">AE3 · Threads &amp; void*</button>
+    <button class="tab" onclick="showSection('ae4')">AE4 · Sémaphores</button>
+    <button class="tab" onclick="showSection('ae5')">AE5 · Mutex &amp; Sync</button>
+    <button class="tab" onclick="showSection('ae6')">AE6 · I/O Unix</button>
+    <button class="tab" data-section="summary" onclick="showSection('summary')">★ Résumé de cours</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ======================== AE0 ======================== -->
+<div class="section active" id="ae0">
+  <div class="section-header">
+    <div class="section-tag">Auto-évaluation 0 · Après CM0</div>
+    <div class="section-title">C, Binaire, Mémoire et Pointeurs</div>
+    <div class="section-subtitle">Bases du langage C, représentation des données, endianness</div>
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll('ae0')">▸ Tout développer</button>
+  <div class="qa-list">
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">Comment écrire en C, compiler et exécuter un Hello, World! sur ma propre machine ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>1. Créer un fichier <code>hello.c</code> avec un éditeur de texte :</p>
+        <div class="code-block">#include &lt;stdio.h&gt;
+
+int main(void) {
+    printf("Hello, World!\n");
+    return 0;
+}</div>
+        <p>2. Compiler avec GCC :</p>
+        <div class="code-block">gcc -Wall -Wextra -o hello hello.c</div>
+        <p>3. Exécuter :</p>
+        <div class="code-block">./hello</div>
+        <p><span class="tag tag-tip">Prérequis</span> Avoir GCC installé. Sur Ubuntu/Debian : <code>sudo apt install gcc</code>. Sur macOS : <code>xcode-select --install</code>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">Quel éditeur de texte j'utilise pour écrire des programmes en C ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><span class="tag tag-tip">Pas de mauvaise réponse</span> L'important est d'en connaître un.</p>
+        <ul>
+          <li><strong>Sur sa propre machine :</strong> VS Code (recommandé), CLion, Eclipse, Vim/Neovim, Emacs…</li>
+          <li><strong>En salle TP :</strong> VS Code, <code>nano</code> (simple), <code>gedit</code> (graphique)</li>
+        </ul>
+        <p>VS Code avec l'extension C/C++ offre la coloration syntaxique, l'autocomplétion et l'intégration du débogueur.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">Quels drapeaux de compilation sont indispensables ? Fortement conseillés ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Indispensables dans ce cours :</strong></p>
+        <div class="code-block">gcc -std=c99 -o mon_prog mon_prog.c</div>
+        <ul>
+          <li><code>-std=c99</code> (ou <code>-std=c11</code>) : impose le standard C99/C11, nécessaire pour les types <code>int32_t</code> etc.</li>
+        </ul>
+        <p><strong>Fortement conseillés :</strong></p>
+        <div class="code-block">gcc -Wall -Wextra -g -std=c99 -o mon_prog mon_prog.c</div>
+        <ul>
+          <li><code>-Wall</code> : active la plupart des avertissements utiles (variables non utilisées, retour manquant…)</li>
+          <li><code>-Wextra</code> : avertissements supplémentaires (comparaisons, paramètres inutilisés…)</li>
+          <li><code>-g</code> : inclut les infos de débogage, indispensable pour utiliser GDB ou Valgrind efficacement</li>
+          <li><code>-Werror</code> : (optionnel) traite les avertissements comme des erreurs — force à corriger tout</li>
+        </ul>
+        <p><span class="tag tag-important">Règle d'or</span> Compiler toujours avec <code>-Wall -Wextra -g</code>. Les warnings sont presque toujours des bugs.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">Comment utiliser Valgrind ? À quoi cela sert-il ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Rôle :</strong> Valgrind est un outil de détection dynamique d'erreurs mémoire. Il permet de trouver :</p>
+        <ul>
+          <li>Les <strong>fuites mémoire</strong> (malloc sans free)</li>
+          <li>Les <strong>accès hors limites</strong> (dépassement de tableau)</li>
+          <li>La <strong>lecture de mémoire non initialisée</strong></li>
+          <li>Le <strong>double free</strong></li>
+        </ul>
+        <p><strong>Utilisation :</strong></p>
+        <div class="code-block"># D'abord compiler avec -g
+gcc -Wall -Wextra -g -o mon_prog mon_prog.c
+
+# Puis lancer avec valgrind
+valgrind --leak-check=full ./mon_prog [arguments]</div>
+        <p><code>--leak-check=full</code> affiche les détails de chaque fuite mémoire avec la pile d'appels.</p>
+        <p><span class="tag tag-warning">Attention</span> Valgrind ralentit l'exécution d'un facteur 10 à 50×, mais c'est normal.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Qu'est-ce qu'un bit et un octet (byte) ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Bit</strong> : unité d'information la plus petite. Ne peut valoir que 0 ou 1.</li>
+          <li><strong>Octet (byte)</strong> : groupe de 8 bits. C'est l'unité d'adressage standard en mémoire.</li>
+        </ul>
+        <p>Exemple : l'octet <code>01000001</code> représente la valeur 65, qui correspond au caractère 'A' en ASCII.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">Que signifie « la machine est byte addressable » ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Cela signifie que <strong>chaque octet en mémoire possède une adresse unique</strong>. Le plus petit élément adressable est l'octet (et non le bit, ni un mot de 4 octets).</p>
+        <p>Conséquence : un pointeur <code>char *</code> permet d'accéder à chaque octet individuellement. Deux pointeurs de types différents pointant vers la même adresse pointent vers le même premier octet.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q7</span>
+        <span class="q-text">Quelle est la différence entre les entiers signés et non signés ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Signés (<code>signed</code>)</strong> : peuvent représenter des valeurs <strong>positives ET négatives</strong>. Sur n bits, plage : −2^(n−1) à +2^(n−1)−1. Ex: <code>int</code> 32 bits → −2 147 483 648 à +2 147 483 647.</li>
+          <li><strong>Non signés (<code>unsigned</code>)</strong> : valeurs <strong>positives uniquement</strong>. Sur n bits, plage : 0 à 2^n−1. Ex: <code>unsigned int</code> 32 bits → 0 à 4 294 967 295.</li>
+        </ul>
+        <p>En C, les entiers sont signés par défaut (sauf <code>char</code> qui dépend de la machine).</p>
+        <p>La représentation utilisée pour les signés est le <strong>complément à 2</strong>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q8</span>
+        <span class="q-text">Quelle est la taille d'un char ? Est-il signé ou non signé ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Taille :</strong> toujours <strong>1 octet (8 bits)</strong> — c'est garanti par la norme C.</li>
+          <li><strong>Signé ou non :</strong> <strong>dépend de la machine et du compilateur</strong>. Sur x86/x86-64 avec GCC, <code>char</code> est signé par défaut. Sur certaines architectures ARM, il est non signé.</li>
+        </ul>
+        <p>Pour lever l'ambiguïté, utiliser explicitement <code>signed char</code> ou <code>unsigned char</code>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Quelle est la taille d'un int ? Est-il signé ou non signé ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Taille :</strong> <strong>généralement 4 octets (32 bits)</strong> sur les architectures modernes 32 et 64 bits (x86-64, ARM64). La norme garantit seulement ≥ 16 bits.</li>
+          <li><strong>Signé :</strong> <code>int</code> est <strong>signé par défaut</strong>. Pour non signé : <code>unsigned int</code>.</li>
+        </ul>
+        <p>Pour une taille garantie, utiliser les types de <code>&lt;stdint.h&gt;</code> : <code>int32_t</code>, <code>uint32_t</code>…</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q10</span>
+        <span class="q-text">Combien de valeurs peut-on représenter sur 8, 16, 32 bits ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>8 bits :</strong> 2⁸ = <strong>256</strong> valeurs (0 à 255 non signé, −128 à 127 signé)</li>
+          <li><strong>16 bits :</strong> 2¹⁶ = <strong>65 536</strong> valeurs (0 à 65535 non signé)</li>
+          <li><strong>32 bits :</strong> 2³² = <strong>4 294 967 296</strong> ≈ <strong>4 milliards</strong> de valeurs</li>
+          <li><strong>64 bits :</strong> 2⁶⁴ ≈ 1,8 × 10¹⁹ valeurs</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q11</span>
+        <span class="q-text">Est-ce que je connais toutes les puissances de 2 jusqu'à 2¹⁰ ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">2⁰ = 1       2¹ = 2       2² = 4       2³ = 8
+2⁴ = 16      2⁵ = 32      2⁶ = 64      2⁷ = 128
+2⁸ = 256     2⁹ = 512     2¹⁰ = 1024 ≈ 10³</div>
+        <p><span class="tag tag-tip">Astuce mnémotechnique</span> 2¹⁰ = 1024 ≈ 1 kilo. C'est la base pour estimer les grandes puissances de 2.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q12</span>
+        <span class="q-text">Comment donner une valeur décimale approchée d'une grande puissance de 2 ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>On utilise l'approximation <strong>2¹⁰ ≈ 10³</strong> :</p>
+        <div class="code-block">2³² = (2¹⁰)³ × 2² ≈ (10³)³ × 4 = 4 × 10⁹  ≈ 4 milliards
+2⁶⁴ = (2¹⁰)⁶ × 2⁴ ≈ (10³)⁶ × 16 ≈ 1,6 × 10¹⁹
+2²⁰ = (2¹⁰)² ≈ (10³)² = 10⁶ = 1 million (1 méga)</div>
+        <p>Mémo : 2¹⁰ ≈ kilo (10³), 2²⁰ ≈ méga (10⁶), 2³⁰ ≈ giga (10⁹).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q13</span>
+        <span class="q-text">Comment convertir un entier décimal en binaire ? en hexadécimal ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Décimal → Binaire :</strong> divisions euclidiennes successives par 2, lire les restes de bas en haut.</p>
+        <div class="code-block">13 ÷ 2 = 6  reste 1
+ 6 ÷ 2 = 3  reste 0
+ 3 ÷ 2 = 1  reste 1
+ 1 ÷ 2 = 0  reste 1
+→ 13 en binaire = 1101</div>
+        <p><strong>Décimal → Hexadécimal :</strong> même principe mais divisions par 16. Les restes 10–15 s'écrivent A–F.</p>
+        <div class="code-block">255 ÷ 16 = 15  reste 15 (= F)
+ 15 ÷ 16 = 0   reste 15 (= F)
+→ 255 en hexa = 0xFF</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q14</span>
+        <span class="q-text">Comment passer du binaire à l'hexadécimal et réciproquement ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Binaire → Hexadécimal :</strong> regrouper les bits <strong>par 4 en partant de la droite</strong>. Chaque groupe de 4 bits donne un chiffre hexadécimal.</p>
+        <div class="code-block">10110101
+= 1011 | 0101
+=  B   |  5
+= 0xB5</div>
+        <p><strong>Hexadécimal → Binaire :</strong> chaque chiffre hexa se convertit en 4 bits.</p>
+        <div class="code-block">0x3F = 0011 1111</div>
+        <p><span class="tag tag-tip">Table à mémoriser</span></p>
+        <div class="code-block">0=0000  1=0001  2=0010  3=0011
+4=0100  5=0101  6=0110  7=0111
+8=1000  9=1001  A=1010  B=1011
+C=1100  D=1101  E=1110  F=1111</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q15</span>
+        <span class="q-text">Quels sont les types entiers de taille et signitude fixes en C99 ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Définis dans <code>&lt;stdint.h&gt;</code> (C99) :</p>
+        <div class="code-block">// Signés
+int8_t   int16_t   int32_t   int64_t
+
+// Non signés
+uint8_t  uint16_t  uint32_t  uint64_t
+
+// Plus rapides sur la machine (≥ n bits)
+int_fast8_t  int_fast32_t ...
+
+// Plus petits en mémoire (≥ n bits)
+int_least8_t  int_least32_t ...
+
+// Pour stocker un pointeur
+intptr_t   uintptr_t
+
+// Taille maximale disponible
+intmax_t   uintmax_t</div>
+        <p><span class="tag tag-important">Bonne pratique</span> Préférer <code>int32_t</code> à <code>int</code> quand la taille exacte compte (protocoles réseau, fichiers binaires…).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q16</span>
+        <span class="q-text">Qu'est-ce que le boutisme (endianness) ? Différence little-endian / big-endian ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Le <strong>boutisme</strong> définit l'<strong>ordre dans lequel les octets d'un entier multi-octet sont stockés en mémoire</strong>.</p>
+        <p>Exemple : l'entier 32 bits <code>0x12345678</code> stocké à l'adresse 0x1000 :</p>
+        <div class="code-block">Adresse :    0x1000  0x1001  0x1002  0x1003
+
+Little-endian (x86, x86-64) :
+             0x78    0x56    0x34    0x12
+             ↑ octet de poids FAIBLE en premier
+
+Big-endian (réseau, certains ARM) :
+             0x12    0x34    0x56    0x78
+             ↑ octet de poids FORT en premier</div>
+        <p><span class="tag tag-important">Importance</span> Crucial lors de la communication réseau (réseau = big-endian) ou de la lecture de fichiers binaires. Les fonctions <code>htons()</code>, <code>ntohl()</code> etc. servent à convertir.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q17</span>
+        <span class="q-text">Révisions sur les pointeurs : opérateurs & et * ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><code>&amp;x</code> : opérateur <strong>adresse de</strong>. Retourne l'adresse mémoire de la variable <code>x</code>.</li>
+          <li><code>*p</code> : opérateur de <strong>déréférencement</strong>. Accède à la valeur pointée par le pointeur <code>p</code>.</li>
+        </ul>
+        <div class="code-block">int x = 42;
+int *p = &amp;x;   // p contient l'adresse de x
+*p = 100;       // modifie x via p → x vaut maintenant 100
+printf("%d\n", x); // affiche 100</div>
+        <p><code>*</code> dans une <strong>déclaration</strong> signifie "pointeur vers". <code>*</code> dans une <strong>expression</strong> signifie "déréférencer".</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== AE1 ======================== -->
+<div class="section" id="ae1">
+  <div class="section-header">
+    <div class="section-tag">Auto-évaluation 1 · Après CM1</div>
+    <div class="section-title">Noyau, Processus et fork()</div>
+    <div class="section-subtitle">Système d'exploitation, appels système, création de processus</div>
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll('ae1')">▸ Tout développer</button>
+  <div class="qa-list">
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">Quels sont les rôles principaux du noyau d'un système d'exploitation ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Le noyau (kernel) est le cœur du système d'exploitation. Ses rôles principaux :</p>
+        <ul>
+          <li><strong>Gestion des processus</strong> : création, ordonnancement, terminaison</li>
+          <li><strong>Gestion de la mémoire</strong> : allocation, protection, mémoire virtuelle</li>
+          <li><strong>Gestion des entrées/sorties</strong> : pilotes de périphériques, abstraction matérielle</li>
+          <li><strong>Système de fichiers</strong> : organisation, accès et protection des fichiers</li>
+          <li><strong>Communication inter-processus (IPC)</strong> : signaux, pipes, sockets…</li>
+          <li><strong>Sécurité et protection</strong> : espace utilisateur vs espace noyau, permissions</li>
+        </ul>
+        <p>Le noyau s'exécute en mode <strong>privilégié</strong>. Les programmes utilisateurs ne peuvent accéder aux ressources matérielles qu'à travers lui, via les <em>appels système</em>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">Qu'est-ce qu'un appel système ? Exemples ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un <strong>appel système (syscall)</strong> est une interface par laquelle un programme en mode utilisateur demande un service au noyau. C'est le seul moyen légal d'accéder aux ressources matérielles.</p>
+        <p>Mécanisme : le programme déclenche une interruption logicielle → passage en mode noyau → exécution → retour en mode utilisateur.</p>
+        <p><strong>Exemples :</strong></p>
+        <ul>
+          <li>Processus : <code>fork()</code>, <code>execve()</code>, <code>exit()</code>, <code>wait()</code>, <code>getpid()</code></li>
+          <li>Fichiers : <code>open()</code>, <code>read()</code>, <code>write()</code>, <code>close()</code></li>
+          <li>Mémoire : <code>mmap()</code>, <code>brk()</code></li>
+          <li>Signaux : <code>kill()</code>, <code>sigaction()</code></li>
+          <li>Réseau : <code>socket()</code>, <code>bind()</code>, <code>connect()</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">Que contient la section 2 du manuel ? Et la section 3 ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Section 2</strong> : les <strong>appels système</strong> (interfaces directes avec le noyau). Ex : <code>fork</code>, <code>read</code>, <code>write</code>…</li>
+          <li><strong>Section 3</strong> : les <strong>fonctions de la bibliothèque C standard</strong> (libc). Ex : <code>printf</code>, <code>malloc</code>, <code>strlen</code>…</li>
+        </ul>
+        <div class="code-block">man 2 fork    # appel système fork
+man 3 printf  # fonction de la bibliothèque standard
+man 2 open    # appel système open
+man 3 fopen   # fonction stdio (enveloppe de open)</div>
+        <p>Autres sections utiles : 1 = commandes shell, 4 = fichiers spéciaux, 5 = formats de fichiers, 7 = aperçus.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">Qu'est-ce qu'un processus ? Qu'est-ce qui l'identifie ? Quels sont ses attributs ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un <strong>processus</strong> est un <strong>programme en cours d'exécution</strong>. C'est une instance d'un programme avec son propre espace mémoire, ses ressources et son état d'exécution.</p>
+        <p><strong>Identifiant :</strong> le <strong>PID</strong> (Process IDentifier), un entier unique attribué par le noyau.</p>
+        <p><strong>Attributs d'un processus :</strong></p>
+        <ul>
+          <li><code>PID</code> : identifiant du processus</li>
+          <li><code>PPID</code> : PID du processus parent</li>
+          <li><code>UID</code> / <code>GID</code> : identité de l'utilisateur/groupe propriétaire</li>
+          <li>Espace d'adressage (code, pile, tas, données)</li>
+          <li>Table des descripteurs de fichiers ouverts</li>
+          <li>Répertoire courant</li>
+          <li>Variables d'environnement</li>
+          <li>État (running, sleeping, zombie, stopped…)</li>
+          <li>Priorité d'ordonnancement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Comment chercher l'identifiant d'un processus ? Qu'est-ce que ça permet ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">ps aux              # liste tous les processus
+ps aux | grep nom   # filtrer par nom
+pgrep nom           # retourne les PID par nom
+pidof nom           # PID d'un exécutable par son nom
+top / htop          # vue dynamique</div>
+        <p>Une fois le PID connu, on peut :</p>
+        <ul>
+          <li>Envoyer un signal : <code>kill -SIGTERM 1234</code> ou <code>kill -9 1234</code></li>
+          <li>Attacher un débogueur : <code>gdb -p 1234</code></li>
+          <li>Inspecter la mémoire : <code>/proc/1234/maps</code></li>
+          <li>Voir les fichiers ouverts : <code>lsof -p 1234</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">Instruction switch en C : syntaxe, cas, défaut, break ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">switch (expression) {
+    case valeur1:
+        // instructions
+        break;      // IMPORTANT : évite le "fall-through"
+    case valeur2:
+    case valeur3:   // les deux cas font la même chose
+        // instructions
+        break;
+    default:        // cas par défaut (optionnel)
+        // instructions
+        break;      // bonne pratique de l'inclure
+}</div>
+        <p><strong><code>break</code> :</strong> sort du switch. <strong>Sans break</strong>, l'exécution continue dans le case suivant (fall-through), ce qui est rarement voulu.</p>
+        <p><span class="tag tag-warning">Piège classique</span> Oublier un <code>break</code> provoque un bug silencieux où plusieurs cases s'exécutent. Compiler avec <code>-Wimplicit-fallthrough</code> pour être averti.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q7</span>
+        <span class="q-text">Quel appel système crée un processus ? Quelle valeur retourne-t-il ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong><code>fork()</code></strong> crée un processus fils qui est une <strong>copie exacte du père</strong> (espace mémoire, descripteurs, etc.).</p>
+        <div class="code-block">#include &lt;unistd.h&gt;
+
+pid_t pid = fork();
+
+if (pid == -1) {
+    // ERREUR (fork a échoué)
+    perror("fork");
+} else if (pid == 0) {
+    // CODE DU FILS (fork retourne 0 au fils)
+    printf("Je suis le fils, mon PID = %d\n", getpid());
+} else {
+    // CODE DU PÈRE (fork retourne le PID du fils au père)
+    printf("J'ai créé le fils avec PID = %d\n", pid);
+}</div>
+        <p><strong>Valeurs de retour :</strong> 0 → au fils | PID du fils → au père | −1 → erreur</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q8</span>
+        <span class="q-text">Pourquoi parle-t-on d'arborescence des processus ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Chaque processus a un <strong>parent</strong> (sauf le tout premier). Quand un processus crée un fils via <code>fork()</code>, cela forme une relation parent-enfant. L'ensemble forme une <strong>arborescence</strong>.</p>
+        <ul>
+          <li>Au démarrage du système, le noyau crée le processus <strong>init</strong> (PID 1) ou <strong>systemd</strong>.</li>
+          <li>Tous les autres processus sont des descendants de PID 1.</li>
+        </ul>
+        <div class="code-block">systemd (PID 1)
+├── sshd (PID 234)
+│   └── bash (PID 567)
+│       └── gcc (PID 890)
+├── Xorg (PID 345)
+└── ...</div>
+        <p><code>pstree</code> permet de visualiser l'arborescence complète.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Que sont les arguments d'un processus ? Comment y accéder ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Les <strong>arguments</strong> sont les paramètres passés au programme lors de son lancement (ex : <code>./prog arg1 arg2</code>).</p>
+        <div class="code-block">int main(int argc, char *argv[]) {
+    // argc = nombre d'arguments (y compris le nom du prog)
+    // argv[0] = nom du programme
+    // argv[1] = premier argument
+    // argv[argc-1] = dernier argument
+    // argv[argc] = NULL (sentinelle)
+
+    for (int i = 0; i &lt; argc; i++) {
+        printf("argv[%d] = %s\n", i, argv[i]);
+    }
+    return 0;
+}</div>
+        <p>Exemple : <code>./mon_prog hello 42</code> → argc=3, argv={"./mon_prog", "hello", "42", NULL}</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q10</span>
+        <span class="q-text">Qu'est-ce que l'environnement d'un processus ? Comment y accéder en C ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>L'<strong>environnement</strong> est un ensemble de variables de la forme <code>NOM=valeur</code> transmises au processus. Ex : <code>PATH</code>, <code>HOME</code>, <code>USER</code>…</p>
+        <div class="code-block">#include &lt;stdlib.h&gt;
+
+// Méthode 1 : getenv (la plus simple)
+char *path = getenv("PATH");
+if (path != NULL) printf("PATH = %s\n", path);
+
+// Méthode 2 : via le 3ème paramètre de main
+int main(int argc, char *argv[], char *envp[]) {
+    for (int i = 0; envp[i] != NULL; i++)
+        printf("%s\n", envp[i]);
+}
+
+// Méthode 3 : variable globale extern
+extern char **environ;
+for (char **e = environ; *e != NULL; e++)
+    printf("%s\n", *e);</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q11</span>
+        <span class="q-text">Comment un processus peut-il connaître son PID ? Et celui de son parent ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;unistd.h&gt;
+
+pid_t mon_pid    = getpid();   // PID du processus courant
+pid_t pid_parent = getppid();  // PID du processus parent
+
+printf("Mon PID : %d, PID parent : %d\n", mon_pid, pid_parent);</div>
+        <p>Ces deux fonctions ne retournent jamais d'erreur.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== AE2 ======================== -->
+<div class="section" id="ae2">
+  <div class="section-header">
+    <div class="section-tag">Auto-évaluation 2 · Après CM2</div>
+    <div class="section-title">Signaux, wait() et exec()</div>
+    <div class="section-subtitle">Gestion d'erreurs, signaux Unix, attente de processus, remplacement d'image</div>
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll('ae2')">▸ Tout développer</button>
+  <div class="qa-list">
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">À quoi servent perror et la variable globale errno ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong><code>errno</code></strong> : variable globale (dans <code>&lt;errno.h&gt;</code>) qui contient le <strong>code d'erreur du dernier appel système échoué</strong>. Valeur : entier positif (ex : <code>ENOENT</code>=2, <code>EACCES</code>=13…). N'est significative que si l'appel système a retourné −1.</li>
+          <li><strong><code>perror(msg)</code></strong> : affiche sur stderr le message <code>msg</code> suivi de <code>: </code> et du message d'erreur correspondant à <code>errno</code>.</li>
+        </ul>
+        <div class="code-block">int fd = open("fichier.txt", O_RDONLY);
+if (fd == -1) {
+    perror("Erreur open");
+    // Affiche par ex: "Erreur open: No such file or directory"
+    exit(1);
+}</div>
+        <p><span class="tag tag-important">Règle</span> Toujours vérifier la valeur de retour des appels système et afficher l'erreur avec <code>perror</code>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">Pourquoi utiliser des arguments pointeurs dans les fonctions ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>En C, les arguments sont passés <strong>par valeur</strong> (copie). Un pointeur en argument permet :</p>
+        <ul>
+          <li><strong>Modifier la variable de l'appelant</strong> (passage par référence simulé) :</li>
+        </ul>
+        <div class="code-block">void incrementer(int *x) { (*x)++; }
+int n = 5;
+incrementer(&amp;n);  // n vaut maintenant 6</div>
+        <ul>
+          <li><strong>Retourner plusieurs valeurs</strong> via plusieurs pointeurs en argument</li>
+          <li><strong>Efficacité</strong> : passer l'adresse d'une grande structure plutôt que de la copier</li>
+        </ul>
+        <p>Exemple concret : <code>scanf("%d", &amp;x)</code> utilise un pointeur pour écrire le résultat dans <code>x</code>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">Quel mot-clé indique qu'un argument pointeur n'est utilisé que pour lire ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Le mot-clé <strong><code>const</code></strong>.</p>
+        <div class="code-block">// Correct : le pointeur est en lecture seule
+void afficher(const char *s) {
+    printf("%s\n", s);
+    // s[0] = 'X'; // ERREUR de compilation : lecture seule
+}
+
+// Comparaison :
+void modifier(char *s) { s[0] = 'X'; }  // peut écrire</div>
+        <p><span class="tag tag-tip">Bonnes pratiques</span></p>
+        <ul>
+          <li>Met en évidence l'intention (documentation du code)</li>
+          <li>Permet le compilateur de détecter les modifications accidentelles</li>
+          <li>Autorise l'appel avec des chaînes littérales (<code>const char*</code>)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">Qui peut envoyer un signal à un processus ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Le processus lui-même</strong> (ex : <code>raise(SIGTERM)</code>)</li>
+          <li><strong>Un autre processus du même utilisateur</strong> (via <code>kill()</code>)</li>
+          <li><strong>Le superutilisateur (root)</strong> : peut envoyer à n'importe quel processus</li>
+          <li><strong>Le noyau</strong> : signaux générés par des événements matériels (<code>SIGSEGV</code> = accès mémoire invalide, <code>SIGFPE</code> = division par zéro, <code>SIGCHLD</code> = mort d'un enfant…)</li>
+          <li><strong>Le terminal</strong> : Ctrl+C génère <code>SIGINT</code>, Ctrl+Z génère <code>SIGTSTP</code>, Ctrl+\ génère <code>SIGQUIT</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Quelles sont les différentes actions que peut entraîner la réception d'un signal ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Terminer le processus</strong> (action par défaut de nombreux signaux : SIGTERM, SIGKILL…)</li>
+          <li><strong>Ignorer le signal</strong> (avec <code>SIG_IGN</code>, sauf SIGKILL et SIGSTOP qui ne peuvent être ignorés)</li>
+          <li><strong>Exécuter un gestionnaire personnalisé</strong> (handler) défini par le programmeur avec <code>signal()</code> ou <code>sigaction()</code></li>
+          <li><strong>Suspendre le processus</strong> (SIGSTOP, SIGTSTP)</li>
+          <li><strong>Reprendre un processus suspendu</strong> (SIGCONT)</li>
+          <li><strong>Générer un core dump</strong> (SIGQUIT, SIGSEGV, etc.)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">Quel est le prototype de la fonction kill ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;signal.h&gt;
+
+int kill(pid_t pid, int sig);</div>
+        <p><strong>Paramètres :</strong></p>
+        <ul>
+          <li><code>pid</code> : PID du processus destinataire (ou groupe si négatif)</li>
+          <li><code>sig</code> : signal à envoyer (ex : <code>SIGTERM</code>, <code>SIGKILL</code>, <code>SIGUSR1</code>…)</li>
+        </ul>
+        <p><strong>Retour :</strong> 0 si succès, −1 si erreur (errno mis à jour)</p>
+        <div class="code-block">kill(pid_fils, SIGTERM);  // demande poliment la terminaison
+kill(pid_fils, SIGKILL);  // terminaison forcée (ne peut être bloquée)
+kill(pid_fils, 0);        // vérifie si le processus existe (sans envoyer de signal)</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q7</span>
+        <span class="q-text">Quel appel système permet d'attendre la mort d'un enfant ? Comment l'utiliser ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;sys/wait.h&gt;
+
+pid_t waitpid(pid_t pid, int *status, int options);</div>
+        <ul>
+          <li><code>pid</code> : PID de l'enfant attendu, ou −1 pour attendre n'importe quel enfant</li>
+          <li><code>status</code> : pointeur vers un entier qui recevra l'état de terminaison</li>
+          <li><code>options</code> : 0 pour bloquer, <code>WNOHANG</code> pour ne pas bloquer</li>
+          <li><strong>Retour :</strong> PID de l'enfant terminé, ou −1 si erreur</li>
+        </ul>
+        <div class="code-block">int status;
+pid_t pid_mort = waitpid(-1, &amp;status, 0);  // attend un enfant quelconque
+
+if (WIFEXITED(status))      // s'est terminé normalement ?
+    printf("Code de sortie: %d\n", WEXITSTATUS(status));
+if (WIFSIGNALED(status))    // tué par un signal ?
+    printf("Signal: %d\n", WTERMSIG(status));</div>
+        <p><code>wait(&amp;status)</code> est équivalent à <code>waitpid(-1, &amp;status, 0)</code>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q8</span>
+        <span class="q-text">Comment exécuter un nouveau programme dans un processus ? Qu'arrive-t-il à l'ancien ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>La famille de fonctions <strong><code>exec()</code></strong> remplace l'image mémoire du processus courant par un nouveau programme.</p>
+        <div class="code-block">#include &lt;unistd.h&gt;
+
+execl("/bin/ls", "ls", "-l", NULL);
+// Si execl réussit, la ligne suivante n'est JAMAIS exécutée
+perror("execl a échoué");</div>
+        <p><strong>Ce qui est conservé :</strong> PID, PPID, descripteurs de fichiers (sauf ceux marqués FD_CLOEXEC), variables d'environnement…</p>
+        <p><strong>Ce qui est remplacé :</strong> code, données, pile, tas — tout le programme précédent disparaît.</p>
+        <p>En cas de succès, <code>exec</code> ne retourne <strong>jamais</strong>. Si ça retourne, c'est une erreur.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Qu'est-ce que le PATH ? Différence entre execlp et execl ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>PATH</strong> : variable d'environnement contenant une liste de répertoires séparés par <code>:</code> où le shell (et les fonctions execlp/execvp) cherche les exécutables.</p>
+        <div class="code-block">echo $PATH
+# /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</div>
+        <ul>
+          <li><strong><code>execl</code></strong> : chemin <strong>absolu ou relatif</strong> requis. Ex : <code>execl("/bin/ls", "ls", NULL)</code></li>
+          <li><strong><code>execlp</code></strong> : cherche l'exécutable dans le <strong>PATH</strong>. Ex : <code>execlp("ls", "ls", NULL)</code></li>
+        </ul>
+        <p>Même logique pour <code>execv</code> vs <code>execvp</code>.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q10</span>
+        <span class="q-text">Quelle est la différence entre execv et execl ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong><code>execl</code></strong> : arguments listés <strong>un par un</strong> dans la fonction (liste variable), terminée par <code>NULL</code>.</li>
+          <li><strong><code>execv</code></strong> : arguments passés dans un <strong>tableau</strong> (<code>char *argv[]</code>), terminé par <code>NULL</code>.</li>
+        </ul>
+        <div class="code-block">// execl : arguments individuels
+execl("/bin/ls", "ls", "-l", "-a", NULL);
+
+// execv : tableau d'arguments
+char *args[] = {"ls", "-l", "-a", NULL};
+execv("/bin/ls", args);</div>
+        <p><code>execv</code> est plus pratique quand le nombre d'arguments est variable ou construit dynamiquement.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q11</span>
+        <span class="q-text">Pour quelles raisons un appel exec pourrait-il échouer ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li>Le fichier n'existe pas (<code>ENOENT</code>)</li>
+          <li>Pas les droits d'exécution (<code>EACCES</code>)</li>
+          <li>Format d'exécutable invalide ou architecture incompatible (<code>ENOEXEC</code>)</li>
+          <li>Trop d'arguments ou d'environnement (<code>E2BIG</code>)</li>
+          <li>Manque de mémoire (<code>ENOMEM</code>)</li>
+          <li>Le fichier est un répertoire</li>
+          <li>Chemin trop long (<code>ENAMETOOLONG</code>)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q12</span>
+        <span class="q-text">Dans quel cas un processus peut-il être un zombie ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un processus <strong>zombie</strong> est un processus qui s'est <strong>terminé mais dont le père n'a pas encore appelé <code>wait()</code></strong>.</p>
+        <p>Le processus zombie ne consomme plus de CPU ni de mémoire significative, mais son entrée dans la table des processus persiste pour conserver son code de sortie jusqu'à ce que le père le récupère.</p>
+        <div class="code-block">// Pour éviter les zombies :
+// 1. Le père appelle wait() après fork()
+// 2. Ignorer SIGCHLD : signal(SIGCHLD, SIG_IGN);
+// 3. Gestionnaire de SIGCHLD qui appelle waitpid()</div>
+        <p><span class="tag tag-warning">Problème</span> Si le père meurt sans avoir appelé <code>wait()</code>, l'enfant zombie est "adopté" par <code>init</code> (PID 1) qui appellera <code>wait()</code> à sa place.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== AE3 ======================== -->
+<div class="section" id="ae3">
+  <div class="section-header">
+    <div class="section-tag">Auto-évaluation 3 · Après CM3</div>
+    <div class="section-title">void*, Pointeurs de fonctions et Threads</div>
+    <div class="section-subtitle">Généricité en C, callbacks, programmation multi-thread avec pthreads</div>
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll('ae3')">▸ Tout développer</button>
+  <div class="qa-list">
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">Qu'est-ce qu'un pointeur void* ? 3 exemples dans la bibliothèque standard ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><code>void *</code> est un <strong>pointeur générique</strong> : il peut pointer vers n'importe quel type, sans connaître le type à la compilation. C'est le mécanisme de <em>généricité</em> du C.</p>
+        <p><strong>3 exemples dans la bibliothèque standard :</strong></p>
+        <ul>
+          <li><code>void *malloc(size_t size)</code> — alloue de la mémoire, retourne un pointeur générique</li>
+          <li><code>void *memcpy(void *dest, const void *src, size_t n)</code> — copie n octets</li>
+          <li><code>void qsort(void *base, size_t nmemb, size_t size, int (*compar)(const void*, const void*))</code> — tri générique</li>
+          <li>(bonus) <code>void *pthread_create</code> — prend un <code>void *</code> en argument de thread</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">Dans quels cas utiliser un pointeur void* ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li>Quand on veut écrire une <strong>fonction générique</strong> qui fonctionne avec n'importe quel type</li>
+          <li>Pour les fonctions de la bibliothèque standard (<code>malloc</code>, <code>qsort</code>, etc.)</li>
+          <li>Pour passer des données à un thread (<code>pthread_create</code> prend un <code>void *</code>)</li>
+          <li>Pour stocker des pointeurs de types différents dans la même structure</li>
+          <li>Quand l'interface doit être indépendante du type concret (abstraction)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">Que ne peut-on PAS faire avec un void* ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Déréférencer directement</strong> : <code>*p</code> est interdit car la taille du type pointé est inconnue</li>
+          <li><strong>Arithmétique de pointeur</strong> : <code>p + 1</code> est interdit (la taille d'un "void" est inconnue)</li>
+          <li><strong>Accès à des champs</strong> : <code>p-&gt;champ</code> est interdit</li>
+        </ul>
+        <p>Il faut d'abord <strong>caster</strong> vers le type concret :</p>
+        <div class="code-block">void *p = malloc(sizeof(int));
+*(int *)p = 42;       // cast puis déréférencement : OK
+int *pi = (int *)p;   // conversion explicite : OK
+pi[0] = 42;           // maintenant on peut</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">Dans quels cas écrire explicitement un cast entre pointeurs ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>En C (pas C++) :</strong></p>
+        <ul>
+          <li><code>void *</code> ↔ tout autre pointeur : <strong>implicite</strong> (pas besoin de cast)</li>
+          <li>Pointeur vers type A → pointeur vers type B (différents) : <strong>cast explicite obligatoire</strong></li>
+        </ul>
+        <div class="code-block">int *p = malloc(sizeof(int));  // implicite : OK en C
+// En C++ ce serait : int *p = (int *)malloc(sizeof(int));
+
+int x = 42;
+char *c = (char *)&amp;x;  // cast explicite nécessaire (int* → char*)</div>
+        <p><span class="tag tag-warning">Attention</span> Caster des pointeurs vers des types incompatibles peut violer les règles d'aliasing strict et provoquer un comportement indéfini.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Comment déclarer un paramètre dont le type est un pointeur de fonction ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Syntaxe : <code>type_retour (*nom)(type_param1, type_param2, ...)</code></p>
+        <div class="code-block">// Pointeur vers une fonction prenant 2 int et retournant int
+int (*comparateur)(int, int);
+
+// Comme paramètre d'une fonction
+void trier(int *tab, int n, int (*comparer)(int, int)) {
+    // utilise comparer comme callback
+}
+
+// Avec typedef pour clarifier
+typedef int (*t_comparateur)(int, int);
+void trier(int *tab, int n, t_comparateur comparer);</div>
+        <p><span class="tag tag-tip">Astuce lecture</span> Pour lire la déclaration, commencer par le nom : "comparateur est un pointeur vers une fonction qui prend 2 int et retourne int".</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">(Bonus) Comment déclarer une fonction dont le retour est un pointeur de fonction ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Syntaxe sans typedef (difficile à lire) :</p>
+        <div class="code-block">int (*get_operation(char op))(int, int);
+// get_operation prend un char et retourne un pointeur
+// vers une fonction prenant 2 int et retournant int</div>
+        <p>Avec typedef (beaucoup plus lisible) :</p>
+        <div class="code-block">typedef int (*t_op)(int, int);
+t_op get_operation(char op) {
+    if (op == '+') return addition;
+    if (op == '*') return multiplication;
+    return NULL;
+}</div>
+        <p>Exemple dans la stdlib : <code>signal(int sig, void (*handler)(int))</code> retourne l'ancien handler.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q7</span>
+        <span class="q-text">Comment utiliser un pointeur de fonction pour appeler la fonction pointée ? (2 syntaxes)</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">int (*f)(int, int) = addition;  // f pointe vers addition
+
+// Syntaxe 1 : appel indirect explicite (déréférencement)
+int resultat = (*f)(3, 4);
+
+// Syntaxe 2 : appel direct (le compilateur comprend)
+int resultat2 = f(3, 4);</div>
+        <p>Les deux syntaxes sont équivalentes. La syntaxe 2 est plus courante et lisible.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q8</span>
+        <span class="q-text">Comment affecter l'adresse d'une fonction à un pointeur de fonction ? (2 syntaxes)</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">int addition(int a, int b) { return a + b; }
+
+int (*f)(int, int);
+
+// Syntaxe 1 : avec &
+f = &amp;addition;
+
+// Syntaxe 2 : sans & (nom de fonction = adresse implicitement)
+f = addition;</div>
+        <p>Les deux sont équivalentes. En C, le nom d'une fonction se convertit implicitement en pointeur vers cette fonction (comme le nom d'un tableau se convertit en pointeur vers son premier élément).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Comment créer un thread ? (nom, paramètres, type de la fonction)</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;pthread.h&gt;
+
+int pthread_create(pthread_t *tid,
+                   const pthread_attr_t *attr,
+                   void *(*start_routine)(void *),
+                   void *arg);</div>
+        <ul>
+          <li><code>tid</code> : pointeur vers l'identifiant du thread (sortie)</li>
+          <li><code>attr</code> : attributs (NULL = défaut)</li>
+          <li><code>start_routine</code> : fonction du thread, de type <code>void *(*)(void *)</code></li>
+          <li><code>arg</code> : argument passé à la fonction (de type <code>void *</code>)</li>
+          <li><strong>Retour :</strong> 0 si succès, code d'erreur sinon</li>
+        </ul>
+        <div class="code-block">void *ma_fonction(void *arg) {
+    int n = *(int *)arg;
+    printf("Thread reçoit : %d\n", n);
+    return NULL;
+}
+
+pthread_t tid;
+int valeur = 42;
+pthread_create(&amp;tid, NULL, ma_fonction, &amp;valeur);
+// Compiler avec : gcc ... -lpthread</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q10</span>
+        <span class="q-text">Comment attendre la fin d'un thread ? (nom et paramètres)</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;pthread.h&gt;
+
+int pthread_join(pthread_t tid, void **retval);</div>
+        <ul>
+          <li><code>tid</code> : identifiant du thread à attendre</li>
+          <li><code>retval</code> : si non NULL, reçoit la valeur retournée par le thread (celle passée à <code>return</code> ou <code>pthread_exit()</code>)</li>
+          <li><strong>Retour :</strong> 0 si succès, code d'erreur sinon</li>
+        </ul>
+        <div class="code-block">void *retour;
+pthread_join(tid, &amp;retour);  // bloque jusqu'à la fin du thread
+// retour contient la valeur retournée par le thread</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q11</span>
+        <span class="q-text">Différence principale entre processus fils et thread (mémoire partagée) ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Différence fondamentale : la mémoire</strong></p>
+        <ul>
+          <li><strong>Processus fils (fork)</strong> : obtient une <strong>copie indépendante</strong> de l'espace mémoire du père (mécanisme Copy-On-Write). Les modifications d'une variable par le fils <strong>n'affectent pas</strong> le père.</li>
+          <li><strong>Thread</strong> : <strong>partage la même mémoire</strong> que le thread créateur (variables globales, tas). Les modifications d'une variable partagée par un thread sont <strong>immédiatement visibles</strong> par les autres threads.</li>
+        </ul>
+        <p>C'est pourquoi les threads nécessitent des mécanismes de synchronisation (mutex, sémaphores) pour éviter les race conditions, alors que les processus n'en ont pas besoin pour leur propre mémoire.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== AE4 ======================== -->
+<div class="section" id="ae4">
+  <div class="section-header">
+    <div class="section-tag">Auto-évaluation 4 · Après CM4</div>
+    <div class="section-title">Structures, Concurrence et Sémaphores</div>
+    <div class="section-subtitle">Initialisation, race conditions, atomicité, synchronisation</div>
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll('ae4')">▸ Tout développer</button>
+  <div class="qa-list">
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">Comment initialiser une structure avec accolades ? (C90 et C99) Champs partiels ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">struct Point { int x; int y; float z; };
+
+// C90 : ordre des champs obligatoire (positional)
+struct Point p1 = {1, 2, 3.0f};
+
+// C99 : designated initializers (recommandé, plus lisible)
+struct Point p2 = {.x = 1, .y = 2, .z = 3.0f};
+
+// Initialisation partielle (C90 et C99)
+struct Point p3 = {.x = 5};
+// → p3.x = 5, p3.y = 0, p3.z = 0.0f
+// Les champs non mentionnés sont ZÉRO-initialisés</div>
+        <p><span class="tag tag-tip">Bonne pratique C99</span> Utiliser les designated initializers : plus lisible et résistant aux changements d'ordre dans la struct.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">(Optionnel) Comment passer directement la valeur d'une structure sans créer de variable ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Avec les <strong>littéraux composés (compound literals)</strong> de C99 :</p>
+        <div class="code-block">void afficher_point(struct Point p) {
+    printf("(%d, %d)\n", p.x, p.y);
+}
+
+// Sans littéral composé (il faut créer une variable)
+struct Point tmp = {3, 4};
+afficher_point(tmp);
+
+// Avec littéral composé C99 (pas de variable intermédiaire)
+afficher_point((struct Point){.x = 3, .y = 4});</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">Qu'est-ce que l'indéterminisme pour une fonction ou un programme ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un programme ou une fonction est <strong>indéterministe</strong> si son résultat peut <strong>varier d'une exécution à l'autre</strong> pour les mêmes entrées, en raison de facteurs non contrôlés.</p>
+        <p><strong>Sources d'indéterminisme :</strong></p>
+        <ul>
+          <li>L'ordonnancement des threads/processus par le système (timing)</li>
+          <li>Les interruptions matérielles</li>
+          <li>La lecture de variables non initialisées</li>
+          <li>Les nombres aléatoires</li>
+          <li>Les accès concurrents non synchronisés (race conditions)</li>
+        </ul>
+        <p>Un programme concurrent sans synchronisation est généralement indéterministe — et c'est un problème.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">Qu'est-ce qu'une situation de compétition (race condition) ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Une <strong>race condition</strong> survient quand deux tâches accèdent à une ressource partagée de façon concurrente et que le résultat dépend de l'ordre d'exécution.</p>
+        <div class="code-block">// Exemple : deux threads incrémentent un compteur
+int compteur = 0;
+
+void *incrementer(void *arg) {
+    for (int i = 0; i &lt; 100000; i++)
+        compteur++;   // ← race condition ! (read-modify-write non atomique)
+    return NULL;
+}</div>
+        <p><strong>Entre processus :</strong> race condition possible sur des fichiers partagés, segments de mémoire partagée, ou ressources système.</p>
+        <p><strong>Entre threads :</strong> toute variable globale ou sur le tas accessible à plusieurs threads sans synchronisation est une race condition potentielle.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Qu'est-ce qu'un appel système bloquant ? Exemples ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un <strong>appel système bloquant</strong> suspend l'exécution du processus (ou thread) jusqu'à ce que l'opération puisse être complétée. Le processus passe à l'état "sleeping" et libère le CPU.</p>
+        <p><strong>Exemples :</strong></p>
+        <ul>
+          <li><code>read()</code> sur un terminal ou un pipe vide : attend une saisie</li>
+          <li><code>wait()</code> / <code>waitpid()</code> : attend la mort d'un fils</li>
+          <li><code>sem_wait()</code> : attend que le sémaphore soit &gt; 0</li>
+          <li><code>accept()</code> sur un socket : attend une connexion entrante</li>
+          <li><code>pthread_join()</code> : attend la fin d'un thread</li>
+          <li><code>nanosleep()</code>, <code>sleep()</code> : attend un délai</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">Qu'est-ce qu'une instruction atomique ? Pourquoi s'en préoccuper ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Une <strong>instruction atomique</strong> est une opération <strong>indivisible</strong> : elle s'exécute entièrement ou pas du tout, sans possibilité d'interruption.</p>
+        <p><strong>Pourquoi s'en préoccuper :</strong></p>
+        <p>Des opérations semblant simples en C ne sont pas atomiques au niveau machine :</p>
+        <div class="code-block">x++;  // compile en 3 instructions :
+      // 1. LOAD  x → registre
+      // 2. ADD   registre + 1
+      // 3. STORE registre → x</div>
+        <p>Si deux threads font <code>x++</code> simultanément sur <code>x=0</code>, on peut obtenir 1 au lieu de 2 (race condition).</p>
+        <p>Solutions : sémaphores, mutex, ou instructions atomiques matérielles (ex : <code>__sync_fetch_and_add</code>, <code>&lt;stdatomic.h&gt;</code> en C11).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q7</span>
+        <span class="q-text">Comment initialiser un sémaphore anonyme ? À quoi sert le 3ème paramètre ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;semaphore.h&gt;
+
+int sem_init(sem_t *sem, int pshared, unsigned int value);</div>
+        <ul>
+          <li><code>sem</code> : pointeur vers le sémaphore à initialiser</li>
+          <li><code>pshared</code> : <strong>0</strong> = sémaphore partagé entre threads du même processus | <strong>non-zéro</strong> = partagé entre processus (doit être en mémoire partagée)</li>
+          <li><code>value</code> : valeur initiale du compteur (ex : 1 pour un sémaphore binaire)</li>
+          <li><strong>Retour :</strong> 0 si succès, −1 si erreur</li>
+        </ul>
+        <div class="code-block">sem_t mutex_sem;
+sem_init(&amp;mutex_sem, 0, 1);  // sémaphore binaire pour threads</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q8</span>
+        <span class="q-text">Comment détruire un sémaphore anonyme ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;semaphore.h&gt;
+
+int sem_destroy(sem_t *sem);</div>
+        <p>Libère les ressources associées au sémaphore. À appeler quand le sémaphore n'est plus utilisé (après que tous les threads l'aient terminé).</p>
+        <p><span class="tag tag-warning">Attention</span> Détruire un sémaphore sur lequel des threads sont bloqués est un comportement indéfini.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Que font sem_wait et sem_post ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">// P(s) — opération "attendre" / "prendre"
+int sem_wait(sem_t *sem);
+// Si compteur > 0 : décrémente et continue
+// Si compteur == 0 : BLOQUE jusqu'à ce qu'un autre thread fasse sem_post
+
+// V(s) — opération "signaler" / "libérer"
+int sem_post(sem_t *sem);
+// Incrémente le compteur
+// Si des threads attendent (via sem_wait), en réveille un</div>
+        <p><strong>Utilisation typique (sémaphore binaire comme mutex) :</strong></p>
+        <div class="code-block">sem_t s;
+sem_init(&amp;s, 0, 1);  // compteur = 1
+
+// Thread A                    // Thread B
+sem_wait(&amp;s);  // prend        sem_wait(&amp;s);  // bloque si A dans section crit.
+/* section critique */
+sem_post(&amp;s);  // libère       // Thread B peut continuer</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== AE5 ======================== -->
+<div class="section" id="ae5">
+  <div class="section-header">
+    <div class="section-tag">Auto-évaluation 5 · Après CM5</div>
+    <div class="section-title">Mutex, Deadlocks et Problèmes classiques</div>
+    <div class="section-subtitle">Exclusion mutuelle, étreintes mortelles, producteurs-consommateurs</div>
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll('ae5')">▸ Tout développer</button>
+  <div class="qa-list">
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">Qu'est-ce qu'une section critique ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Une <strong>section critique</strong> est une portion de code qui accède à une <strong>ressource partagée</strong> (variable, fichier, structure de données…) et qui <strong>ne peut être exécutée que par un thread à la fois</strong>.</p>
+        <p>L'objectif est de garantir que les opérations sur la ressource partagée se déroulent sans interférence entre threads.</p>
+        <div class="code-block">// Section critique : accès à "compteur"
+pthread_mutex_lock(&amp;mutex);
+/* --- DÉBUT section critique --- */
+compteur++;
+/* --- FIN section critique --- */
+pthread_mutex_unlock(&amp;mutex);</div>
+        <p>Propriétés souhaitées : <strong>exclusion mutuelle</strong>, <strong>absence de deadlock</strong>, <strong>absence de famine</strong>, <strong>efficacité</strong> (ne pas bloquer si la ressource est libre).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">Qu'est-ce qu'un mutex ? Comment le créer, verrouiller, déverrouiller, détruire ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un <strong>mutex (MUTual EXclusion)</strong> est un verrou qui garantit qu'un seul thread peut être dans la section critique à la fois.</p>
+        <div class="code-block">#include &lt;pthread.h&gt;
+
+pthread_mutex_t m;
+
+// Créer (initialiser)
+pthread_mutex_init(&amp;m, NULL);
+// Ou statiquement : pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+
+// Verrouiller (lock) — bloque si déjà verrouillé
+pthread_mutex_lock(&amp;m);
+
+// ... section critique ...
+
+// Déverrouiller (unlock)
+pthread_mutex_unlock(&amp;m);
+
+// Détruire
+pthread_mutex_destroy(&amp;m);</div>
+        <p>Variante non bloquante : <code>pthread_mutex_trylock()</code> retourne immédiatement avec une erreur si le mutex est déjà pris.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">Contraintes supplémentaires d'un mutex vs un sémaphore binaire ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un sémaphore peut être V() par un thread différent de celui qui a fait P(). Un mutex a des contraintes supplémentaires :</p>
+        <ul>
+          <li><strong>Propriété</strong> : le mutex doit être <strong>déverrouillé par le même thread qui l'a verrouillé</strong>. Déverrouiller un mutex depuis un autre thread est un comportement indéfini.</li>
+          <li><strong>Non récursif par défaut</strong> : si un thread essaie de re-verrouiller un mutex qu'il détient déjà, c'est un deadlock (sauf avec <code>PTHREAD_MUTEX_RECURSIVE</code>).</li>
+          <li>Ces contraintes permettent des optimisations et une meilleure détection des erreurs.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">Transmettre l'adresse d'un mutex à un thread (3 cas) ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>a) Mutex global :</strong> accessible directement par tous les threads sans passer d'argument.</p>
+        <div class="code-block">pthread_mutex_t mutex_global;  // variable globale
+void *thread_fn(void *arg) {
+    pthread_mutex_lock(&amp;mutex_global);  // accès direct
+    ...
+}</div>
+        <p><strong>b) Mutex dans la pile de main :</strong> passer son adresse via l'argument <code>void *</code>.</p>
+        <div class="code-block">void *thread_fn(void *arg) {
+    pthread_mutex_t *m = (pthread_mutex_t *)arg;
+    pthread_mutex_lock(m);
+}
+int main() {
+    pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+    pthread_create(&amp;tid, NULL, thread_fn, &amp;m);
+}</div>
+        <p><strong>c) Mutex sur le tas dans une structure :</strong> structurer les données partagées avec le mutex inclus.</p>
+        <div class="code-block">typedef struct {
+    pthread_mutex_t mutex;
+    int compteur;
+    char *buffer;
+} t_donnees_partagees;
+
+void *thread_fn(void *arg) {
+    t_donnees_partagees *d = (t_donnees_partagees *)arg;
+    pthread_mutex_lock(&amp;d-&gt;mutex);
+    d-&gt;compteur++;
+    pthread_mutex_unlock(&amp;d-&gt;mutex);
+}</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Qu'est-ce que le problème des philosophes ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Problème classique de synchronisation posé par Dijkstra :</p>
+        <ul>
+          <li>5 philosophes assis autour d'une table ronde, 5 fourchettes (une entre chaque paire)</li>
+          <li>Un philosophe pense, puis veut manger, puis pense à nouveau</li>
+          <li>Pour manger, un philosophe a besoin des <strong>deux fourchettes adjacentes</strong></li>
+          <li>Si chacun prend la fourchette à sa gauche et attend celle à droite → <strong>deadlock !</strong></li>
+        </ul>
+        <p>Le problème illustre les défis de l'allocation de ressources partagées sans deadlock ni famine.</p>
+        <p><strong>Solutions :</strong> numéroter les fourchettes et les prendre toujours dans l'ordre croissant, ou désigner un "arbitre", ou limiter à N−1 philosophes pouvant manger simultanément.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">Qu'est-ce qu'une étreinte mortelle (deadlock) ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un <strong>deadlock</strong> se produit quand deux (ou plus) threads se bloquent mutuellement en attendant des ressources que l'autre détient, sans qu'aucun ne puisse progresser.</p>
+        <div class="code-block">// Thread A          // Thread B
+lock(mutex1);       lock(mutex2);
+lock(mutex2);  ←→  lock(mutex1);
+// Deadlock ! A attend mutex2 (tenu par B), B attend mutex1 (tenu par A)</div>
+        <p><strong>4 conditions de Coffman (toutes nécessaires pour un deadlock) :</strong></p>
+        <ul>
+          <li><strong>Exclusion mutuelle</strong> : les ressources sont non partageables</li>
+          <li><strong>Rétention et attente</strong> : un thread tient une ressource et en attend une autre</li>
+          <li><strong>Non-préemption</strong> : les ressources ne peuvent être retirées de force</li>
+          <li><strong>Attente circulaire</strong> : cycle dans le graphe d'allocation</li>
+        </ul>
+        <p><strong>Prévention :</strong> imposer un ordre total sur l'acquisition des ressources (toujours prendre mutex1 avant mutex2).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q7</span>
+        <span class="q-text">Problème producteurs-consommateurs : qu'est-ce que c'est ? Comment le résoudre ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Description :</strong> des producteurs ajoutent des éléments dans un buffer borné, des consommateurs les retirent. Contraintes : ne pas lire si buffer vide, ne pas écrire si buffer plein.</p>
+        <div class="code-block">#define N 10
+sem_t vide;   // compte les places libres (init: N)
+sem_t plein;  // compte les éléments disponibles (init: 0)
+pthread_mutex_t mutex;  // accès exclusif au buffer
+
+// Producteur
+void *produire(void *arg) {
+    while (1) {
+        int item = produire_item();
+        sem_wait(&amp;vide);          // attendre une place libre
+        pthread_mutex_lock(&amp;mutex);
+        inserer_dans_buffer(item);
+        pthread_mutex_unlock(&amp;mutex);
+        sem_post(&amp;plein);          // signaler un élément ajouté
+    }
+}
+
+// Consommateur
+void *consommer(void *arg) {
+    while (1) {
+        sem_wait(&amp;plein);          // attendre un élément
+        pthread_mutex_lock(&amp;mutex);
+        int item = retirer_du_buffer();
+        pthread_mutex_unlock(&amp;mutex);
+        sem_post(&amp;vide);           // signaler une place libérée
+        utiliser_item(item);
+    }
+}</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q8</span>
+        <span class="q-text">Problème lecteurs-écrivains : qu'est-ce que c'est ? Comment le résoudre ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Description :</strong> plusieurs lecteurs peuvent lire simultanément, mais un écrivain doit avoir l'accès exclusif (pas d'autre lecteur ni écrivain simultané).</p>
+        <div class="code-block">int nb_lecteurs = 0;
+pthread_mutex_t mutex_lecteurs;  // protège nb_lecteurs
+sem_t acces_ecriture;            // exclusivité pour les écrivains
+
+// Lecteur
+void *lire(void *arg) {
+    pthread_mutex_lock(&amp;mutex_lecteurs);
+    nb_lecteurs++;
+    if (nb_lecteurs == 1)  // premier lecteur : bloquer les écrivains
+        sem_wait(&amp;acces_ecriture);
+    pthread_mutex_unlock(&amp;mutex_lecteurs);
+
+    // --- lecture de la ressource ---
+
+    pthread_mutex_lock(&amp;mutex_lecteurs);
+    nb_lecteurs--;
+    if (nb_lecteurs == 0)  // dernier lecteur : libérer les écrivains
+        sem_post(&amp;acces_ecriture);
+    pthread_mutex_unlock(&amp;mutex_lecteurs);
+}
+
+// Écrivain
+void *ecrire(void *arg) {
+    sem_wait(&amp;acces_ecriture);   // accès exclusif
+    // --- écriture ---
+    sem_post(&amp;acces_ecriture);
+}</div>
+        <p><span class="tag tag-warning">Attention</span> Cette solution favorise les lecteurs : si des lecteurs arrivent continuellement, les écrivains peuvent souffrir de famine.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Qu'est-ce qu'une situation de famine (starvation) ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>La <strong>famine</strong> (starvation) survient quand un thread (ou processus) est empêché d'avancer <strong>indéfiniment</strong>, non pas à cause d'un deadlock, mais parce que d'autres threads sont toujours prioritaires et monopolisent les ressources.</p>
+        <p><strong>Exemple :</strong> dans le problème lecteurs-écrivains (solution favorisant les lecteurs), si des lecteurs arrivent en permanence, un écrivain peut attendre indéfiniment — c'est de la famine.</p>
+        <p><strong>Différence avec deadlock :</strong></p>
+        <ul>
+          <li>Deadlock : personne ne progresse (blocage mutuel)</li>
+          <li>Famine : certains progressent, d'autres jamais</li>
+        </ul>
+        <p><strong>Solutions :</strong> files d'attente FIFO, politiques équitables (aging : augmenter la priorité avec le temps d'attente).</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== AE6 ======================== -->
+<div class="section" id="ae6">
+  <div class="section-header">
+    <div class="section-tag">Auto-évaluation 6 · Après CM6</div>
+    <div class="section-title">Entrées/Sorties Unix</div>
+    <div class="section-subtitle">Descripteurs de fichiers, open/read/write/close, permissions, bufferisation</div>
+  </div>
+  <button class="expand-all-btn" onclick="toggleAll('ae6')">▸ Tout développer</button>
+  <div class="qa-list">
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">Quels sont les 4 appels système Unix fondamentaux pour les entrées-sorties ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong><code>open()</code></strong> : ouvre ou crée un fichier → retourne un descripteur de fichier</li>
+          <li><strong><code>read()</code></strong> : lit des octets depuis un descripteur</li>
+          <li><strong><code>write()</code></strong> : écrit des octets vers un descripteur</li>
+          <li><strong><code>close()</code></strong> : ferme un descripteur de fichier</li>
+        </ul>
+        <p>Ces 4 appels fonctionnent sur <strong>tout</strong> ce qui est représenté comme un fichier Unix : fichiers ordinaires, tubes (pipes), sockets, terminaux, périphériques…</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">Qu'est-ce qu'un descripteur de fichier (file descriptor) ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Un <strong>descripteur de fichier (fd)</strong> est un <strong>entier non négatif</strong> qui identifie un fichier ouvert dans le processus. C'est un index dans la table des fichiers ouverts du processus, maintenue par le noyau.</p>
+        <ul>
+          <li>Valeurs réservées : 0 = stdin, 1 = stdout, 2 = stderr</li>
+          <li>Quand on <code>open()</code>, le noyau retourne le plus petit fd disponible ≥ 3</li>
+          <li>Le fd n'est valide que dans le processus qui l'a ouvert (sauf héritage par fork)</li>
+        </ul>
+        <p>Abstraction puissante : le même code utilisant un fd peut lire depuis un fichier, un pipe ou une socket.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">Que sont les types size_t et ssize_t ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong><code>size_t</code></strong> : entier <strong>non signé</strong>, suffisamment grand pour représenter la taille de n'importe quel objet en mémoire. Utilisé pour les tailles et les comptes. Défini dans <code>&lt;stddef.h&gt;</code>. Vaut typiquement 64 bits sur x86-64.</li>
+          <li><strong><code>ssize_t</code></strong> : entier <strong>signé</strong>, même taille que <code>size_t</code>. Permet de retourner une taille <em>ou</em> une erreur (−1). Utilisé par <code>read()</code> et <code>write()</code>.</li>
+        </ul>
+        <div class="code-block">ssize_t n = read(fd, buf, 1024);
+if (n == -1) {  // erreur
+    perror("read");
+} else if (n == 0) {  // fin de fichier
+    printf("EOF\n");
+} else {  // n octets lus (1 ≤ n ≤ 1024)
+    ...
+}</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">Que retourne open ? Comment ouvrir en lecture seule ? En écriture ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;fcntl.h&gt;
+
+int open(const char *pathname, int flags, .../* mode_t mode */);</div>
+        <ul>
+          <li><strong>Succès :</strong> retourne un fd ≥ 0</li>
+          <li><strong>Échec :</strong> retourne −1 et met errno à jour</li>
+        </ul>
+        <div class="code-block">// Lecture seule
+int fd = open("fichier.txt", O_RDONLY);
+
+// Écriture seule
+int fd = open("fichier.txt", O_WRONLY);
+
+// Lecture et écriture
+int fd = open("fichier.txt", O_RDWR);</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Fichier ouvert en écriture : créer, tronquer, ou écrire à la fin ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">// Créer s'il n'existe pas (O_CREAT requis avec un mode)
+int fd = open("f.txt", O_WRONLY | O_CREAT, 0644);
+
+// Tronquer (vider) si le fichier existe
+int fd = open("f.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// Équivalent courant : ouvrir en écriture en repartant de zéro
+
+// Écrire à la fin (append) si le fichier existe
+int fd = open("f.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
+// Le curseur est toujours positionné en fin avant chaque write</div>
+        <p><span class="tag tag-tip">Combinaisons courantes</span></p>
+        <ul>
+          <li><code>O_WRONLY | O_CREAT | O_TRUNC</code> : comportement de <code>fopen("f", "w")</code></li>
+          <li><code>O_WRONLY | O_CREAT | O_APPEND</code> : comportement de <code>fopen("f", "a")</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">Quand open crée un fichier, à quoi sert le dernier argument ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Le 3ème argument est le <strong>mode</strong> : les <strong>permissions du fichier créé</strong>, exprimées en octal.</p>
+        <div class="code-block">open("f.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//                                                  ^^^^ permissions</div>
+        <p>Ces permissions sont combinées avec le <code>umask</code> du processus : permissions_réelles = mode & ~umask.</p>
+        <p>Le 3ème argument est ignoré si <code>O_CREAT</code> n'est pas dans les flags.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q7 &amp; 8</span>
+        <span class="q-text">Permissions Unix : signification et représentation en octal ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Chaque fichier a 9 bits de permissions : 3 groupes × 3 bits (rwx) pour propriétaire, groupe, autres.</p>
+        <div class="code-block">Permissions : rwxrwxrwx
+              │││││││││
+              │││││││└─ autres : exécuter (x) = 1
+              ││││││└── autres : écrire   (w) = 2
+              │││││└─── autres : lire     (r) = 4
+              ││││└──── groupe : exécuter
+              │││└───── groupe : écrire
+              ││└────── groupe : lire
+              │└─────── proprio : exécuter
+              └──────── proprio : écrire / lire
+
+0755 = rwxr-xr-x  (proprio: tout, groupe+autres: lecture+exécution)
+0644 = rw-r--r--  (proprio: lire+écrire, groupe+autres: lecture seule)
+0600 = rw-------  (proprio seul peut lire/écrire)
+0777 = rwxrwxrwx  (tout le monde peut tout faire)</div>
+        <p>Mémo : <strong>r=4, w=2, x=1</strong>. Additionner pour chaque groupe.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Comment utiliser read ? (arguments, valeur de retour)</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;unistd.h&gt;
+
+ssize_t read(int fd, void *buf, size_t count);</div>
+        <ul>
+          <li><code>fd</code> : descripteur de fichier source</li>
+          <li><code>buf</code> : tampon de réception</li>
+          <li><code>count</code> : nombre maximum d'octets à lire</li>
+        </ul>
+        <p><strong>Valeur de retour :</strong></p>
+        <ul>
+          <li><code>&gt; 0</code> : nombre d'octets effectivement lus (peut être &lt; count !)</li>
+          <li><code>0</code> : fin de fichier (EOF)</li>
+          <li><code>-1</code> : erreur (errno mis à jour)</li>
+        </ul>
+        <div class="code-block">char buf[1024];
+ssize_t n;
+while ((n = read(fd, buf, sizeof(buf))) &gt; 0) {
+    write(STDOUT_FILENO, buf, n);  // affiche ce qui a été lu
+}
+if (n == -1) perror("read");</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q10</span>
+        <span class="q-text">Dans quels cas read est-il bloquant ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <ul>
+          <li><strong>Terminal (stdin)</strong> : attend que l'utilisateur tape une entrée et appuie sur Entrée</li>
+          <li><strong>Pipe vide</strong> : attend qu'un processus écrive dans le pipe</li>
+          <li><strong>Socket réseau</strong> : attend que des données arrivent</li>
+          <li><strong>Fichier sur réseau (NFS)</strong> : peut bloquer si le serveur est lent</li>
+        </ul>
+        <p>Pour les fichiers ordinaires sur disque, <code>read</code> est techniquement non-bloquant (il peut mettre en attente pendant l'accès disque, mais revient toujours).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q11</span>
+        <span class="q-text">Comment utiliser write ? (arguments, valeur de retour)</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">#include &lt;unistd.h&gt;
+
+ssize_t write(int fd, const void *buf, size_t count);</div>
+        <ul>
+          <li><code>fd</code> : descripteur de fichier destination</li>
+          <li><code>buf</code> : données à écrire</li>
+          <li><code>count</code> : nombre d'octets à écrire</li>
+        </ul>
+        <p><strong>Valeur de retour :</strong></p>
+        <ul>
+          <li><code>&gt; 0</code> : nombre d'octets effectivement écrits (peut être &lt; count )</li>
+          <li><code>-1</code> : erreur</li>
+        </ul>
+        <div class="code-block">const char *msg = "Hello!\n";
+write(STDOUT_FILENO, msg, 7);  // écrit sur stdout
+
+// Écriture robuste (gère les écriture partielles)
+ssize_t total = 0;
+while (total &lt; count) {
+    ssize_t n = write(fd, buf + total, count - total);
+    if (n == -1) { perror("write"); break; }
+    total += n;
+}</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q12</span>
+        <span class="q-text">Les octets nuls dans les chaînes ont-ils une signification pour read/write ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p><strong>Non.</strong> Les octets nuls (<code>'\0'</code>) n'ont <strong>aucune signification particulière</strong> pour <code>read</code> et <code>write</code>. Ces appels système travaillent sur des <strong>séquences d'octets brutes</strong>, pas sur des chaînes C.</p>
+        <p>C'est une différence fondamentale avec les fonctions C de haut niveau comme <code>printf</code> ou <code>strcpy</code> qui s'arrêtent au premier <code>'\0'</code>.</p>
+        <p>Cela signifie que <code>write</code> peut écrire des données contenant des zéros (fichiers binaires, images, etc.) sans problème.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q13</span>
+        <span class="q-text">Quels sont les trois canaux standards et leurs descripteurs ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">Descripteur   Nom       Macro             Flux stdio
+fd = 0        stdin     STDIN_FILENO      stdin
+fd = 1        stdout    STDOUT_FILENO     stdout
+fd = 2        stderr    STDERR_FILENO     stderr</div>
+        <ul>
+          <li><strong>stdin (0)</strong> : entrée standard (clavier par défaut)</li>
+          <li><strong>stdout (1)</strong> : sortie standard (terminal par défaut)</li>
+          <li><strong>stderr (2)</strong> : sortie d'erreur standard (terminal par défaut, non redirigée par <code>&gt;</code>)</li>
+        </ul>
+        <p>Ces fd sont ouverts automatiquement à la création du processus. Ils peuvent être redirigés par le shell (<code>./prog &gt; fichier</code>).</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q14</span>
+        <span class="q-text">Avec les entrées/sorties standard : lire une ligne, un caractère, données formatées ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">// Lire une ligne d'entrée
+char buf[256];
+fgets(buf, sizeof(buf), stdin);   // depuis stdin
+fgets(buf, sizeof(buf), fichier); // depuis un fichier
+
+// Écrire une ligne dans un fichier
+fprintf(fichier, "Ligne\n");
+fputs("Ligne\n", fichier);
+
+// Lire un caractère (octet) en entrée
+int c = fgetc(stdin);
+int c2 = getchar();  // équivalent fgetc(stdin)
+
+// Écrire un caractère en sortie
+fputc('A', stdout);
+putchar('A');  // équivalent fputc(stdout)
+
+// Lire données formatées
+int n; float f;
+fscanf(stdin, "%d %f", &amp;n, &amp;f);
+scanf("%d", &amp;n);  // équivalent fscanf(stdin)
+
+// Écrire données formatées
+fprintf(stdout, "%d %f\n", n, f);
+printf("%d\n", n);  // équivalent fprintf(stdout)</div>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q15</span>
+        <span class="q-text">Pourquoi getchar retourne un int et pas un char ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>Parce que <code>getchar()</code> doit pouvoir signaler la <strong>fin de fichier (EOF)</strong>.</p>
+        <p>EOF est défini comme −1 dans la bibliothèque standard. Or, un <code>char</code> non signé ne peut pas représenter −1 (il vaut 255 à la place). Et même un <code>char</code> signé aurait une ambiguïté avec le caractère d'octet 0xFF.</p>
+        <p>En retournant un <code>int</code>, on peut distinguer :</p>
+        <div class="code-block">int c = getchar();
+if (c == EOF) {      // -1 : fin de fichier ou erreur
+    printf("Fin\n");
+} else {
+    // c est un octet valide (0 à 255)
+    printf("Caractère : %c\n", (char)c);
+}</div>
+        <p><span class="tag tag-warning">Piège classique</span> <code>char c = getchar();</code> est incorrect : si <code>char</code> est non signé, la comparaison <code>c == EOF</code> est toujours fausse.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q16</span>
+        <span class="q-text">Quels sont les flux associés aux 3 canaux standards ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <div class="code-block">Flux C        fd    Description
+stdin         0     Entrée standard   (type FILE*)
+stdout        1     Sortie standard   (type FILE*)
+stderr        2     Sortie erreur     (type FILE*)</div>
+        <p>Ces flux sont des variables globales de type <code>FILE *</code>, déclarées dans <code>&lt;stdio.h&gt;</code>. Ils encapsulent les descripteurs correspondants avec la gestion de la bufferisation.</p>
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question" onclick="toggle(this)">
+        <span class="q-num">Q17</span>
+        <span class="q-text">Qu'est-ce que la bufferisation ? Les 3 modes ? Comportement par défaut ?</span>
+        <span class="toggle-icon">+</span>
+      </div>
+      <div class="answer">
+        <p>La <strong>bufferisation</strong> accumule les données dans un tampon avant de les envoyer réellement au noyau via <code>write()</code>, pour réduire le nombre coûteux d'appels système.</p>
+        <p><strong>3 modes de bufferisation :</strong></p>
+        <ul>
+          <li><strong>Non bufferisé (<code>_IONBF</code>)</strong> : chaque écriture appelle <code>write()</code> immédiatement. Aucun tampon. Utilisé pour <code>stderr</code>.</li>
+          <li><strong>Bufferisation par ligne (<code>_IOLBF</code>)</strong> : le tampon est vidé à chaque <code>'\n'</code> ou quand il est plein. Utilisé par <code>stdout</code> <em>quand connecté à un terminal</em>.</li>
+          <li><strong>Bufferisation en blocs (<code>_IOFBF</code>)</strong> : le tampon n'est vidé que lorsqu'il est plein, ou lors d'un <code>fflush()</code>, ou à la fermeture. Utilisé pour les fichiers sur disque.</li>
+        </ul>
+        <p><strong>Comportements par défaut :</strong></p>
+        <div class="code-block">stderr  → non bufferisé       (messages d'erreur immédiats)
+stdout  → par ligne (terminal) ou en blocs (fichier redirigé)
+fichiers → en blocs</div>
+        <p><span class="tag tag-warning">Piège</span> <code>printf("msg")</code> sans <code>\n</code> peut ne pas s'afficher si <code>stdout</code> est bufferisé par ligne. Utiliser <code>fflush(stdout)</code> pour forcer.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======================== RÉSUMÉ ======================== -->
+<div class="section" id="summary">
+  <div class="section-header">
+    <div class="section-tag">Résumé de cours</div>
+    <div class="section-title">Vue d'ensemble — Système &amp; Réseaux</div>
+    <div class="section-subtitle">Organisation thématique du cours de Pierre Rousselin, L2 Info — USPN</div>
+  </div>
+
+  <div class="summary-grid">
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-card-icon">🧱</div>
+        <div class="summary-card-title">Thème 1 — Bases C et Représentation des données</div>
+      </div>
+      <div class="summary-card-body">
+        <h4>Compilation</h4>
+        <p>Le cycle de compilation en C : préprocesseur → compilateur → éditeur de liens. Les drapeaux essentiels sont <strong><code>-Wall -Wextra -g</code></strong> (avertissements et débogage) et <strong><code>-std=c99</code></strong> pour le standard. <strong>Valgrind</strong> est l'outil de détection des fuites mémoire et accès invalides.</p>
+
+        <h4>Représentation des données</h4>
+        <p>La mémoire est <strong>byte addressable</strong> : chaque octet a une adresse unique. Un <strong>bit</strong> = 0 ou 1, un <strong>octet</strong> = 8 bits. Sur n bits, on représente 2ⁿ valeurs. Approximation clé : <strong>2¹⁰ ≈ 10³</strong>.</p>
+        <p>Entiers <strong>signés</strong> (complément à 2, positifs et négatifs) vs <strong>non signés</strong> (positifs seulement). Conversions : divisions euclidiennes successives. Regroupement par 4 bits pour le passage binaire ↔ hexadécimal.</p>
+
+        <h4>Types à taille fixe (C99)</h4>
+        <p><code>&lt;stdint.h&gt;</code> définit <code>int8_t</code>, <code>uint32_t</code>, etc. pour des tailles garanties indépendantes de l'architecture.</p>
+
+        <h4>Boutisme (Endianness)</h4>
+        <p><strong>Little-endian</strong> (x86) : octet de poids faible en première adresse. <strong>Big-endian</strong> (réseau) : octet de poids fort en premier. Crucial pour la communication réseau et les fichiers binaires.</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-card-icon">⚙️</div>
+        <div class="summary-card-title">Thème 2 — Système d'exploitation et Processus</div>
+      </div>
+      <div class="summary-card-body">
+        <h4>Noyau (Kernel)</h4>
+        <p>Le noyau gère les processus, la mémoire, les E/S, le système de fichiers, les IPC et la sécurité. Il s'exécute en mode privilégié. Les programmes y accèdent via les <strong>appels système (syscalls)</strong>, consultables avec <code>man 2</code>.</p>
+
+        <h4>Processus</h4>
+        <p>Un processus = un programme en cours d'exécution. Identifié par son <strong>PID</strong>. Attributs : PID, PPID, UID/GID, espace mémoire, fichiers ouverts, environnement, répertoire courant. La table de processus forme une <strong>arborescence</strong> dont la racine est <code>init/systemd</code> (PID 1).</p>
+
+        <h4>Création de processus : fork()</h4>
+        <p><code>fork()</code> crée une copie du processus courant. Retourne 0 au fils, le PID du fils au père, −1 en cas d'erreur. Les deux processus poursuivent après le <code>fork()</code>, d'où la nécessité de tester la valeur de retour.</p>
+
+        <h4>Arguments et environnement</h4>
+        <p>Accès aux arguments via <code>argc</code>/<code>argv</code>. Variables d'environnement accessibles via <code>getenv()</code>, <code>environ</code>, ou le 3ème paramètre de <code>main</code>. Le <strong>PATH</strong> liste les répertoires de recherche des exécutables.</p>
+
+        <h4>Signaux</h4>
+        <p>Mécanisme de notification asynchrone. Peuvent terminer, ignorer, suspendre/reprendre un processus ou déclencher un handler. Envoi : <code>kill(pid, sig)</code>. Terminaux génèrent SIGINT (Ctrl+C), SIGTSTP (Ctrl+Z).</p>
+
+        <h4>Remplacement d'image : exec()</h4>
+        <p>La famille <code>exec()</code> remplace le programme courant (même PID, nouveau code). <code>execl</code>/<code>execv</code> : chemin absolu requis. <code>execlp</code>/<code>execvp</code> : recherche dans PATH. Ne retourne jamais en cas de succès.</p>
+
+        <h4>Attente : wait()/waitpid()</h4>
+        <p><code>waitpid(pid, &status, opts)</code> attend la mort d'un fils. Macros <code>WIFEXITED</code>/<code>WEXITSTATUS</code> pour analyser la terminaison. Sans <code>wait()</code>, un processus terminé devient <strong>zombie</strong>.</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-card-icon">🔀</div>
+        <div class="summary-card-title">Thème 3 — Généricité : void* et Pointeurs de fonctions</div>
+      </div>
+      <div class="summary-card-body">
+        <h4>void* — Pointeur générique</h4>
+        <p><code>void *</code> permet d'écrire des fonctions indépendantes du type concret. Il peut recevoir n'importe quel pointeur implicitement (en C). On ne peut pas le déréférencer ni faire d'arithmétique directement dessus — un cast vers le type concret est nécessaire. Utilisé par <code>malloc</code>, <code>memcpy</code>, <code>qsort</code>…</p>
+
+        <h4>Pointeurs de fonctions</h4>
+        <p>Syntaxe : <code>type_retour (*nom)(params)</code>. Permettent de passer des <strong>callbacks</strong> à des fonctions génériques (comme <code>qsort</code> prend une fonction de comparaison). Deux syntaxes équivalentes pour affecter et appeler :</p>
+        <ul>
+          <li>Affecter : <code>f = ma_fonction</code> ou <code>f = &ma_fonction</code></li>
+          <li>Appeler : <code>f(args)</code> ou <code>(*f)(args)</code></li>
+        </ul>
+        <p>L'utilisation de <code>typedef</code> améliore grandement la lisibilité.</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-card-icon">🧵</div>
+        <div class="summary-card-title">Thème 4 — Threads POSIX (pthreads)</div>
+      </div>
+      <div class="summary-card-body">
+        <h4>Création et attente</h4>
+        <p><code>pthread_create(&tid, NULL, fonction, arg)</code> crée un thread qui exécute <code>fonction(arg)</code>. La fonction est de type <code>void *(*)(void *)</code>. <code>pthread_join(tid, &retval)</code> attend la fin du thread et récupère sa valeur de retour. Compiler avec <code>-lpthread</code>.</p>
+
+        <h4>Threads vs Processus</h4>
+        <p>Différence fondamentale : les threads <strong>partagent la mémoire</strong> (variables globales, tas) du processus, contrairement aux processus fils qui obtiennent une copie indépendante. Avantage : communication rapide. Inconvénient : nécessite synchronisation.</p>
+
+        <h4>Passer des données à un thread</h4>
+        <p>Via l'argument <code>void *</code> de <code>pthread_create</code> : passer l'adresse d'une variable, d'une structure, ou d'un tableau alloué dynamiquement. Ne jamais passer l'adresse d'une variable locale susceptible de sortir de portée.</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-card-icon">🔒</div>
+        <div class="summary-card-title">Thème 5 — Synchronisation : Sémaphores et Mutex</div>
+      </div>
+      <div class="summary-card-body">
+        <h4>Le problème : race conditions</h4>
+        <p>Quand plusieurs threads accèdent à une ressource partagée sans synchronisation, le résultat dépend de l'ordonnancement → <strong>indéterminisme</strong>. Même une simple opération <code>x++</code> est non atomique (3 instructions machine).</p>
+
+        <h4>Sémaphores POSIX</h4>
+        <p>Compteur entier avec deux opérations atomiques : <code>sem_wait()</code> (décrémente ou bloque si 0) et <code>sem_post()</code> (incrémente, réveille un thread bloqué). Initialisation : <code>sem_init(&s, 0, valeur)</code>. Destruction : <code>sem_destroy(&s)</code>.</p>
+
+        <h4>Mutex POSIX</h4>
+        <p>Verrou d'exclusion mutuelle. Contrainte supplémentaire vs sémaphore binaire : <strong>doit être déverrouillé par le même thread qui l'a verrouillé</strong>. Opérations : <code>pthread_mutex_lock</code> / <code>unlock</code> / <code>destroy</code>. Initialisation statique avec <code>PTHREAD_MUTEX_INITIALIZER</code>.</p>
+
+        <h4>Deadlock et Famine</h4>
+        <p><strong>Deadlock</strong> : cycle d'attente mutuelle → aucun thread ne progresse. Prévention : imposer un ordre total sur l'acquisition des ressources. <strong>Famine</strong> : un thread attend indéfiniment parce que d'autres sont toujours prioritaires.</p>
+
+        <h4>Problèmes classiques</h4>
+        <ul>
+          <li><strong>Philosophes</strong> : deadlock si chacun prend une fourchette et attend l'autre</li>
+          <li><strong>Producteurs-Consommateurs</strong> : buffer borné avec sémaphores <code>vide</code>/<code>plein</code> + mutex</li>
+          <li><strong>Lecteurs-Écrivains</strong> : lecteurs simultanés possibles, écrivain exclusif ; risque de famine pour les écrivains</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-card-icon">📁</div>
+        <div class="summary-card-title">Thème 6 — Entrées/Sorties Unix</div>
+      </div>
+      <div class="summary-card-body">
+        <h4>Appels système de bas niveau</h4>
+        <p>Les 4 syscalls fondamentaux : <code>open()</code>, <code>read()</code>, <code>write()</code>, <code>close()</code>. Fonctionnent sur tous les fichiers Unix : fichiers ordinaires, pipes, sockets, terminaux. Travaillent sur des octets bruts (pas de sens particulier au '\0').</p>
+
+        <h4>Descripteurs de fichiers</h4>
+        <p>Entier ≥ 0 identifiant un fichier ouvert. Réservés : 0 (stdin), 1 (stdout), 2 (stderr). <code>open()</code> retourne le plus petit fd libre ≥ 3. <code>ssize_t</code> permet de distinguer les données (≥ 0) des erreurs (−1).</p>
+
+        <h4>Flags d'ouverture</h4>
+        <p><code>O_RDONLY</code>, <code>O_WRONLY</code>, <code>O_RDWR</code> pour le mode. <code>O_CREAT | O_TRUNC</code> pour créer/vider, <code>O_APPEND</code> pour écrire à la fin. Le mode de permission (ex : <code>0644</code>) est requis avec <code>O_CREAT</code>.</p>
+
+        <h4>Permissions Unix</h4>
+        <p>9 bits : rwx pour propriétaire, groupe, autres. Mémo : r=4, w=2, x=1. <code>0644</code> = rw-r--r-- (fichier standard), <code>0755</code> = rwxr-xr-x (exécutable).</p>
+
+        <h4>Bibliothèque stdio (E/S standard)</h4>
+        <p>Couche de haut niveau au-dessus des syscalls : <code>fopen/fclose</code>, <code>fgets/fputs</code>, <code>fgetc/fputc</code>, <code>fprintf/fscanf</code>. <code>getchar()</code> retourne <code>int</code> (pas <code>char</code>) pour pouvoir représenter EOF (−1).</p>
+
+        <h4>Bufferisation</h4>
+        <p>3 modes : non bufferisé (stderr), par ligne (stdout terminal), en blocs (fichiers). La bufferisation accumule les données pour réduire les appels système. Forcer le vidage avec <code>fflush()</code>. Piège : <code>printf</code> sans <code>\n</code> peut ne pas s'afficher immédiatement en mode ligne.</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-card-icon">📊</div>
+        <div class="summary-card-title">Récapitulatif des appels système essentiels</div>
+      </div>
+      <div class="summary-card-body">
+        <h4>Processus</h4>
+        <div class="code-block" style="margin-top:0">pid_t fork()                              // Créer un fils
+pid_t getpid(), getppid()                 // Identifier
+pid_t waitpid(pid, *status, opts)         // Attendre un fils
+int execl/execv/execlp/execvp(...)        // Remplacer l'image
+void exit(int status)                     // Terminer</div>
+        <h4>Signaux</h4>
+        <div class="code-block">int kill(pid_t pid, int sig)               // Envoyer signal
+int raise(int sig)                        // Signal à soi-même
+void (*signal(int sig, void(*h)(int)))(int) // Handler</div>
+        <h4>Threads</h4>
+        <div class="code-block">int pthread_create(&tid, NULL, fn, arg)   // Créer thread
+int pthread_join(tid, &retval)            // Attendre thread
+int pthread_mutex_lock/unlock(&m)         // Mutex
+int sem_wait/sem_post(&s)                 // Sémaphore</div>
+        <h4>Fichiers</h4>
+        <div class="code-block">int open(path, flags [, mode])            // Ouvrir/créer
+ssize_t read(fd, buf, count)              // Lire
+ssize_t write(fd, buf, count)             // Écrire
+int close(fd)                             // Fermer</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => {
+    if (t.getAttribute('onclick').includes(`'${id}'`)) t.classList.add('active');
+  });
+}
+
+function toggle(questionEl) {
+  const item = questionEl.parentElement;
+  item.classList.toggle('open');
+}
+
+function toggleAll(sectionId) {
+  const section = document.getElementById(sectionId);
+  const items = section.querySelectorAll('.qa-item');
+  const allOpen = [...items].every(i => i.classList.contains('open'));
+  items.forEach(i => allOpen ? i.classList.remove('open') : i.classList.add('open'));
+  const btn = section.querySelector('.expand-all-btn');
+  btn.textContent = allOpen ? '▸ Tout développer' : '▾ Tout réduire';
+}
+</script>
+</body>
+</html>
