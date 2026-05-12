@@ -21,10 +21,10 @@ int main(void)
 	srand(time(NULL));
 	generation_aleatoire(A);
 	generation_aleatoire(B);
-	// imprime(A);
-	// puts("");
-	// imprime(B);
-	// puts("");
+	imprime(A);
+	puts("");
+	imprime(B);
+	puts("");
 	clock_gettime(CLOCK_REALTIME, &tic);
 
 	for (i = 0; i < N; ++i) {
@@ -39,7 +39,7 @@ int main(void)
 	duree = (toc.tv_sec - tic.tv_sec);
 	duree += (toc.tv_nsec - tic.tv_nsec) / 1000000000.0;
 	printf("durée : %g\n", duree);
-	// imprime(R);
+	imprime(R);
 	return 0;
 }
 

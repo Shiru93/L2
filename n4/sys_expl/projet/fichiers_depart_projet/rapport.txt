@@ -1,0 +1,30 @@
+Fonctionnalités implémentées :
+    - Exercice 1 :
+        serveur echo TCP sur port 4321
+        client avec connexion et boucle d'envoi/réception
+
+    - Exercice 2 :
+        structure struct user, fonctions user_accept et user_free, serveur multithread avec pthread_create et pthread_detach
+
+    - Exercice 3 :
+        pipe global,
+        thread répéteur qui diffuse les messages à tous les clients
+        client avec poll() pour écouter clavier et socket simultanément
+
+    - Exercice 4 :
+        implémentation de crlf_to_lf et lf_to_crlf dans utils.c
+
+    - Exercice 5 :
+        implémentation complète du buffer dans buffer/buffer.c avec buff_create, buff_getc, buff_ungetc, buff_free, buff_eof, buff_ready, buff_fgets, buff_fgets_crlf. Fichier de test buffer/test_buffer.c.
+
+    - Exercice 6 :
+        Utilisation du buffer côté client pour lire les messages de la socket de façon bufferisée. 
+        Le client utilise buff_fgets_crlf pour lire ligne par ligne depuis la socket au lieu de read brut. 
+        La condition poll a été modifiée pour ne pas attendre si le buffer contient déjà des données (buff_ready). 
+        Les messages sont convertis avec lf_to_crlf avant d'être envoyés au serveur et avec crlf_to_lf après réception pour l'affichage.
+
+Ce qui ne fonctionne pas :
+    - Exercice 7 non implémentées
+
+Ressources utilisées :
+    - Page de manuel (man 2 socket, man 2 bind, etc...)
