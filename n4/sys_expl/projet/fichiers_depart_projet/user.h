@@ -13,7 +13,8 @@
 	do { perror(msg); exit(EXIT_FAILURE); } while(0);
 
 struct user {
-	struct sockaddr_in address;
+	// struct sockaddr_in address;		// <- IPv4 seulement !
+	struct sockaddr_storage address;  // <- IPv4 ET IPv6
 	socklen_t addr_len;
 	int sock;
 	char nickname[17];	// 16 caractères max + '\0'

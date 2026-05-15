@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <netdb.h>
 
 #include "list/list.h"
 #include "user.h"
@@ -148,63 +149,170 @@ void *handle_client(void *clt)
 	return NULL;
 }
 
-int create_listening_sock(uint16_t port)
-{
-	int sfd;
-	struct sockaddr_in my_addr;
+/*
+ * create_listening_sock sans getaddrinfo (rend le serveur compatible avec IPv4 et IPv6)
+ */
+// int create_listening_sock(uint16_t port)
+// {
+// 	int sfd;
+// 	struct sockaddr_in my_addr;
 	
-	sfd = socket(AF_INET, SOCK_STREAM, 0);
-	if(sfd == -1)
-	handle_error("socket");
+// 	sfd = socket(AF_INET, SOCK_STREAM, 0);
+// 	if(sfd == -1)
+// 	handle_error("socket");
 	
-	/*
-	 * Quand tu arrêtes le serveur avec Ctrl-C, la connexion TCP ne se ferme pas instantanément. 
-	 * Le système garde le port en état TIME_WAIT pendant ~30-60 secondes pour s'assurer que tous les paquets en transit sont bien arrivés.
-	 * Pendant ce temps, si tu relances ./srv, bind() échoue car le port est encore "occupé". 
-	 */
-	int opt = 1;
+// 	/*
+// 	 * Quand tu arrêtes le serveur avec Ctrl-C, la connexion TCP ne se ferme pas instantanément. 
+// 	 * Le système garde le port en état TIME_WAIT pendant ~30-60 secondes pour s'assurer que tous les paquets en transit sont bien arrivés.
+// 	 * Pendant ce temps, si tu relances ./srv, bind() échoue car le port est encore "occupé". 
+// 	 */
+// 	int opt = 1;
+
+// 	/*
+// 	 * C'est une option de socket qui dit au système : "même si ce port est en TIME_WAIT, laisse-moi le réutiliser".
+// 	 * Argument					Ce que c'est
+// 	 * sfd						ta socket
+// 	 * SOL_SOCKET				niveau "socket" (pas TCP, pas IP)
+// 	 * SO_REUSEADDR				l'option qu'on veut activer
+// 	 * &opt						la valeur — 1 = activer
+// 	 * sizeof(opt)				taille de la valeur
+// 	 * 
+// 	 * Sans SO_REUSEADDR :
+// 	 * ./srv → Ctrl-C → ./srv → bind: Address already in use ❌
+// 	 * 
+// 	 * Avec SO_REUSEADDR :
+// 	 * ./srv → Ctrl-C → ./srv → fonctionne immédiatement ✅
+// 	 */
+// 	setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+// 	my_addr.sin_family = AF_INET;
+	
+// 	/*
+// 	 * Les processeurs stockent les nombres dans un certain ordre d'octets (little-endian sur x86). 
+// 	 * Mais le réseau utilise un ordre différent (big-endian). Il faut convertir :
+// 	 */
+// 	my_addr.sin_port = htons(port);
+
+// 	/*
+// 	 * INADDR_ANY signifie "accepte les connexions sur toutes les interfaces réseau de la machine" (localhost, WiFi, ethernet...). 
+// 	 * C'est ce qu'on veut pour un serveur.
+// 	 */
+// 	my_addr.sin_addr.s_addr = INADDR_ANY; 	// Adresse internet dans l'ordre des octets réseaux 
+
+// 	/*
+// 	 * Le cast (struct sockaddr *) est nécessaire car bind est générique — elle accepte plusieurs types d'adresses
+// 	 */
+// 	if(bind(sfd, (struct sockaddr *) &my_addr, sizeof(my_addr)) == -1)
+// 		handle_error("bind");
+
+// 	if(listen(sfd, LISTEN_BACKLOG) == -1)
+// 		handle_error("listen");
+
+// 	return sfd;
+// }
+
+/*
+ * create_listening_sock avec getaddrinfo (rend le serveur compatible avec IPv4 et IPv6)
+ */
+int create_listening_sock(uint16_t port){
+    int sfd;
 
 	/*
-	 * C'est une option de socket qui dit au système : "même si ce port est en TIME_WAIT, laisse-moi le réutiliser".
-	 * Argument					Ce que c'est
-	 * sfd						ta socket
-	 * SOL_SOCKET				niveau "socket" (pas TCP, pas IP)
-	 * SO_REUSEADDR				l'option qu'on veut activer
-	 * &opt						la valeur — 1 = activer
-	 * sizeof(opt)				taille de la valeur
+	 * Ce que fait getaddrinfo
+	 * C'est une fonction qui fait tout le travail de résolution 
+	 * elle prend un nom ou une adresse et retourne une liste de struct addrinfo prêtes à utiliser.
 	 * 
-	 * Sans SO_REUSEADDR :
-	 * ./srv → Ctrl-C → ./srv → bind: Address already in use ❌
+	 * int getaddrinfo(const char *node,     // hôte ou NULL pour serveur
+                const char *service,  // port sous forme de chaîne
+                const struct addrinfo *hints,  // ce qu'on veut
+                struct addrinfo **res);         // résultat
+
+	 * Les hints — ce qu'on lui demande
+	 * AF_UNSPEC = "donne-moi ce qui marche" — IPv4 ou IPv6
+	 * AI_PASSIVE + node = NULL = équivalent de INADDR_ANY pour les deux protocoles
 	 * 
-	 * Avec SO_REUSEADDR :
-	 * ./srv → Ctrl-C → ./srv → fonctionne immédiatement ✅
-	 */
-	setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	 * Ce que getaddrinfo retourne
+	 * Une liste chaînée de struct addrinfo :
+	 * res → [addrinfo IPv6] → [addrinfo IPv4] → NULL
+        ai_family = AF_INET6    ai_family = AF_INET
+        ai_addr = sockaddr_in6  ai_addr = sockaddr_in
+        ai_addrlen = 28         ai_addrlen = 16
 
-	my_addr.sin_family = AF_INET;
-	
-	/*
-	 * Les processeurs stockent les nombres dans un certain ordre d'octets (little-endian sur x86). 
-	 * Mais le réseau utilise un ordre différent (big-endian). Il faut convertir :
+	 * Chaque nœud contient tout ce dont on a besoin pour créer et bind une socket — peu importe si c'est IPv4 ou IPv6 !
 	 */
-	my_addr.sin_port = htons(port);
-
-	/*
-	 * INADDR_ANY signifie "accepte les connexions sur toutes les interfaces réseau de la machine" (localhost, WiFi, ethernet...). 
-	 * C'est ce qu'on veut pour un serveur.
-	 */
-	my_addr.sin_addr.s_addr = INADDR_ANY; 	// Adresse internet dans l'ordre des octets réseaux 
+    struct addrinfo hints = { .ai_socktype = SOCK_STREAM,	// On veut du TCP
+                              .ai_family = AF_UNSPEC,	// IPv4 ou IPv6, peu importe
+                              .ai_flags = AI_PASSIVE };	// Pour un serveur -> écoute sur toutes les interfaces
+    struct addrinfo *res;
+    char port_str[6];
 
 	/*
-	 * Le cast (struct sockaddr *) est nécessaire car bind est générique — elle accepte plusieurs types d'adresses
+	 * 1. convertir le port uint16_t en chaîne "4321"
+	 * getaddrinfo veut le port sous forme de chaîne, pas d'entier.
+	 * */
+    snprintf(port_str, sizeof(port_str), "%d", port);
+
+    /*
+	 * 2. Demander les adresses
+	 * NULL = pas d'hôte spécifique → AI_PASSIVE s'applique → écoute sur toutes les interfaces. gai_strerror traduit le code d'erreur en message lisible.
 	 */
-	if(bind(sfd, (struct sockaddr *) &my_addr, sizeof(my_addr)) == -1)
-		handle_error("bind");
+    int stat = getaddrinfo(NULL, port_str, &hints, &res);
+    if(stat != 0){
+        fprintf(stderr, "%s\n", gai_strerror(stat));
+        exit(EXIT_FAILURE);
+    }
 
-	if(listen(sfd, LISTEN_BACKLOG) == -1)
-		handle_error("listen");
+	// /*
+	//  * 3. créer la socket avec les infos retournées
+	//  * Au lieu de hardcoder AF_INET, on utilise res->ai_family — ça sera AF_INET6 ou AF_INET selon ce que le système a choisi.
+	//  * res->ai_addr et res->ai_addrlen remplacent sockaddr_in !
+	//  */
+    // sfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    // if(sfd == -1) handle_error("socket");
 
-	return sfd;
+    // // 4. SO_REUSEADDR — permet de relancer le serveur sans attendre
+    // int opt = 1;
+    // setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+    // /*
+	//  * 5. bind — avec l'adresse retournée par getaddrinfo
+	//  * Au lieu de passer &my_addr et sizeof(my_addr), on utilise directement res->ai_addr et res->ai_addrlen — ça marche pour IPv4 et IPv6 !
+	//  */
+    // if(bind(sfd, res->ai_addr, res->ai_addrlen) == -1) handle_error("bind");
+
+	struct addrinfo *cur = res;
+	while(cur != NULL){
+		sfd = socket(cur->ai_family, cur->ai_socktype, cur->ai_protocol);
+		if(sfd == -1){
+			cur = cur->ai_next;
+			continue;
+		}
+
+		int opt = 1;
+		setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
+		if(bind(sfd, cur->ai_addr, cur->ai_addrlen) == 0)
+			break; 	// Succès
+
+		close(sfd);
+		cur = cur->ai_next;
+	}
+
+	if(cur == NULL){
+		fprintf(stderr, "Impossible de bind\n");
+		exit(EXIT_FAILURE);
+	}
+
+    /*
+	 * 6. Libérer la mémoire allouée par getaddrinfo
+	 * getaddrinfo alloue la liste avec malloc — il faut la libérer avec freeaddrinfo.
+	 */
+    freeaddrinfo(res);
+
+    // 7. listen — identique à avant
+    if(listen(sfd, LISTEN_BACKLOG) == -1) handle_error("listen");
+
+    return sfd;
 }
 
 void *repeteur(void * arg){

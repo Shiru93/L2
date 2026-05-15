@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <poll.h>
 #include <string.h>
+#include <netdb.h>
+
 #include "buffer/buffer.h"
 #include "utils.h"
 
@@ -110,24 +112,90 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-int connect_serveur_tcp(char *adresse, uint16_t port)
-{
+/*
+ * connect_serveur_tcp sans getaddrinfo
+ */
+// int connect_serveur_tcp(char *adresse, uint16_t port)
+// {
+// 	int sfd;
+// 	struct sockaddr_in my_addr;
+
+// 	sfd = socket(AF_INET, SOCK_STREAM, 0);
+// 	if(sfd == -1)
+// 		handle_error("socket");
+
+// 	my_addr.sin_family = AF_INET;
+// 	my_addr.sin_port = htons(port);
+
+// 	if(inet_pton(AF_INET, adresse, &my_addr.sin_addr) != 1)
+// 		handle_error("inet_aton");
+
+// 	if(connect(sfd, (struct sockaddr *) &my_addr, sizeof(my_addr)) == -1)
+// 		handle_error("connect");
+
+// 	/* pour éviter les warnings de variable non utilisée */
+// 	return sfd;
+// }
+
+/*
+ * connect_serveur_tcp avec getaddrinfo
+ */
+int connect_serveur_tcp(char *adresse, uint16_t port){
 	int sfd;
-	struct sockaddr_in my_addr;
+	struct addrinfo hints = { .ai_socktype = SOCK_STREAM };
+	struct addrinfo *res;
+	char port_str[6];
 
-	sfd = socket(AF_INET, SOCK_STREAM, 0);
-	if(sfd == -1)
-		handle_error("socket");
+	/*
+	 * 1. Convertir le port uint16_t en chaîne "4321"
+	 */
+	snprintf(port_str, sizeof(port_str), "%d", port);
 
-	my_addr.sin_family = AF_INET;
-	my_addr.sin_port = htons(port);
+	/*
+	 * 2. Demander les adresses
+	 */
+	int stat = getaddrinfo(adresse, port_str, &hints, &res);
+	if(stat != 0){
+		fprintf(stderr, "%s\n", gai_strerror(stat));
+		exit(EXIT_FAILURE);
+	}
 
-	if(inet_pton(AF_INET, adresse, &my_addr.sin_addr) != 1)
-		handle_error("inet_aton");
+	// /*
+	//  * 3. Créer la socket avec les infos retournées
+	//  */
+	// sfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	// if(sfd == -1) handle_error("socket");
 
-	if(connect(sfd, (struct sockaddr *) &my_addr, sizeof(my_addr)) == -1)
-		handle_error("connect");
+	// /*
+	//  * 4. connect
+	//  */
+	// if(connect(sfd, res->ai_addr, res->ai_addrlen))
+	// 	handle_error("connect");
 
-	/* pour éviter les warnings de variable non utilisée */
+	struct addrinfo *cur = res;
+	while(cur != NULL){
+		sfd = socket(cur->ai_family, cur->ai_socktype, cur->ai_protocol);
+		if(sfd == -1){
+			cur = cur->ai_next;
+			continue;
+		}
+
+		if(connect(sfd, cur->ai_addr, cur->ai_addrlen) == 0)
+			break;
+
+		close(sfd);
+		cur = cur->ai_next;
+	}
+
+	if(cur == NULL){
+		fprintf(stderr, "Impossible de se connecter\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/*
+	 * 5. Libérer la mémoire allouée par getaddrinfo
+	 */
+	freeaddrinfo(res);
+	
 	return sfd;
 }
