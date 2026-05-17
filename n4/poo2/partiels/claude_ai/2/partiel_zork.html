@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partiel POO2 — Zork</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #12111a;
+    --ink2: #2e2c3f;
+    --muted: #64627a;
+    --light: #f5f5fb;
+    --border: #d8d6ea;
+    --accent: #2c24b0;
+    --accent-bg: #eceaff;
+    --green: #166534;
+    --green-bg: #f0faf4;
+    --green-bd: #a7d4b8;
+    --warn: #7c3500;
+    --warn-bg: #fff5eb;
+    --warn-bd: #e8c49a;
+    --code: #0f0e18;
+    --page: #fafaf9;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:#dddde8;font-family:'Source Serif 4',Georgia,serif;font-size:15px;color:var(--ink);line-height:1.75}
+
+  .page{max-width:880px;margin:28px auto;background:var(--page);box-shadow:0 2px 48px rgba(0,0,0,.16);padding:58px 74px 72px}
+  @media(max-width:700px){.page{padding:28px 20px;margin:0}}
+
+  /* ── EN-TÊTE ── */
+  .hd{border-bottom:3px solid var(--ink);padding-bottom:18px;margin-bottom:28px}
+  .hd-top{font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .hd h1{font-size:1.65rem;font-weight:700;line-height:1.2;margin-bottom:3px}
+  .hd .sub{font-family:'Inter',sans-serif;font-size:.85rem;color:var(--muted)}
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+  .meta-box{background:var(--light);border:1px solid var(--border);border-radius:3px;padding:10px 12px}
+  .meta-box label{font-family:'Inter',sans-serif;font-size:.67rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+  .meta-box span{font-family:'Inter',sans-serif;font-size:.88rem;font-weight:700;color:var(--ink)}
+
+  /* ── CONSIGNES ── */
+  .instr{background:var(--warn-bg);border:1px solid var(--warn-bd);border-left:4px solid #c97a2a;border-radius:0 3px 3px 0;padding:12px 16px;margin-bottom:30px;font-size:.88rem}
+  .instr strong{font-family:'Inter',sans-serif;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--warn);display:block;margin-bottom:5px}
+  .instr ul{padding-left:18px}.instr li{margin-bottom:3px}
+
+  /* ── CONTEXTE ── */
+  .ctx{background:var(--accent-bg);border:1px solid #c0b8f8;border-left:4px solid var(--accent);border-radius:0 3px 3px 0;padding:14px 18px;margin-bottom:36px;font-size:.9rem}
+  .ctx strong{font-family:'Inter',sans-serif;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);display:block;margin-bottom:8px}
+  .ctx p+p{margin-top:6px}
+  code{font-family:'JetBrains Mono',monospace;font-size:.82em;background:rgba(44,36,176,.08);padding:1px 5px;border-radius:3px;color:var(--accent)}
+
+  /* ── EXERCICE ── */
+  .ex{margin-bottom:52px;padding-top:4px}
+  .ex-hd{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;padding-bottom:9px;border-bottom:2px solid var(--ink)}
+  .ex-num{font-family:'Inter',sans-serif;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#fff;background:var(--ink);padding:3px 9px;border-radius:2px;white-space:nowrap}
+  .ex-title{font-size:1.12rem;font-weight:700;flex:1;line-height:1.3}
+  .ex-pts{font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;color:var(--accent);background:var(--accent-bg);border:1px solid #c0b8f8;padding:3px 10px;border-radius:2px;white-space:nowrap}
+  .intro{margin-bottom:14px;font-size:.92rem;color:var(--ink2)}
+
+  /* ── QUESTION ── */
+  .q{margin-bottom:20px}
+  .ql{font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .qn{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;min-width:22px;border-radius:50%;background:var(--light);border:1.5px solid var(--border);font-size:.75rem;font-weight:700;color:var(--muted)}
+  .ql .qp{font-size:.7rem;color:var(--muted);margin-left:auto;font-weight:500}
+  .q p{font-size:.91rem;padding-left:31px;color:var(--ink2);line-height:1.65}
+  .q p+p{margin-top:5px}
+
+  /* ── CODE ── */
+  .clbl{font-family:'Inter',sans-serif;font-size:.68rem;font-weight:600;color:var(--muted);letter-spacing:.04em;margin-left:31px;margin-top:10px;margin-bottom:-4px;display:block}
+  pre{background:#f0eff8;border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin:10px 0 10px 31px;overflow-x:auto}
+  pre code{font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.65;color:var(--code);background:none;padding:0;border-radius:0}
+  .kw{color:#2c24b0;font-weight:600}
+  .cl{color:#0a4d7a}
+  .fn{color:#116833}
+  .st{color:#7a3200}
+  .cm{color:#9090b0;font-style:italic}
+  .nb{color:#b83232}
+  .an{color:#7a2090}
+  .todo{background:#ffffc0;color:#665800;padding:0 4px;border-radius:2px;font-weight:700;font-style:normal}
+
+  /* ── RÉPONSE ── */
+  .rep{margin:8px 0 10px 31px;border:1.5px dashed var(--border);border-radius:3px;background:#fff}
+  .rep-lines{padding:6px 10px;display:flex;flex-direction:column}
+  .rep-line{border-bottom:1px solid #eaeaf5;height:26px;width:100%}
+  .rep-pre{margin:0;background:#fcfcff;border:1.5px dashed var(--border);border-radius:3px;min-height:120px}
+
+  /* ── HINT ── */
+  .hint{background:var(--green-bg);border:1px solid var(--green-bd);border-left:3px solid #22a05a;border-radius:0 3px 3px 0;padding:9px 13px;margin:6px 0 6px 31px;font-size:.82rem;color:var(--green)}
+  .hint strong{font-family:'Inter',sans-serif;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:2px}
+
+  /* ── CORR ── */
+  .corr{display:none}
+  .corr.on{display:block}
+  .corr-inner{margin:8px 0 8px 31px;background:var(--green-bg);border:1px solid var(--green-bd);border-left:3px solid #22a05a;border-radius:0 3px 3px 0;padding:12px 15px}
+  .corr-inner h4{font-family:'Inter',sans-serif;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--green);margin-bottom:7px}
+  .corr-inner pre{margin:6px 0 0;background:#f0faf4;border-color:var(--green-bd)}
+  .corr-inner p{font-size:.87rem;color:var(--green);line-height:1.6;margin-top:6px}
+  .btn-corr{margin:4px 0 4px 31px;font-family:'Inter',sans-serif;font-size:.72rem;font-weight:600;color:var(--accent);background:var(--accent-bg);border:1px solid #c0b8f8;border-radius:3px;padding:4px 10px;cursor:pointer;letter-spacing:.03em}
+  .btn-corr:hover{background:#d8d4fc}
+
+  /* ── SÉPARATEUR ── */
+  hr{border:none;border-top:1px dashed var(--border);margin:36px 0}
+
+  /* ── BARÈME ── */
+  .bareme{margin-top:44px;border-top:3px double var(--ink);padding-top:20px}
+  .bareme h3{font-family:'Inter',sans-serif;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px}
+  .bar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:7px}
+  .bar-row{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;background:var(--light);border:1px solid var(--border);border-radius:3px;font-family:'Inter',sans-serif;font-size:.8rem}
+  .bar-row .bl{color:var(--ink2);font-weight:500}
+  .bar-row .bp{font-weight:700;color:var(--accent)}
+  .bar-total{margin-top:10px;background:var(--ink);color:#fff;border-radius:3px;padding:11px 14px;display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:.88rem;font-weight:700}
+
+  .print-btn{position:fixed;top:18px;right:18px;background:var(--ink);color:#fff;border:none;border-radius:3px;padding:7px 15px;font-family:'Inter',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;letter-spacing:.04em}
+  .print-btn:hover{background:var(--accent)}
+  @media print{.print-btn{display:none}.page{box-shadow:none;margin:0;padding:40px 56px}}
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">🖨 Imprimer / PDF</button>
+
+<div class="page">
+
+<!-- ══ EN-TÊTE ══ -->
+<div class="hd">
+  <div class="hd-top">Université Sorbonne Paris Nord · Institut Galilée · Licence Informatique L2</div>
+  <h1>Programmation Orientée Objet 2<br><span style="font-size:1.05rem;font-weight:400;color:var(--muted)">Épreuve sur table — Design Patterns · Jeu Zork</span></h1>
+  <div class="sub">Marc Champesme · Département d'Informatique</div>
+  <div class="meta">
+    <div class="meta-box"><label>Durée</label><span>1h30</span></div>
+    <div class="meta-box"><label>Total</label><span>36 points</span></div>
+    <div class="meta-box"><label>Documents</label><span>Aucun</span></div>
+    <div class="meta-box"><label>Outils</label><span>Aucun</span></div>
+  </div>
+</div>
+
+<!-- ══ CONSIGNES ══ -->
+<div class="instr">
+  <strong>Consignes</strong>
+  <ul>
+    <li>Soigner la syntaxe Java (accolades, points-virgules, génériques, <code>@Override</code>...).</li>
+    <li>Les classes et interfaces du cours (<code>Iterator</code>, <code>Iterable</code>, <code>Predicate</code>, <code>Function</code>, <code>Comparator</code>...) sont supposées importées.</li>
+    <li>Le code à compléter est signalé par <span style="background:#ffffc0;padding:1px 5px;border-radius:2px;font-size:.82rem;font-family:monospace">// À COMPLÉTER</span>.</li>
+  </ul>
+</div>
+
+<!-- ══ CONTEXTE ══ -->
+<div class="ctx">
+  <strong>Rappel des classes du projet Zork utilisées dans ce sujet</strong>
+  <p>Les classes suivantes, issues de vos TPs, sont utilisées dans tout le sujet. Leurs définitions complètes sont rappelées quand nécessaire au fil des exercices.</p>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--accent);margin-top:4px">
+    <strong>enum</strong> ObjetZork · <strong>enum</strong> Category · <strong>enum</strong> Direction · Room · Array&lt;E&gt; · ArrayIterator&lt;E&gt;
+  </p>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     EXERCICE 1 — ITERATOR
+══════════════════════════════════════ -->
+<div class="ex">
+  <div class="ex-hd">
+    <span class="ex-num">Exercice 1</span>
+    <span class="ex-title">Pattern Iterator — Filtrer les ObjetZork d'un tableau</span>
+    <span class="ex-pts">8 points</span>
+  </div>
+
+  <p class="intro">On rappelle les classes <code>Array&lt;E&gt;</code> et <code>ArrayIterator&lt;E&gt;</code> issues du TD1 :</p>
+
+  <span class="clbl">Array.java (extrait)</span>
+  <pre><code><span class="kw">public class</span> <span class="cl">Array</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Cloneable</span>, <span class="cl">Iterable</span>&lt;E&gt;, <span class="cl">Serializable</span> {
+    <span class="kw">private</span> E[] elements;
+    <span class="kw">public final int</span> length;
+
+    <span class="kw">public</span> <span class="fn">Array</span>(<span class="kw">int</span> size) {
+        length = size;
+        elements = (E[]) <span class="kw">new</span> <span class="cl">Object</span>[size];
+    }
+    <span class="kw">public</span> E     <span class="fn">get</span>(<span class="kw">int</span> i)       { <span class="kw">return</span> elements[i]; }
+    <span class="kw">public void</span>  <span class="fn">set</span>(<span class="kw">int</span> i, E elt) { elements[i] = elt; }
+    <span class="kw">public</span> <span class="cl">Iterator</span>&lt;E&gt; <span class="fn">iterator</span>()  { <span class="kw">return new</span> <span class="cl">ArrayIterator</span>&lt;&gt;(elements, length); }
+}</code></pre>
+
+  <span class="clbl">ArrayIterator.java (extrait)</span>
+  <pre><code><span class="kw">public class</span> <span class="cl">ArrayIterator</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">protected</span> E[]  tab;
+    <span class="kw">protected int</span>  size;
+    <span class="kw">protected int</span>  index;
+
+    <span class="kw">public</span> <span class="fn">ArrayIterator</span>(E[] tab, <span class="kw">int</span> size) {
+        <span class="kw">this</span>.tab = tab; <span class="kw">this</span>.size = size; <span class="kw">this</span>.index = <span class="nb">0</span>;
+    }
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> index &lt; size; }
+    <span class="kw">public</span> E       <span class="fn">next</span>()    { <span class="kw">return</span> tab[index++]; }
+}</code></pre>
+
+  <!-- Q1.1 -->
+  <div class="q">
+    <div class="ql"><span class="qn">1</span><span>Qu'est-ce que l'interface <code>Iterable&lt;E&gt;</code> apporte à la classe <code>Array&lt;E&gt;</code> ? Donnez un exemple de code concret que cela rend possible.</span><span class="qp">1 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <p>Implémenter <code>Iterable&lt;E&gt;</code> permet d'utiliser le <strong>for-each</strong> avec un <code>Array</code>. Exemple :</p>
+      <pre><code><span class="cl">Array</span>&lt;<span class="cl">String</span>&gt; arr = <span class="kw">new</span> <span class="cl">Array</span>&lt;&gt;(<span class="nb">3</span>);
+arr.<span class="fn">set</span>(<span class="nb">0</span>, <span class="st">"a"</span>); arr.<span class="fn">set</span>(<span class="nb">1</span>, <span class="st">"b"</span>); arr.<span class="fn">set</span>(<span class="nb">2</span>, <span class="st">"c"</span>);
+<span class="kw">for</span> (<span class="cl">String</span> s : arr) {          <span class="cm">// Possible grâce à Iterable</span>
+    <span class="cl">System</span>.out.<span class="fn">println</span>(s);
+}</code></pre>
+    </div></div>
+  </div>
+
+  <!-- Q1.2 -->
+  <div class="q">
+    <div class="ql"><span class="qn">2</span><span>Définissez la classe <code>FilterNotNullIterator&lt;E&gt;</code> qui <strong>hérite</strong> de <code>ArrayIterator&lt;E&gt;</code> et filtre les éléments <code>null</code> d'un tableau. Ajoutez une méthode privée <code>int findNext(int from)</code> qui renvoie l'indice du premier élément non-null à partir de <code>from</code>, ou <code>size</code> si aucun n'existe.</span><span class="qp">4 pts</span></div>
+    <span class="clbl">FilterNotNullIterator.java — à compléter</span>
+    <pre><code><span class="kw">public class</span> <span class="cl">FilterNotNullIterator</span>&lt;E&gt; <span class="kw">extends</span> <span class="cl">ArrayIterator</span>&lt;E&gt; {
+
+    <span class="kw">public</span> <span class="fn">FilterNotNullIterator</span>(E[] tab, <span class="kw">int</span> size) {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+
+    <span class="kw">private int</span> <span class="fn">findNext</span>(<span class="kw">int</span> from) {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> E <span class="fn">next</span>() {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+}</code></pre>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public class</span> <span class="cl">FilterNotNullIterator</span>&lt;E&gt; <span class="kw">extends</span> <span class="cl">ArrayIterator</span>&lt;E&gt; {
+
+    <span class="kw">public</span> <span class="fn">FilterNotNullIterator</span>(E[] tab, <span class="kw">int</span> size) {
+        <span class="kw">super</span>(tab, size);
+        index = <span class="fn">findNext</span>(<span class="nb">0</span>);  <span class="cm">// Positionner sur le 1er non-null</span>
+    }
+
+    <span class="kw">private int</span> <span class="fn">findNext</span>(<span class="kw">int</span> from) {
+        <span class="kw">while</span> (from &lt; size &amp;&amp; tab[from] == <span class="kw">null</span>) {
+            from++;
+        }
+        <span class="kw">return</span> from;  <span class="cm">// Renvoie size si aucun non-null trouvé</span>
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() {
+        <span class="kw">return</span> index &lt; size;  <span class="cm">// index est toujours sur un non-null ou == size</span>
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> E <span class="fn">next</span>() {
+        E elt = tab[index];
+        index = <span class="fn">findNext</span>(index + <span class="nb">1</span>);  <span class="cm">// Avancer vers le prochain non-null</span>
+        <span class="kw">return</span> elt;
+    }
+}</code></pre>
+      <p>Points clés : appel à <code>super()</code>, initialisation de <code>index</code> via <code>findNext(0)</code>, <code>hasNext()</code> vérifie juste <code>index &lt; size</code> car <code>index</code> est toujours pré-positionné.</p>
+    </div></div>
+  </div>
+
+  <!-- Q1.3 -->
+  <div class="q">
+    <div class="ql"><span class="qn">3</span><span>Donnez le code qui utilise <code>FilterNotNullIterator</code> pour afficher uniquement les <code>ObjetZork</code> non-null du tableau suivant. Attendu : <code>:Chaise:Pizza 4 fromages</code></span><span class="qp">2 pts</span></div>
+    <span class="clbl">Code d'appel</span>
+    <pre><code><span class="cl">ObjetZork</span>[] tab = {<span class="cl">ObjetZork</span>.CHAISE, <span class="kw">null</span>, <span class="kw">null</span>,
+                    <span class="cl">ObjetZork</span>.PIZZA, <span class="kw">null</span>};
+<span class="todo">// À COMPLÉTER — utiliser FilterNotNullIterator</span></code></pre>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="cl">FilterNotNullIterator</span>&lt;<span class="cl">ObjetZork</span>&gt; iter
+    = <span class="kw">new</span> <span class="cl">FilterNotNullIterator</span>&lt;&gt;(tab, tab.length);
+<span class="kw">while</span> (iter.<span class="fn">hasNext</span>()) {
+    <span class="cl">System</span>.out.<span class="fn">print</span>(<span class="st">":"</span> + iter.<span class="fn">next</span>().<span class="fn">getNiceName</span>());
+}
+<span class="cl">System</span>.out.<span class="fn">println</span>();   <span class="cm">// Affiche : :Chaise:Pizza 4 fromages</span></code></pre>
+    </div></div>
+  </div>
+
+  <!-- Q1.4 -->
+  <div class="q">
+    <div class="ql"><span class="qn">4</span><span>Pourquoi <code>ArrayIterator</code> déclare-t-il ses attributs <code>tab</code>, <code>size</code> et <code>index</code> avec la visibilité <code>protected</code> plutôt que <code>private</code> ?</span><span class="qp">1 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <p><code>protected</code> rend les attributs accessibles aux <strong>sous-classes</strong> (comme <code>FilterNotNullIterator</code>). Avec <code>private</code>, <code>FilterNotNullIterator</code> ne pourrait pas lire ni modifier <code>tab</code>, <code>size</code> ou <code>index</code> directement, ce qui rendrait le filtrage impossible sans passer par des getters.</p>
+    </div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════
+     EXERCICE 2 — SINGLETON + ENUM
+══════════════════════════════════════ -->
+<div class="ex">
+  <div class="ex-hd">
+    <span class="ex-num">Exercice 2</span>
+    <span class="ex-title">Singleton &amp; Enum — ObjetZork et Comparator</span>
+    <span class="ex-pts">6 points</span>
+  </div>
+
+  <p class="intro">On rappelle la définition (simplifiée) de l'enum <code>ObjetZork</code> du TP4 :</p>
+
+  <span class="clbl">ObjetZork.java (extrait)</span>
+  <pre><code><span class="kw">public enum</span> <span class="cl">ObjetZork</span> {
+    CHAISE(<span class="st">"Chaise"</span>,    <span class="cl">Category</span>.MEUBLE,       <span class="nb">10</span>, <span class="kw">true</span>),
+    TABLE(<span class="st">"Table"</span>,      <span class="cl">Category</span>.MEUBLE,       <span class="nb">50</span>, <span class="kw">false</span>),
+    ORDINATEUR(<span class="st">"Mon PC"</span>, <span class="cl">Category</span>.INFORMATIQUE, <span class="nb">15</span>, <span class="kw">true</span>),
+    PIZZA(<span class="st">"Pizza 4 fromages"</span>, <span class="cl">Category</span>.ALIMENT, <span class="nb">5</span>, <span class="kw">true</span>),
+    ANNEAU(<span class="st">"Mon précieux"</span>, <span class="cl">Category</span>.TRESOR,     <span class="nb">100</span>, <span class="kw">true</span>),
+    CLEF_TRESOR(<span class="st">"Clé du trésor"</span>, <span class="cl">Category</span>.CLEF,  <span class="nb">2</span>, <span class="kw">true</span>),
+    LAMPE(<span class="st">"Lampe de poche"</span>, <span class="cl">Category</span>.ACCESSOIRE, <span class="nb">5</span>, <span class="kw">true</span>);
+
+    <span class="kw">private final</span> <span class="cl">String</span>   niceName;
+    <span class="kw">private final</span> <span class="cl">Category</span> cat;
+    <span class="kw">private final int</span>      weight;
+    <span class="kw">private final boolean</span>  isTransportable;
+
+    <span class="cl">ObjetZork</span>(<span class="cl">String</span> n, <span class="cl">Category</span> c, <span class="kw">int</span> w, <span class="kw">boolean</span> t) {
+        niceName = n; cat = c; weight = w; isTransportable = t;
+    }
+    <span class="kw">public</span> <span class="cl">String</span>   <span class="fn">getNiceName</span>()       { <span class="kw">return</span> niceName; }
+    <span class="kw">public</span> <span class="cl">Category</span> <span class="fn">getCategory</span>()       { <span class="kw">return</span> cat; }
+    <span class="kw">public int</span>      <span class="fn">getWeight</span>()         { <span class="kw">return</span> weight; }
+    <span class="kw">public boolean</span>  <span class="fn">isTransportable</span>()   { <span class="kw">return</span> isTransportable; }
+}</code></pre>
+
+  <!-- Q2.1 -->
+  <div class="q">
+    <div class="ql"><span class="qn">1</span><span>Donnez <strong>deux propriétés</strong> de la classe <code>ObjetZork</code> qui la rendent adéquate à une définition comme <code>enum</code>.</span><span class="qp">1 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <p><strong>1.</strong> Le nombre d'instances est <strong>fini et connu à l'avance</strong> (il n'y a que 7 objets dans le jeu).<br>
+      <strong>2.</strong> La classe est <strong>non modifiable</strong> (tous les attributs sont <code>final</code>) : une fois créé, un <code>ObjetZork</code> ne change jamais d'état — condition obligatoire pour une enum.</p>
+    </div></div>
+  </div>
+
+  <!-- Q2.2 -->
+  <div class="q">
+    <div class="ql"><span class="qn">2</span><span>En utilisant la méthode <code>values()</code> de l'enum, ajoutez à <code>ObjetZork</code> une méthode <code>static ObjetZork[] getTransportables()</code> qui renvoie un tableau contenant uniquement les <code>ObjetZork</code> transportables. Vous n'utiliserez pas de Stream.</span><span class="qp">2 pts</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public static</span> <span class="cl">ObjetZork</span>[] <span class="fn">getTransportables</span>() {
+    <span class="cm">// 1er passage : compter</span>
+    <span class="kw">int</span> count = <span class="nb">0</span>;
+    <span class="kw">for</span> (<span class="cl">ObjetZork</span> oz : <span class="fn">values</span>()) {
+        <span class="kw">if</span> (oz.<span class="fn">isTransportable</span>()) count++;
+    }
+    <span class="cm">// 2ème passage : remplir</span>
+    <span class="cl">ObjetZork</span>[] result = <span class="kw">new</span> <span class="cl">ObjetZork</span>[count];
+    <span class="kw">int</span> i = <span class="nb">0</span>;
+    <span class="kw">for</span> (<span class="cl">ObjetZork</span> oz : <span class="fn">values</span>()) {
+        <span class="kw">if</span> (oz.<span class="fn">isTransportable</span>()) result[i++] = oz;
+    }
+    <span class="kw">return</span> result;
+}</code></pre>
+    </div></div>
+  </div>
+
+  <!-- Q2.3 -->
+  <div class="q">
+    <div class="ql"><span class="qn">3</span><span>Définissez une classe <code>CompareWeight</code> implémentant <code>Comparator&lt;ObjetZork&gt;</code> qui trie par poids croissant. Appliquez-lui le pattern <strong>Singleton</strong> (variable publique). Puis écrivez le code qui trie une <code>List&lt;ObjetZork&gt; loz</code> par poids.</span><span class="qp">3 pts</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public class</span> <span class="cl">CompareWeight</span> <span class="kw">implements</span> <span class="cl">Comparator</span>&lt;<span class="cl">ObjetZork</span>&gt; {
+    <span class="cm">// Singleton : unique instance accessible via theInstance</span>
+    <span class="kw">public static final</span> <span class="cl">CompareWeight</span> theInstance = <span class="kw">new</span> <span class="cl">CompareWeight</span>();
+    <span class="kw">private</span> <span class="fn">CompareWeight</span>() { }  <span class="cm">// constructeur privé</span>
+
+    <span class="an">@Override</span>
+    <span class="kw">public int</span> <span class="fn">compare</span>(<span class="cl">ObjetZork</span> o1, <span class="cl">ObjetZork</span> o2) {
+        <span class="kw">return</span> o1.<span class="fn">getWeight</span>() - o2.<span class="fn">getWeight</span>();
+    }
+}
+
+<span class="cm">// Utilisation</span>
+<span class="cl">List</span>&lt;<span class="cl">ObjetZork</span>&gt; loz = ...;
+loz.<span class="fn">sort</span>(<span class="cl">CompareWeight</span>.theInstance);</code></pre>
+      <p>On peut aussi écrire avec une lambda : <code>loz.sort((o1, o2) -> o1.getWeight() - o2.getWeight());</code></p>
+    </div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════
+     EXERCICE 3 — STRATEGY
+══════════════════════════════════════ -->
+<div class="ex">
+  <div class="ex-hd">
+    <span class="ex-num">Exercice 3</span>
+    <span class="ex-title">Pattern Strategy — FilterArrayIterator et lambdas</span>
+    <span class="ex-pts">7 points</span>
+  </div>
+
+  <p class="intro">On souhaite remplacer <code>FilterNotNullIterator</code> et <code>FilterTransportableIterator</code> par une unique classe <code>FilterArrayIterator&lt;E&gt;</code> paramétrée par un <code>Predicate&lt;E&gt;</code>.</p>
+
+  <!-- Q3.1 -->
+  <div class="q">
+    <div class="ql"><span class="qn">1</span><span>Expliquez en deux phrases pourquoi c'est le pattern <strong>Strategy</strong> qui est utilisé ici, et quel est le rôle du <code>Predicate&lt;E&gt;</code>.</span><span class="qp">1 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <p>La Strategy consiste à <strong>encapsuler un algorithme interchangeable</strong> dans un objet. Ici, le critère de filtrage (l'algorithme) est encapsulé dans un <code>Predicate&lt;E&gt;</code> : on change de comportement en fournissant un prédicat différent, sans toucher à la classe <code>FilterArrayIterator</code>.</p>
+    </div></div>
+  </div>
+
+  <!-- Q3.2 -->
+  <div class="q">
+    <div class="ql"><span class="qn">2</span><span>Complétez la classe <code>FilterArrayIterator&lt;E&gt;</code> :</span><span class="qp">4 pts</span></div>
+    <span class="clbl">FilterArrayIterator.java — à compléter</span>
+    <pre><code><span class="kw">public class</span> <span class="cl">FilterArrayIterator</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">private</span> E[] tab;
+    <span class="kw">private int</span> size;
+    <span class="kw">private</span> <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; predicate;
+    <span class="kw">private int</span> index;
+
+    <span class="kw">public</span> <span class="fn">FilterArrayIterator</span>(E[] tab, <span class="kw">int</span> size, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; p) {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+
+    <span class="kw">private int</span> <span class="fn">findNext</span>(<span class="kw">int</span> from) {
+        <span class="todo">// À COMPLÉTER : renvoie le 1er indice >= from satisfaisant le prédicat</span>
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="todo">// À COMPLÉTER</span> }
+
+    <span class="kw">public</span> E <span class="fn">next</span>() {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+}</code></pre>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public class</span> <span class="cl">FilterArrayIterator</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">private</span> E[] tab;
+    <span class="kw">private int</span> size;
+    <span class="kw">private</span> <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; predicate;
+    <span class="kw">private int</span> index;
+
+    <span class="kw">public</span> <span class="fn">FilterArrayIterator</span>(E[] tab, <span class="kw">int</span> size, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; p) {
+        <span class="kw">this</span>.tab = tab;
+        <span class="kw">this</span>.size = size;
+        <span class="kw">this</span>.predicate = p;
+        <span class="kw">this</span>.index = <span class="fn">findNext</span>(<span class="nb">0</span>);
+    }
+
+    <span class="kw">private int</span> <span class="fn">findNext</span>(<span class="kw">int</span> from) {
+        <span class="kw">while</span> (from &lt; size &amp;&amp; !predicate.<span class="fn">test</span>(tab[from])) {
+            from++;
+        }
+        <span class="kw">return</span> from;
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> index &lt; size; }
+
+    <span class="kw">public</span> E <span class="fn">next</span>() {
+        E elt = tab[index];
+        index = <span class="fn">findNext</span>(index + <span class="nb">1</span>);
+        <span class="kw">return</span> elt;
+    }
+}</code></pre>
+    </div></div>
+  </div>
+
+  <!-- Q3.3 -->
+  <div class="q">
+    <div class="ql"><span class="qn">3</span><span>En utilisant <code>FilterArrayIterator</code>, écrivez le code affichant le nom des <code>ObjetZork</code> de la catégorie <code>ALIMENT</code> ou transportables <strong>en utilisant une lambda</strong> (pas de classe supplémentaire). Les données : <code>ObjetZork[] tab = ObjetZork.values(); int size = tab.length;</code>.</span><span class="qp">2 pts</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="cl">ObjetZork</span>[] tab = <span class="cl">ObjetZork</span>.<span class="fn">values</span>();
+
+<span class="cm">// Lambda : ALIMENT OU transportable</span>
+<span class="cl">Iterator</span>&lt;<span class="cl">ObjetZork</span>&gt; iter = <span class="kw">new</span> <span class="cl">FilterArrayIterator</span>&lt;&gt;(
+    tab, tab.length,
+    oz -&gt; oz.<span class="fn">getCategory</span>() == <span class="cl">Category</span>.ALIMENT || oz.<span class="fn">isTransportable</span>()
+);
+<span class="kw">while</span> (iter.<span class="fn">hasNext</span>()) {
+    <span class="cl">System</span>.out.<span class="fn">println</span>(iter.<span class="fn">next</span>().<span class="fn">getNiceName</span>());
+}</code></pre>
+    </div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════
+     EXERCICE 4 — DECORATOR
+══════════════════════════════════════ -->
+<div class="ex">
+  <div class="ex-hd">
+    <span class="ex-num">Exercice 4</span>
+    <span class="ex-title">Pattern Decorator — FilterIterator sur Room</span>
+    <span class="ex-pts">5 points</span>
+  </div>
+
+  <p class="intro">On rappelle la classe <code>Room</code> (TP4) qui implémente <code>Iterable&lt;ObjetZork&gt;</code>, et la classe <code>FilterIterator&lt;E&gt;</code> du TD3, déjà complète :</p>
+
+  <span class="clbl">FilterIterator.java — fournie (TD3)</span>
+  <pre><code><span class="kw">public class</span> <span class="cl">FilterIterator</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">private</span> <span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> E&gt; supportIter;
+    <span class="kw">private</span> <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; predicate;
+    <span class="kw">private boolean</span> nextFound;
+    <span class="kw">private</span> E nextElt;
+
+    <span class="kw">public</span> <span class="fn">FilterIterator</span>(<span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> E&gt; iter, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; p) {
+        supportIter = iter; predicate = p; <span class="fn">findNext</span>();
+    }
+    <span class="kw">private void</span> <span class="fn">findNext</span>() {
+        nextFound = <span class="kw">false</span>;
+        <span class="kw">while</span> (supportIter.<span class="fn">hasNext</span>()) {
+            E c = supportIter.<span class="fn">next</span>();
+            <span class="kw">if</span> (predicate.<span class="fn">test</span>(c)) { nextElt = c; nextFound = <span class="kw">true</span>; <span class="kw">return</span>; }
+        }
+    }
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> nextFound; }
+    <span class="kw">public</span> E       <span class="fn">next</span>()    { E r = nextElt; <span class="fn">findNext</span>(); <span class="kw">return</span> r; }
+}</code></pre>
+
+  <!-- Q4.1 -->
+  <div class="q">
+    <div class="ql"><span class="qn">1</span><span>Pourquoi dit-on que <code>FilterIterator</code> est un <strong>Decorator</strong> de <code>Iterator</code> ? Identifiez les deux éléments structurels du pattern dans ce code.</span><span class="qp">1 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <p><strong>1.</strong> <code>FilterIterator</code> implémente la <em>même interface</em> (<code>Iterator&lt;E&gt;</code>) que l'objet qu'il décore → on peut l'utiliser partout où un <code>Iterator</code> est attendu.<br>
+      <strong>2.</strong> Il contient une <em>référence</em> vers l'objet décoré (<code>supportIter</code>) et lui délègue les appels, en ajoutant un comportement (le filtrage).</p>
+    </div></div>
+  </div>
+
+  <!-- Q4.2 -->
+  <div class="q">
+    <div class="ql"><span class="qn">2</span><span>En utilisant <code>FilterIterator</code>, écrivez le code qui affiche le nom des objets transportables de la <code>Room r</code> (lambda obligatoire), puis enchaîne un second filtre gardant seulement les objets de poids &gt; 5.</span><span class="qp">2 pts</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="cl">Room</span> r = ...;
+
+<span class="cm">// 1er décorateur : transportables</span>
+<span class="cl">Iterator</span>&lt;<span class="cl">ObjetZork</span>&gt; it1 = <span class="kw">new</span> <span class="cl">FilterIterator</span>&lt;&gt;(
+    r.<span class="fn">iterator</span>(),
+    oz -&gt; oz.<span class="fn">isTransportable</span>()
+);
+<span class="cm">// 2ème décorateur empilé : poids > 5</span>
+<span class="cl">Iterator</span>&lt;<span class="cl">ObjetZork</span>&gt; it2 = <span class="kw">new</span> <span class="cl">FilterIterator</span>&lt;&gt;(
+    it1,
+    oz -&gt; oz.<span class="fn">getWeight</span>() &gt; <span class="nb">5</span>
+);
+<span class="cm">// Affichage</span>
+<span class="kw">while</span> (it2.<span class="fn">hasNext</span>()) {
+    <span class="cl">System</span>.out.<span class="fn">println</span>(it2.<span class="fn">next</span>().<span class="fn">getNiceName</span>());
+}</code></pre>
+      <p>Le point clé : <code>it1</code> est passé en paramètre à <code>it2</code> → on empile les décorateurs.</p>
+    </div></div>
+  </div>
+
+  <!-- Q4.3 -->
+  <div class="q">
+    <div class="ql"><span class="qn">3</span><span>Complétez la méthode <code>next()</code> de la classe <code>MappingIterator&lt;T,R&gt;</code> (TD3) qui transforme chaque élément via une <code>Function&lt;T,R&gt;</code>. Le reste est fourni.</span><span class="qp">2 pts</span></div>
+    <span class="clbl">MappingIterator.java — à compléter</span>
+    <pre><code><span class="kw">public class</span> <span class="cl">MappingIterator</span>&lt;T,R&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;R&gt; {
+    <span class="kw">private</span> <span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> T&gt; iter;
+    <span class="kw">private</span> <span class="cl">Function</span>&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> R&gt; func;
+
+    <span class="kw">public</span> <span class="fn">MappingIterator</span>(<span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> T&gt; it, <span class="cl">Function</span>&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> R&gt; f)
+        { iter = it; func = f; }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> iter.<span class="fn">hasNext</span>(); }
+
+    <span class="kw">public</span> R <span class="fn">next</span>() {
+        <span class="todo">// À COMPLÉTER — 1 seule ligne</span>
+    }
+}
+<span class="cm">// Utilisation : afficher les noms des objets transportables d'une Room r</span>
+<span class="cl">Iterator</span>&lt;<span class="cl">String</span>&gt; itNoms = <span class="kw">new</span> <span class="cl">MappingIterator</span>&lt;&gt;(
+    <span class="kw">new</span> <span class="cl">FilterIterator</span>&lt;&gt;(r.<span class="fn">iterator</span>(), oz -&gt; oz.<span class="fn">isTransportable</span>()),
+    oz -&gt; oz.<span class="fn">getNiceName</span>()
+);</code></pre>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public</span> R <span class="fn">next</span>() {
+    <span class="kw">return</span> func.<span class="fn">apply</span>(iter.<span class="fn">next</span>());
+}</code></pre>
+      <p>La <code>Function</code> est la Strategy : elle encapsule la transformation. <code>MappingIterator</code> délègue à <code>iter</code> (Decorator) et transforme via <code>func</code> (Strategy).</p>
+    </div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════
+     EXERCICE 5 — STREAM
+══════════════════════════════════════ -->
+<div class="ex">
+  <div class="ex-hd">
+    <span class="ex-num">Exercice 5</span>
+    <span class="ex-title">Streams Java — Calculs sur les Room (TP4)</span>
+    <span class="ex-pts">6 points</span>
+  </div>
+
+  <p class="intro">On dispose de la classe <code>Room</code> avec ses méthodes <code>room.stream()</code>, <code>room.getNext(Direction d)</code> (renvoie null si pas de voisin), et de l'enum <code>Direction</code>.</p>
+
+  <!-- Q5.1 -->
+  <div class="q">
+    <div class="ql"><span class="qn">1</span><span>Complétez la méthode <code>countPred</code> qui compte le nombre d'<code>ObjetZork</code> d'une <code>Room p</code> satisfaisant un prédicat, en utilisant un Stream et <code>filter</code>+<code>count</code>.</span><span class="qp">1.5 pt</span></div>
+    <pre><code><span class="kw">public static int</span> <span class="fn">countPred</span>(<span class="cl">Room</span> p, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">ObjetZork</span>&gt; pred) {
+    <span class="todo">// À COMPLÉTER — 1 ligne avec Stream</span>
+}</code></pre>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public static int</span> <span class="fn">countPred</span>(<span class="cl">Room</span> p, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">ObjetZork</span>&gt; pred) {
+    <span class="kw">return</span> (<span class="kw">int</span>) p.<span class="fn">stream</span>().<span class="fn">filter</span>(pred).<span class="fn">count</span>();
+}</code></pre>
+    </div></div>
+  </div>
+
+  <!-- Q5.2 -->
+  <div class="q">
+    <div class="ql"><span class="qn">2</span><span>Complétez la méthode <code>choisirPiece</code> qui renvoie, dans un <code>Optional&lt;Room&gt;</code>, la salle voisine contenant le plus grand nombre d'<code>ObjetZork</code> satisfaisant le prédicat. Utilisez <code>Stream.of(Direction.values())</code>, <code>map</code>, <code>filter</code>, et vous pouvez vous appuyer sur <code>countPred</code>.</span><span class="qp">3 pts</span></div>
+    <pre><code><span class="kw">public static</span> <span class="cl">Optional</span>&lt;<span class="cl">Room</span>&gt; <span class="fn">choisirPiece</span>(<span class="cl">Room</span> current,
+                                              <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">ObjetZork</span>&gt; pred) {
+    <span class="todo">// À COMPLÉTER</span>
+}</code></pre>
+    <div class="hint"><strong>Aide</strong> Pour trouver le maximum avec Streams : <code>stream.max(Comparator)</code> renvoie un <code>Optional</code>. Vous pouvez utiliser <code>Comparator.comparingInt(...)</code>.</div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public static</span> <span class="cl">Optional</span>&lt;<span class="cl">Room</span>&gt; <span class="fn">choisirPiece</span>(<span class="cl">Room</span> current,
+                                              <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">ObjetZork</span>&gt; pred) {
+    <span class="kw">return</span> <span class="cl">Stream</span>.<span class="fn">of</span>(<span class="cl">Direction</span>.<span class="fn">values</span>())
+        .<span class="fn">map</span>(d -&gt; current.<span class="fn">getNext</span>(d))       <span class="cm">// Direction → Room (ou null)</span>
+        .<span class="fn">filter</span>(r -&gt; r != <span class="kw">null</span>)             <span class="cm">// Supprimer les null</span>
+        .<span class="fn">max</span>(<span class="cl">Comparator</span>.<span class="fn">comparingInt</span>(
+            r -&gt; <span class="fn">countPred</span>(r, pred)         <span class="cm">// Critère : nb d'objets satisfaisant pred</span>
+        ));
+}</code></pre>
+      <p><code>max()</code> est une opération terminale qui renvoie un <code>Optional&lt;Room&gt;</code>, vide si le Stream est vide (aucun voisin).</p>
+    </div></div>
+  </div>
+
+  <!-- Q5.3 -->
+  <div class="q">
+    <div class="ql"><span class="qn">3</span><span>Écrivez le code qui appelle <code>choisirPiece</code> depuis une <code>Room aRoom</code> pour trouver la salle voisine avec le plus de trésors (<code>Category.TRESOR</code>), et affiche son nom si elle existe, ou "Pas de salle voisine" sinon. Utilisez <code>Optional.ifPresentOrElse</code>.</span><span class="qp">1.5 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="fn">choisirPiece</span>(aRoom, oz -&gt; oz.<span class="fn">getCategory</span>() == <span class="cl">Category</span>.TRESOR)
+    .<span class="fn">ifPresentOrElse</span>(
+        r  -&gt; <span class="cl">System</span>.out.<span class="fn">println</span>(r),
+        ()  -&gt; <span class="cl">System</span>.out.<span class="fn">println</span>(<span class="st">"Pas de salle voisine"</span>)
+    );</code></pre>
+    </div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════
+     EXERCICE 6 — COMMAND + MVC
+══════════════════════════════════════ -->
+<div class="ex">
+  <div class="ex-hd">
+    <span class="ex-num">Exercice 6</span>
+    <span class="ex-title">MVC &amp; Command — TakeObject et GoCommand</span>
+    <span class="ex-pts">5 points</span>
+  </div>
+
+  <p class="intro">On utilise l'architecture MVC du TD5. Les interfaces sont :</p>
+  <span class="clbl">Interfaces disponibles</span>
+  <pre><code><span class="kw">public interface</span> <span class="cl">Command</span> { <span class="kw">void</span> <span class="fn">execute</span>(); }
+
+<span class="kw">public interface</span> <span class="cl">ListView</span>&lt;E&gt; {
+    <span class="kw">void</span> <span class="fn">show</span>();             <span class="cm">// Affiche la liste numérotée</span>
+    E    <span class="fn">readChoice</span>();      <span class="cm">// Lit et renvoie le choix de l'utilisateur</span>
+    <span class="kw">static</span> &lt;T&gt; <span class="cl">ListView</span>&lt;T&gt; <span class="fn">buildMenu</span>(<span class="cl">Iterable</span>&lt;T&gt; items) { <span class="cm">/* ... */</span> }
+    <span class="kw">void</span> <span class="fn">showMenu</span>();         <span class="cm">// Affiche le menu principal</span>
+}</code></pre>
+
+  <p class="intro">Le joueur (<code>Gamer</code>) expose les méthodes : <code>getCurrentRoom()</code>, <code>getInventory()</code>, <code>addToInventory(ObjetZork oz)</code>. La <code>Room</code> expose <code>remove(ObjetZork oz)</code>, <code>getNext(Direction d)</code>, et implémente <code>Iterable&lt;ObjetZork&gt;</code>.</p>
+
+  <!-- Q6.1 -->
+  <div class="q">
+    <div class="ql"><span class="qn">1</span><span>Classez dans le bon compartiment MVC chacune des classes : <code>Room</code>, <code>TakeObject</code>, <code>Gamer</code>, <code>ListView</code>, <code>ObjetZork</code>.</span><span class="qp">1 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <p><strong>Model :</strong> <code>Room</code>, <code>Gamer</code>, <code>ObjetZork</code> — gèrent les données, aucune interaction avec l'utilisateur.<br>
+      <strong>View :</strong> <code>ListView</code> — interagit directement avec l'utilisateur (affichage + lecture).<br>
+      <strong>Controller :</strong> <code>TakeObject</code> — fait le lien entre Model et View, exécute la commande.</p>
+    </div></div>
+  </div>
+
+  <!-- Q6.2 -->
+  <div class="q">
+    <div class="ql"><span class="qn">2</span><span>Définissez la classe <code>TakeObject</code> implémentant <code>Command</code> : sa méthode <code>execute()</code> affiche les objets de la pièce courante via <code>ListView</code>, lit le choix du joueur, retire l'objet de la pièce et l'ajoute à l'inventaire du joueur.</span><span class="qp">4 pts</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public class</span> <span class="cl">TakeObject</span> <span class="kw">implements</span> <span class="cl">Command</span> {
+    <span class="kw">private</span> <span class="cl">Gamer</span> gamer;
+
+    <span class="kw">public</span> <span class="fn">TakeObject</span>(<span class="cl">Gamer</span> gamer) {
+        <span class="kw">this</span>.gamer = gamer;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">execute</span>() {
+        <span class="cl">Room</span> currentRoom = gamer.<span class="fn">getCurrentRoom</span>();
+
+        <span class="cm">// View : construire et afficher la liste</span>
+        <span class="cl">ListView</span>&lt;<span class="cl">ObjetZork</span>&gt; menu = <span class="cl">ListView</span>.<span class="fn">buildMenu</span>(currentRoom);
+        menu.<span class="fn">show</span>();
+
+        <span class="cm">// View : lire le choix du joueur</span>
+        <span class="cl">ObjetZork</span> choix = menu.<span class="fn">readChoice</span>();
+
+        <span class="cm">// Model : modifier les données</span>
+        currentRoom.<span class="fn">remove</span>(choix);
+        gamer.<span class="fn">addToInventory</span>(choix);
+
+        <span class="cm">// View : réafficher le menu principal</span>
+        menu.<span class="fn">showMenu</span>();
+    }
+}</code></pre>
+      <p>Règle MVC respectée : seul le Controller (<code>TakeObject</code>) fait le lien. Le Model (<code>Room</code>, <code>Gamer</code>) n'appelle jamais la View.</p>
+    </div></div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ══════════════════════════════════════
+     EXERCICE 7 — BUILDER
+══════════════════════════════════════ -->
+<div class="ex">
+  <div class="ex-hd">
+    <span class="ex-num">Exercice 7</span>
+    <span class="ex-title">Pattern Builder — Construire une Room</span>
+    <span class="ex-pts">4 points</span>
+  </div>
+
+  <p class="intro">On veut créer des <code>Room</code> de façon lisible. Voici les attributs d'une <code>Room</code> avec leurs valeurs par défaut :</p>
+
+  <span class="clbl">Attributs d'une Room</span>
+  <pre><code><span class="cm">// Obligatoires</span>
+<span class="cl">String</span> shortName;              <span class="cm">// Nom court de la pièce</span>
+
+<span class="cm">// Optionnels (valeurs par défaut)</span>
+<span class="cl">String</span>  description = <span class="st">"Une pièce"</span>;
+<span class="kw">boolean</span> hasTrap     = <span class="kw">false</span>;   <span class="cm">// La pièce est-elle piégée ?</span>
+<span class="kw">int</span>     lightLevel  = <span class="nb">100</span>;     <span class="cm">// Niveau de luminosité (0–100)</span></code></pre>
+
+  <!-- Q7.1 -->
+  <div class="q">
+    <div class="ql"><span class="qn">1</span><span>Définissez la classe <code>RoomBuilder</code> avec son constructeur, ses méthodes <code>withXxx()</code> et sa méthode <code>build()</code>. Ajoutez au constructeur une validation : si <code>shortName</code> est null, lever une <code>NullPointerException</code>.</span><span class="qp">3 pts</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="kw">public class</span> <span class="cl">RoomBuilder</span> {
+    <span class="cl">String</span>  shortName;
+    <span class="cl">String</span>  description = <span class="st">"Une pièce"</span>;
+    <span class="kw">boolean</span> hasTrap     = <span class="kw">false</span>;
+    <span class="kw">int</span>     lightLevel  = <span class="nb">100</span>;
+
+    <span class="cm">// Constructeur : paramètres obligatoires seulement</span>
+    <span class="kw">public</span> <span class="fn">RoomBuilder</span>(<span class="cl">String</span> shortName) {
+        <span class="kw">if</span> (shortName == <span class="kw">null</span>) <span class="kw">throw new</span> <span class="cl">NullPointerException</span>();
+        <span class="kw">this</span>.shortName = shortName;
+    }
+
+    <span class="cm">// Méthodes optionnelles — renvoient this pour le chaînage</span>
+    <span class="kw">public</span> <span class="cl">RoomBuilder</span> <span class="fn">withDescription</span>(<span class="cl">String</span> d)  { description = d;    <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">RoomBuilder</span> <span class="fn">withTrap</span>()                    { hasTrap = <span class="kw">true</span>;     <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">RoomBuilder</span> <span class="fn">withLightLevel</span>(<span class="kw">int</span> l)         { lightLevel = l;     <span class="kw">return this</span>; }
+
+    <span class="cm">// build() : crée la Room finale</span>
+    <span class="kw">public</span> <span class="cl">Room</span> <span class="fn">build</span>() {
+        <span class="kw">return new</span> <span class="cl">Room</span>(<span class="kw">this</span>);
+    }
+}</code></pre>
+    </div></div>
+  </div>
+
+  <!-- Q7.2 -->
+  <div class="q">
+    <div class="ql"><span class="qn">2</span><span>Créez deux salles : <strong>"Donjon"</strong> (description "Une salle sombre", lightLevel 10, piégée) et <strong>"Bibliothèque"</strong> (description "Pleine de livres", lightLevel 80). Puis précisez quelle visibilité donner au constructeur de <code>Room</code> qui prend un <code>RoomBuilder</code>, et pourquoi.</span><span class="qp">1 pt</span></div>
+    <div class="rep"><div class="rep-lines">
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+      <div class="rep-line"></div><div class="rep-line"></div><div class="rep-line"></div>
+    </div></div>
+    <button class="btn-corr" onclick="tog(this)">▶ Voir la correction</button>
+    <div class="corr"><div class="corr-inner"><h4>Correction</h4>
+      <pre><code><span class="cl">Room</span> donjon = <span class="kw">new</span> <span class="cl">RoomBuilder</span>(<span class="st">"Donjon"</span>)
+    .<span class="fn">withDescription</span>(<span class="st">"Une salle sombre"</span>)
+    .<span class="fn">withLightLevel</span>(<span class="nb">10</span>)
+    .<span class="fn">withTrap</span>()
+    .<span class="fn">build</span>();
+
+<span class="cl">Room</span> biblio = <span class="kw">new</span> <span class="cl">RoomBuilder</span>(<span class="st">"Bibliothèque"</span>)
+    .<span class="fn">withDescription</span>(<span class="st">"Pleine de livres"</span>)
+    .<span class="fn">withLightLevel</span>(<span class="nb">80</span>)
+    .<span class="fn">build</span>();</code></pre>
+      <p>Le constructeur <code>Room(RoomBuilder b)</code> doit être <strong>package-private</strong> (sans modificateur). Il est accessible depuis <code>RoomBuilder</code> (même package), mais pas depuis des classes externes, ce qui force à passer par le Builder.</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- ══ BARÈME ══ -->
+<div class="bareme">
+  <h3>Récapitulatif du barème</h3>
+  <div class="bar-grid">
+    <div class="bar-row"><span class="bl">Ex. 1 — Iterator (FilterNotNull)</span><span class="bp">8 pts</span></div>
+    <div class="bar-row"><span class="bl">Ex. 2 — Singleton + Enum</span><span class="bp">6 pts</span></div>
+    <div class="bar-row"><span class="bl">Ex. 3 — Strategy (FilterArray)</span><span class="bp">7 pts</span></div>
+    <div class="bar-row"><span class="bl">Ex. 4 — Decorator (FilterIterator)</span><span class="bp">5 pts</span></div>
+    <div class="bar-row"><span class="bl">Ex. 5 — Streams (countPred, choisirPiece)</span><span class="bp">6 pts</span></div>
+    <div class="bar-row"><span class="bl">Ex. 6 — MVC + Command (TakeObject)</span><span class="bp">5 pts</span></div>
+    <div class="bar-row"><span class="bl">Ex. 7 — Builder (RoomBuilder)</span><span class="bp">4 pts</span></div>
+  </div>
+  <div class="bar-total"><span>TOTAL</span><span>41 points</span></div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+function tog(btn){
+  const d=btn.nextElementSibling;
+  const on=d.classList.toggle('on');
+  btn.textContent=on?'▼ Masquer la correction':'▶ Voir la correction';
+}
+</script>
+</body>
+</html>

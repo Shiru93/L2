@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corrigé — Programmation Impérative IV</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink:     #1a1a2e;
+    --mid:     #44445a;
+    --light:   #6b6b88;
+    --rule:    #c8c8d8;
+    --shade:   #f4f4f8;
+    --green:   #1a6b3a;
+    --green-bg:#eaf5ee;
+    --green-bd:#a8d8b8;
+    --red:     #8b1a1a;
+    --gold:    #7a5c00;
+    --gold-bg: #fdf6e0;
+    --code-bg: #f0f0f6;
+    --correct: #1a6b3a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 10.5pt;
+    color: var(--ink);
+    background: #dde0ea;
+    line-height: 1.65;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto;
+    background: #fff;
+    padding: 16mm 17mm;
+    box-shadow: 0 8px 48px rgba(0,0,0,.18);
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2.5px solid var(--ink);
+    padding-bottom: 9px;
+    margin-bottom: 12px;
+  }
+  .header-left { font-size: 8.5pt; color: var(--mid); line-height: 1.5; }
+  .header-center { text-align:center; }
+  .header-center .main { font-size: 11pt; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+  .header-center .sub  { font-size: 8pt; color: var(--light); letter-spacing: .1em; margin-top: 2px; }
+  .header-right {
+    background: #e8f5ee;
+    border: 1.5px solid var(--green-bd);
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--green);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* ── Title ── */
+  .title-block {
+    text-align: center;
+    margin: 10px 0 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .title-block h1 { font-size: 17pt; font-weight: 700; color: var(--ink); }
+  .title-block .badge {
+    display: inline-block;
+    background: var(--green);
+    color: #fff;
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-top: 5px;
+  }
+  .title-block .subtitle { font-size: 9pt; color: var(--mid); font-style: italic; margin-top: 4px; }
+
+  /* ── Exercice ── */
+  .exercise { margin-bottom: 24px; }
+  .exercise-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    background: var(--ink);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 12px;
+  }
+  .exercise-num { font-size: 7.5pt; letter-spacing: .15em; text-transform: uppercase; opacity: .7; }
+  .exercise-title { font-size: 11.5pt; font-weight: 700; flex: 1; }
+  .exercise-pts { font-family: 'JetBrains Mono', monospace; font-size: 9pt; color: #a8d8b8; }
+
+  /* ── Part ── */
+  .part { margin-bottom: 14px; }
+  .part-title {
+    font-size: 8.5pt; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--mid);
+    border-bottom: 1px dashed var(--rule);
+    padding-bottom: 3px; margin-bottom: 10px;
+  }
+
+  /* ── Question ── */
+  .q-block { margin-bottom: 14px; }
+  .q-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  .q-num {
+    font-weight: 700; font-size: 9.5pt; color: var(--ink);
+    background: var(--shade); border-radius: 3px;
+    padding: 1px 6px; white-space: nowrap;
+  }
+  .q-text { font-size: 10pt; flex: 1; }
+  .q-pts {
+    font-size: 8.5pt; color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; white-space: nowrap;
+    background: var(--gold-bg); padding: 1px 6px; border-radius: 3px;
+  }
+
+  /* ── Réponse ── */
+  .answer {
+    background: var(--green-bg);
+    border: 1.5px solid var(--green-bd);
+    border-left: 4px solid var(--correct);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin-left: 0;
+    position: relative;
+  }
+  .answer::before {
+    content: '✓';
+    position: absolute;
+    top: 8px; left: -20px;
+    color: var(--correct);
+    font-weight: 900;
+    font-size: 12pt;
+  }
+  .answer p { margin-bottom: 5px; font-size: 10pt; }
+  .answer p:last-child { margin-bottom: 0; }
+  .answer ul { padding-left: 18px; }
+  .answer li { margin-bottom: 3px; font-size: 10pt; }
+  .answer strong { color: var(--green); }
+
+  /* ── Code dans réponse ── */
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    background: #fff;
+    border: 1px solid var(--green-bd);
+    padding: 9px 12px;
+    margin: 7px 0 4px;
+    line-height: 1.55;
+    border-radius: 3px;
+    white-space: pre;
+    overflow-x: auto;
+    color: var(--ink);
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    background: rgba(255,255,255,.7);
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+
+  /* ── Arbre ASCII ── */
+  .tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    background: #fff;
+    border: 1px solid var(--green-bd);
+    padding: 10px 16px;
+    margin: 6px 0;
+    border-radius: 3px;
+    line-height: 1.6;
+    display: inline-block;
+  }
+  .tree .R { color: #c0392b; font-weight: 700; }  /* nœud rouge */
+  .tree .B { color: var(--ink); }                  /* nœud noir */
+
+  /* ── Tableau ── */
+  table {
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin: 8px 0;
+    width: 100%;
+  }
+  th {
+    background: var(--ink); color: #fff;
+    padding: 5px 10px;
+    font-size: 8.5pt; font-weight: 600; letter-spacing: .04em;
+    text-align: left;
+  }
+  td { padding: 5px 10px; border-bottom: 1px solid var(--rule); }
+  tr:nth-child(even) td { background: var(--shade); }
+  .total td { font-weight: 700; background: var(--gold-bg); }
+
+  /* ── Note / Piège ── */
+  .warn {
+    background: #fff8e8;
+    border-left: 3px solid #d4a017;
+    padding: 6px 10px;
+    font-size: 9pt;
+    color: #7a5c00;
+    margin: 6px 0;
+    border-radius: 0 3px 3px 0;
+  }
+  .points-note {
+    font-size: 8.5pt; color: var(--light);
+    font-style: italic; margin-top: 4px;
+  }
+
+  /* ── Barème final ── */
+  .bareme {
+    border: 2px solid var(--ink); border-radius: 4px;
+    overflow: hidden; margin-top: 20px;
+    page-break-inside: avoid;
+  }
+  .bareme-title {
+    background: var(--ink); color: #fff;
+    padding: 6px 14px; font-weight: 700;
+    font-size: 9pt; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .bareme table { margin: 0; }
+
+  .footer {
+    margin-top: 18px; padding-top: 8px;
+    border-top: 1px solid var(--rule);
+    display: flex; justify-content: space-between;
+    font-size: 8pt; color: var(--light);
+  }
+
+  @media print {
+    body { background: none; }
+    .page { margin: 0; box-shadow: none; width: 100%; padding: 12mm 15mm; }
+    pre, .answer { page-break-inside: avoid; }
+    .exercise { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      Université Sorbonne Paris Nord<br>
+      Institut Galilée — L2 Info<br>
+      Responsable : C. Tollu
+    </div>
+    <div class="header-center">
+      <div class="main">Programmation Impérative IV</div>
+      <div class="sub">Partiel — Session 2025–2026</div>
+    </div>
+    <div class="header-right">✦ CORRIGÉ OFFICIEL ✦</div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="title-block">
+    <h1>Corrigé du Partiel</h1>
+    <div class="badge">Version corrigée — À ne consulter qu'après avoir traité le sujet</div>
+    <div class="subtitle">Arbres binaires — Expressions arithmétiques — Heapsort — ABR — LLRBT</div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EX 1                                           -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">Exercice 1</span>
+      <span class="exercise-title">Arbres Binaires</span>
+      <span class="exercise-pts">8 pts</span>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie A — Théorie (4 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">1.a</span>
+          <span class="q-text">Définition inductive + relation nœuds internes / externes</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p>Un <strong>arbre binaire</strong> est défini inductivement :</p>
+          <ul>
+            <li><strong>Base :</strong> l'arbre vide (représenté par NULL) est un arbre binaire.</li>
+            <li><strong>Induction :</strong> si l et r sont des arbres binaires et v une étiquette, alors le triplet (l, v, r) est un arbre binaire (un nœud interne avec fils gauche l et fils droit r).</li>
+          </ul>
+          <p style="margin-top:6px;"><strong>Relation fondamentale :</strong> un arbre binaire de taille <em>n</em> (n nœuds internes) possède exactement <strong>n + 1 nœuds externes</strong>.</p>
+          <p><em>Preuve par induction : arbre vide → 0 interne, 1 externe ✓. Si la propriété est vraie pour l (n₁, n₁+1) et r (n₂, n₂+1), l'arbre obtenu a n₁+n₂+1 internes et (n₁+1)+(n₂+1) = n₁+n₂+2 = (n₁+n₂+1)+1 externes ✓</em></p>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">1.b</span>
+          <span class="q-text">Hauteur minimale et maximale pour n ≥ 1</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p><strong>Hauteur minimale</strong> = ⌊log₂ n⌋ — atteinte par un arbre <em>complet</em> (toutes les feuilles au même niveau ou au niveau inférieur), aussi appelé arbre parfaitement équilibré.</p>
+          <p><strong>Hauteur maximale</strong> = n − 1 — atteinte par une <em>liste chaînée</em> (chaque nœud n'a qu'un seul fils).</p>
+          <p><strong>Exemple pour n = 4 :</strong></p>
+          <div style="display:flex; gap:30px; flex-wrap:wrap; margin-top:4px;">
+            <div>
+              <div style="font-size:8.5pt;color:var(--mid);margin-bottom:3px;">Hauteur min = 2 (arbre complet)</div>
+              <div class="tree">
+    A<br>
+   / \<br>
+  B   C<br>
+ /<br>
+D</div>
+            </div>
+            <div>
+              <div style="font-size:8.5pt;color:var(--mid);margin-bottom:3px;">Hauteur max = 3 (liste)</div>
+              <div class="tree">
+A<br>
+ \<br>
+  B<br>
+   \<br>
+    C<br>
+     \<br>
+      D</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">1.c</span>
+          <span class="q-text">Arbres distincts de taille 3</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p>C₃ = <strong>5 arbres</strong> distincts :</p>
+          <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:4px; align-items:flex-end;">
+            <div><div class="tree">  o<br> / \<br>o   o<br>|<br>o</div><div style="font-size:8pt;text-align:center;color:var(--mid);">(1)</div></div>
+            <div><div class="tree">  o<br> / \<br>o   o<br>    |<br>    o</div><div style="font-size:8pt;text-align:center;color:var(--mid);">(2)</div></div>
+            <div><div class="tree">o<br>|\<br>o  o<br>|<br>o</div><div style="font-size:8pt;text-align:center;color:var(--mid);">(3)</div></div>
+            <div><div class="tree">o<br> \<br>  o<br>  |\<br>  o  o</div><div style="font-size:8pt;text-align:center;color:var(--mid);">(4)</div></div>
+            <div><div class="tree">    o<br>   /<br>  o<br> / \<br>o   o</div><div style="font-size:8pt;text-align:center;color:var(--mid);">(5)</div></div>
+          </div>
+          <div class="warn" style="margin-top:8px;">⚠ Les étiquettes ne comptent pas pour distinguer les formes — seule la structure topologique est considérée.</div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">1.d</span>
+          <span class="q-text">Récurrence des nombres de Catalan, calcul de C₄</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p><strong>Récurrence :</strong> C₀ = 1,  et pour n ≥ 0 :</p>
+          <p style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:10pt; margin:4px 0;">C_{n+1} = Σ_{k=0}^{n} C_k · C_{n-k}</p>
+          <p><em>(la racine sépare un sous-arbre gauche de taille k et un droit de taille n−k, pour k de 0 à n)</em></p>
+          <p><strong>Calcul :</strong> C₀=1, C₁=1, C₂=2, C₃=5</p>
+          <p>C₄ = C₀·C₃ + C₁·C₂ + C₂·C₁ + C₃·C₀ = 1×5 + 1×2 + 2×1 + 5×1 = <strong>14</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie B — Programmation C (4 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">1.e</span>
+          <span class="q-text"><code>int sum_binary_tree(link h)</code></span>
+          <span class="q-pts">2 pts</span>
+        </div>
+        <div class="answer">
+<pre>int sum_binary_tree(link h) {
+    if (h == NULL)
+        return 0;                          /* arbre vide : somme = 0 */
+    return h->label
+         + sum_binary_tree(h->left)
+         + sum_binary_tree(h->right);
+}</pre>
+          <div class="points-note">1 pt : cas de base correct. 1 pt : appels récursifs gauche + droite + étiquette.</div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">1.f</span>
+          <span class="q-text"><code>int height_binary_tree(link h)</code></span>
+          <span class="q-pts">2 pts</span>
+        </div>
+        <div class="answer">
+<pre>int height_binary_tree(link h) {
+    if (h == NULL)
+        return -1;                         /* arbre vide : hauteur = -1 */
+    int hl = height_binary_tree(h->left);
+    int hr = height_binary_tree(h->right);
+    return 1 + (hl > hr ? hl : hr);       /* 1 + max(gauche, droite) */
+}</pre>
+          <div class="points-note">1 pt : cas de base −1. 1 pt : formule 1 + max(hg, hd). Accepté aussi : utiliser une fonction max séparée.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EX 2                                           -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">Exercice 2</span>
+      <span class="exercise-title">Expressions Arithmétiques Préfixées</span>
+      <span class="exercise-pts">9 pts</span>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie A — Compréhension (3 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">2.a</span>
+          <span class="q-text">Arbre et valeur de <code>* + 3 4 - 8 2</code></span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <div class="tree">
+       *<br>
+      / \<br>
+     +   -<br>
+    / \ / \<br>
+   3  4 8  2</div>
+          <p><strong>Valeur :</strong> (3+4) × (8−2) = 7 × 6 = <strong>42</strong></p>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">2.b</span>
+          <span class="q-text">Expression préfixe et infixe de l'arbre donné</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p><strong>Notation préfixe :</strong> <code>+ * 2 3 5</code></p>
+          <p><strong>Notation infixe (avec parenthèses) :</strong> <code>((2*3)+5)</code></p>
+          <p><em>Valeur : (2×3)+5 = 11</em></p>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">2.c</span>
+          <span class="q-text">Pourquoi <code>const char**</code> et non <code>const char*</code> ?</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p>Avec <code>char*</code>, le paramètre est passé <strong>par valeur</strong> : chaque appel récursif reçoit une <em>copie</em> du pointeur. Avancer ce pointeur n'affecte pas les autres appels — le curseur ne progresse pas globalement.</p>
+          <p>Avec <code>char**</code>, on passe l'<strong>adresse du pointeur</strong>. Tous les appels récursifs partagent le <em>même</em> curseur :</p>
+          <ul>
+            <li><code>**s</code> → lit le caractère courant</li>
+            <li><code>(*s)++</code> → avance le curseur, visible par tous les appels</li>
+          </ul>
+          <p>Sans cela, chaque appel recommencerait à lire depuis la même position, causant une boucle infinie ou un résultat faux.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie B — Programmation C (6 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">2.d</span>
+          <span class="q-text"><code>parse_aux</code> et <code>parse_expr</code></span>
+          <span class="q-pts">3 pts</span>
+        </div>
+        <div class="answer">
+<pre>static link parse_aux(const char **s) {
+    /* Ignorer les espaces */
+    while (**s == ' ') (*s)++;
+
+    char c = **s;
+    (*s)++;                          /* avancer d'un caractère */
+
+    if (c == '+' || c == '-' || c == '*' || c == '/') {
+        link left  = parse_aux(s);   /* parser le fils gauche */
+        link right = parse_aux(s);   /* parser le fils droit  */
+        return cons_binary_tree(c, left, right);
+    } else {
+        /* c est un chiffre : créer une feuille */
+        return cons_binary_tree(c, NULL, NULL);
+    }
+}
+
+link parse_expr(const char *s) {
+    return parse_aux(&s);            /* passe l'ADRESSE du pointeur */
+}</pre>
+          <div class="points-note">1 pt : <code>&s</code> dans parse_expr. 1 pt : <code>(*s)++</code> correct. 1 pt : récursion gauche puis droite pour les opérateurs.</div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">2.e</span>
+          <span class="q-text"><code>int eval_tree(link h)</code></span>
+          <span class="q-pts">3 pts</span>
+        </div>
+        <div class="answer">
+<pre>int eval_tree(link h) {
+    /* Cas de base : feuille (chiffre) */
+    if (h->left == NULL && h->right == NULL)
+        return h->label - '0';       /* convertir char -> int */
+
+    /* Cas récursif : nœud opérateur */
+    int l = eval_tree(h->left);
+    int r = eval_tree(h->right);
+
+    switch (h->label) {
+        case '+': return l + r;
+        case '-': return l - r;
+        case '*': return l * r;
+        case '/': return l / r;      /* division entière */
+    }
+    return -1;                       /* ne devrait pas arriver */
+}</pre>
+          <div class="points-note">1 pt : cas de base (<code>- '0'</code>). 1 pt : appels récursifs l et r. 1 pt : les 4 opérateurs correctement branchés.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EX 3                                           -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">Exercice 3</span>
+      <span class="exercise-title">Tri par Tas (Heapsort)</span>
+      <span class="exercise-pts">8 pts</span>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie A — Théorie (4 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">3.a</span>
+          <span class="q-text">Propriété du tas-max + formules</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p><strong>Propriété tas-max :</strong> pour tout nœud d'indice i, <code>a[i] ≥ a[2i]</code> et <code>a[i] ≥ a[2i+1]</code> (l'étiquette de chaque nœud est supérieure ou égale à celles de ses fils).</p>
+          <p><strong>Formules (base 1) :</strong></p>
+          <ul>
+            <li>Fils gauche de i : <code>2i</code></li>
+            <li>Fils droit de i  : <code>2i + 1</code></li>
+            <li>Parent de i      : <code>⌊i/2⌋</code></li>
+          </ul>
+          <p>Structure : un arbre binaire <strong>complet</strong> (toutes les feuilles au même niveau ou au niveau inférieur, complété de gauche à droite).</p>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">3.b</span>
+          <span class="q-text">Simulation de <code>buildHeap</code> sur [4, 10, 3, 5, 1, 2, 6]</span>
+          <span class="q-pts">2 pts</span>
+        </div>
+        <div class="answer">
+          <p>La dernière feuille interne est à l'indice ⌊7/2⌋ = 3. On appelle fixHeap de i=3 à i=1.</p>
+<pre>Tableau initial :  [_, 4, 10, 3, 5, 1, 2, 6]
+                        1   2  3  4  5  6  7
+
+i=3 : a[3]=3, fils gauche a[6]=2, fils droit a[7]=6
+      max fils = a[7]=6 > a[3]=3 → swap(3,7)
+      [_, 4, 10, 6, 5, 1, 2, 3]
+
+i=2 : a[2]=10, fils a[4]=5, a[5]=1
+      max fils = a[4]=5 < a[2]=10 → rien
+      [_, 4, 10, 6, 5, 1, 2, 3]
+
+i=1 : a[1]=4, fils a[2]=10, a[3]=6
+      max fils = a[2]=10 > a[1]=4 → swap(1,2)
+      [_, 10, 4, 6, 5, 1, 2, 3]
+      Descendre a[2]=4 : fils a[4]=5, a[5]=1
+      max fils = a[4]=5 > a[2]=4 → swap(2,4)
+      [_, 10, 5, 6, 4, 1, 2, 3]
+      Descendre a[4]=4 : fils a[8], a[9] → n'existent pas → stop
+
+Résultat final (tas-max) : [_, 10, 5, 6, 4, 1, 2, 3]</pre>
+          <div class="warn">⚠ Vérifier : 10≥5 ✓, 10≥6 ✓, 5≥4 ✓, 5≥1 ✓, 6≥2 ✓, 6≥3 ✓ → c'est bien un tas-max.</div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">3.c</span>
+          <span class="q-text">Pourquoi <code>buildHeap</code> est O(n) et non O(n log n) ?</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p>On appelle <code>fixHeap</code> sur les ⌊n/2⌋ nœuds internes, de bas en haut. Mais tous ces appels ne font pas O(log n) travail chacun : les nœuds proches des feuilles descendent très peu.</p>
+          <p>Analyse précise : il y a au plus ⌈n/2^(h+1)⌉ nœuds à hauteur h, et fixHeap y coûte O(h). La somme vaut :</p>
+          <p style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:9pt;">Σ_{h=0}^{log n} h · n/2^h = O(n · Σ h/2^h) = O(n · 2) = <strong>O(n)</strong></p>
+          <p>car la série Σ h/2^h converge vers 2.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie B — Programmation C (4 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">3.d</span>
+          <span class="q-text"><code>void fixHeap(int *a, int l, int r, int i)</code></span>
+          <span class="q-pts">4 pts</span>
+        </div>
+        <div class="answer">
+<pre>void swap(int *a, int i, int j) {
+    int tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+}
+
+void fixHeap(int *a, int l, int r, int i) {
+    while (1) {
+        /* Calculer les indices des fils dans le sous-tableau a[l..r] */
+        int left  = l + 2*(i - l) + 1;
+        int right = l + 2*(i - l) + 2;
+
+        /* Trouver le plus grand parmi i, fils gauche, fils droit */
+        int largest = i;
+        if (left  <= r && a[left]  > a[largest]) largest = left;
+        if (right <= r && a[right] > a[largest]) largest = right;
+
+        /* Si i est déjà le plus grand, le tas est restauré */
+        if (largest == i) break;
+
+        /* Sinon, échanger et continuer la descente */
+        swap(a, i, largest);
+        i = largest;
+    }
+}</pre>
+          <div class="points-note">1 pt : formule fils gauche/droit correcte. 1 pt : calcul du plus grand des 3. 1 pt : condition d'arrêt correcte. 1 pt : boucle itérative (accepté aussi : récursif).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EX 4                                           -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">Exercice 4</span>
+      <span class="exercise-title">Arbres Binaires de Recherche (ABR)</span>
+      <span class="exercise-pts">9 pts</span>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie A — Théorie (3 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">4.a</span>
+          <span class="q-text">Insertion de F, B, H, A, D, G, I + parcours infixe</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+<pre>Insertion dans l'ordre F, B, H, A, D, G, I :
+
+          F
+         / \
+        B   H
+       / \ / \
+      A  D G  I</pre>
+          <p><strong>Parcours infixe :</strong> A B D F G H I <em>(ordre alphabétique — propriété ABR)</em></p>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">4.b</span>
+          <span class="q-text">Suppression de F (la racine) via <code>join_BST</code></span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p><strong>Étapes :</strong></p>
+          <ul>
+            <li>On identifie L = sous-arbre gauche de F = {B, A, D} et R = sous-arbre droit de F = {H, G, I}</li>
+            <li>On libère le nœud F (<code>free(h)</code>)</li>
+            <li>On appelle <code>join_BST(L, R)</code> : on amène le minimum de R à la racine via <code>partition_BST(R, 0)</code></li>
+            <li>Le minimum de R est G (rang 0 dans {H, G, I}). Après partition, G est à la racine de R.</li>
+            <li>G.left ← L</li>
+          </ul>
+<pre>Arbre résultant :
+
+          G
+         / \
+        B   H
+       / \   \
+      A   D   I</pre>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">4.c</span>
+          <span class="q-text">Rôle de <code>partition_BST(h, k)</code></span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p><code>partition_BST(h, k)</code> amène le nœud de <strong>rang k</strong> (le (k+1)-ème plus petit) à la racine, en restructurant l'arbre par des rotations.</p>
+          <p><strong>Briques :</strong> <code>size_BST</code> (pour calculer le rang de la racine courante) + <code>rotate_left</code> / <code>rotate_right</code> (pour faire monter le bon nœud).</p>
+          <p><strong>Complexité :</strong> O(n) dans le pire cas (arbre dégénéré), O(log n) en moyenne. La propriété ABR est conservée.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie B — Programmation C (6 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">4.d</span>
+          <span class="q-text"><code>link partition_BST(link h, int k)</code></span>
+          <span class="q-pts">3 pts</span>
+        </div>
+        <div class="answer">
+<pre>link partition_BST(link h, int k) {
+    int t = size_BST(h->left);    /* rang de la racine courante */
+
+    if (k < t) {
+        /* Le nœud voulu est dans le sous-arbre gauche */
+        h->left  = partition_BST(h->left, k);
+        h = rotate_right(h);       /* faire monter le fils gauche */
+    } else if (k > t) {
+        /* Le nœud voulu est dans le sous-arbre droit */
+        h->right = partition_BST(h->right, k - t - 1);
+        h = rotate_left(h);        /* faire monter le fils droit */
+    }
+    /* k == t : la racine courante a déjà rang k → rien à faire */
+    return h;
+}</pre>
+          <div class="points-note">1 pt : calcul de t = size_BST(h->left). 1 pt : récursion correcte sur gauche/droite. 1 pt : rotations dans le bon sens avec k−t−1 pour la droite.</div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">4.e</span>
+          <span class="q-text"><code>link join_BST(link L, link R)</code></span>
+          <span class="q-pts">3 pts</span>
+        </div>
+        <div class="answer">
+<pre>link join_BST(link L, link R) {
+    if (L == NULL) return R;       /* cas de base : L vide */
+    if (R == NULL) return L;       /* cas de base : R vide */
+
+    /* Amener le minimum de R (rang 0) à la racine de R */
+    R = partition_BST(R, 0);
+
+    /* Accrocher L comme fils gauche du nouveau minimum */
+    R->left = L;
+
+    return R;
+    /* Pas d'allocation : on réutilise les nœuds existants */
+}</pre>
+          <div class="points-note">1 pt : cas de base L ou R NULL. 1 pt : <code>partition_BST(R, 0)</code> amène le min. 1 pt : <code>R->left = L</code> et retour sans free ni malloc.</div>
+          <div class="warn">⚠ Erreur fréquente : appeler partition_BST(L, size_BST(L)-1) au lieu de partition_BST(R, 0). Les deux fonctionnent mais la version avec R est plus simple.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EX 5                                           -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-num">Exercice 5</span>
+      <span class="exercise-title">LLRBT — Left-Leaning Red-Black Tree</span>
+      <span class="exercise-pts">6 pts</span>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie A — Théorie (3 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">5.a</span>
+          <span class="q-text">Les 5 propriétés du LLRBT + borne sur la hauteur</span>
+          <span class="q-pts">2 pts</span>
+        </div>
+        <div class="answer">
+          <ul>
+            <li><strong>P1 :</strong> La propriété ABR est vérifiée (clés gauche &lt; racine ≤ clés droite).</li>
+            <li><strong>P2 :</strong> Un lien rouge penche <em>toujours à gauche</em> : il n'y a jamais de lien rouge allant vers un fils droit.</li>
+            <li><strong>P3 :</strong> Il n'y a jamais deux liens rouges consécutifs (pas de double-rouge sur un même chemin).</li>
+            <li><strong>P4 :</strong> La racine est toujours noire.</li>
+            <li><strong>P5 :</strong> Tous les chemins de la racine vers les feuilles contiennent le même nombre de liens noirs (propriété de hauteur noire parfaite).</li>
+          </ul>
+          <p><strong>Borne sur la hauteur :</strong> la hauteur noire h<sub>n</sub> donne 2^h<sub>n</sub> ≤ n+1, donc h<sub>n</sub> ≤ log₂(n+1). La hauteur totale est au plus 2×h<sub>n</sub> (alternance rouge-noir), donc :</p>
+          <p style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:10pt; margin:4px 0;"><strong>hauteur ≤ 2·log₂(n+1)</strong></p>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">5.b</span>
+          <span class="q-text">Correspondance LLRBT ↔ arbre 2-3</span>
+          <span class="q-pts">1 pt</span>
+        </div>
+        <div class="answer">
+          <p>Un LLRBT encode un <strong>arbre 2-3</strong> (sans 4-nœuds) :</p>
+          <ul>
+            <li>Un <strong>2-nœud</strong> (une clé, deux fils) correspond à un nœud noir sans fils gauche rouge.</li>
+            <li>Un <strong>3-nœud</strong> (deux clés a &lt; b, trois fils) est encodé par un nœud noir b dont le fils gauche est un nœud rouge a. Les trois sous-arbres de a et b deviennent les trois fils du 3-nœud.</li>
+          </ul>
+          <p>Le lien rouge représente une "fusion" de deux nœuds BST en un seul nœud 2-3. Incliner à gauche impose un encodage canonique unique.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="part">
+      <div class="part-title">Partie B — Simulation : insertion de S, E, A, R, C, H (3 pts)</div>
+
+      <div class="q-block">
+        <div class="q-header">
+          <span class="q-num">5.c</span>
+          <span class="q-text">Simulation complète</span>
+          <span class="q-pts">3 pts</span>
+        </div>
+        <div class="answer">
+          <div class="warn">Convention : (R) = nœud rouge, (B) = nœud noir. On insère toujours en rouge ; la racine est rendue noire après chaque insertion.</div>
+
+<pre>── Insérer S ──────────────────────────────
+  S(B)   ← racine rendue noire. Aucune correction.
+
+── Insérer E ──────────────────────────────
+  S(B)          E est &lt; S → fils gauche rouge
+ /
+E(R)
+  ✓ Pas de correction nécessaire.
+
+── Insérer A ──────────────────────────────
+  S(B)          A est &lt; E → fils gauche de E
+ /
+E(R)
+ /
+A(R)   ← DOUBLE ROUGE à gauche !
+
+  [rotate_right(S)] :
+  E(R)
+ / \
+A(R) S(B)   ← rouge à gauche consécutif résolu mais E(R) remonte
+
+  E est maintenant rouge ET a deux fils rouges (A rouge, S rouge) :
+  [color_flip(E)] :
+  E(B)
+ / \
+A(R) S(R)   puis racine → E(B) ✓
+
+── Insérer R ──────────────────────────────
+  E(B)         R est entre E et S → R va à droite de E, gauche de S
+ / \
+A(R) S(B)
+    /
+   R(R)
+  S a un fils gauche rouge R et un fils droit absent → OK (penche à gauche ✓)
+  Pas de correction.
+
+── Insérer C ──────────────────────────────
+  E(B)
+ / \
+A(R) S(B)   C est entre A et E → fils droit de A
+    /
+   R(R)
+A a un fils droit rouge C :
+  [rotate_left(A)] :
+  E(B)
+ / \
+C(R) S(B)   C monte, A descend à gauche
+/         /
+A(R)     R(R)
+
+  C a deux fils rouges A et... non, A est seul fils gauche.
+  C(R) avec fils gauche A(R) = double rouge à gauche !
+  [rotate_right(E)] :
+  C(R)
+ / \
+A(R) E(B)
+      \
+      S(B)
+       /
+      R(R)
+
+  C a deux fils rouges A et E :
+  [color_flip(C)] :
+  C(B)
+ / \
+A(B) E(R)
+      \
+      S(B)
+       /
+      R(R)
+  Racine → C(B) ✓
+
+── Insérer H ──────────────────────────────
+  C(B)
+ / \
+A(B) E(R)    H est entre E et S → fils gauche de S (H &lt; S et H &gt; R)
+      \
+      S(B)   H &gt; R donc fils droit de R
+       /
+      R(R)
+        \
+        H(R)  ← rouge à droite !
+
+  [rotate_left(R)] :
+  R remplace H, R passe à gauche de H :
+      S(B)
+     /
+    H(R)
+   /
+  R(R)   ← double rouge à gauche !
+
+  [rotate_right(S)] :
+      H(R)
+     / \
+    R(R) S(B)
+
+  H a deux fils rouges → [color_flip(H)] :
+      H(B)
+     / \
+    R(B) S(B)   H remonte dans l'arbre principal...
+
+  E a maintenant un fils droit H(B) rouge → non, H est noir.
+  E avait fils droit S(B) qui est devenu H(B)... OK.
+
+Arbre final après S, E, A, R, C, H :
+
+        C(B)
+       / \
+      A(B) E(R)
+              \
+              H(B)
+             / \
+            R(B) S(B)</pre>
+          <p style="margin-top:6px;"><strong>Vérification :</strong> parcours infixe = A C E H R S ✓ (ordre alphabétique)</p>
+          <div class="points-note">1 pt : insertions S, E, A correctes avec corrections. 1 pt : insertions R, C correctes. 1 pt : insertion H correcte.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARÈME -->
+  <div class="bareme">
+    <div class="bareme-title">Barème récapitulatif</div>
+    <table>
+      <thead><tr><th>Exercice</th><th>Thème</th><th>Détail</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Arbres binaires</td><td>1+1+1+1 (théorie) + 2+2 (code)</td><td>8</td></tr>
+        <tr><td>2</td><td>Expressions préfixées</td><td>1+1+1 (compréhension) + 3+3 (code)</td><td>9</td></tr>
+        <tr><td>3</td><td>Heapsort</td><td>1+2+1 (théorie) + 4 (code)</td><td>8</td></tr>
+        <tr><td>4</td><td>ABR</td><td>1+1+1 (théorie) + 3+3 (code)</td><td>9</td></tr>
+        <tr><td>5</td><td>LLRBT</td><td>2+1 (théorie) + 3 (simulation)</td><td>6</td></tr>
+        <tr class="total"><td colspan="3"><strong>TOTAL</strong></td><td><strong>40</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span>Prog4 — Corrigé Partiel 2025–2026</span>
+    <span>Institut Galilée — Université Sorbonne Paris Nord</span>
+    <span>C. Tollu</span>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révision POO2 – Design Patterns</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1b1f2b;
+    --border: #252937;
+    --accent: #7c6af7;
+    --accent2: #f26cf5;
+    --accent3: #3de8c0;
+    --accent4: #f5a623;
+    --text: #e2e4ef;
+    --muted: #7a7f9a;
+    --code-bg: #0a0c12;
+    --green: #3de8a0;
+    --red: #f26c6c;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #1a0f3c 0%, #0d1a2e 50%, #0d0f14 100%);
+    padding: 60px 40px 50px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,106,247,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  header p { color: var(--muted); font-size: 1rem; }
+  header .subtitle { color: var(--accent3); font-size: 0.85rem; margin-top: 4px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,15,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex; align-items: center;
+    overflow-x: auto; gap: 4px;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a {
+    display: inline-block;
+    padding: 14px 16px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    letter-spacing: 0.04em;
+  }
+  nav a:hover { color: var(--text); border-bottom-color: var(--accent); }
+  nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── MAIN LAYOUT ── */
+  main { max-width: 920px; margin: 0 auto; padding: 48px 24px 100px; }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 80px; scroll-margin-top: 60px; }
+  .section-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-number {
+    width: 44px; height: 44px; min-width: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .section-header h2 { font-size: 1.6rem; font-weight: 800; }
+  .badge {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
+    display: inline-block; margin-left: auto;
+  }
+
+  /* Colors per section */
+  .s1 .section-number { background: rgba(124,106,247,0.2); color: var(--accent); }
+  .s1 .badge { background: rgba(124,106,247,0.15); color: var(--accent); }
+  .s2 .section-number { background: rgba(242,108,245,0.2); color: var(--accent2); }
+  .s2 .badge { background: rgba(242,108,245,0.15); color: var(--accent2); }
+  .s3 .section-number { background: rgba(61,232,192,0.2); color: var(--accent3); }
+  .s3 .badge { background: rgba(61,232,192,0.15); color: var(--accent3); }
+  .s4 .section-number { background: rgba(245,166,35,0.2); color: var(--accent4); }
+  .s4 .badge { background: rgba(245,166,35,0.15); color: var(--accent4); }
+  .s5 .section-number { background: rgba(61,232,160,0.2); color: var(--green); }
+  .s5 .badge { background: rgba(61,232,160,0.15); color: var(--green); }
+  .s6 .section-number { background: rgba(242,108,108,0.2); color: var(--red); }
+  .s6 .badge { background: rgba(242,108,108,0.15); color: var(--red); }
+  .s7 .section-number { background: rgba(200,180,255,0.2); color: #c8b4ff; }
+  .s7 .badge { background: rgba(200,180,255,0.15); color: #c8b4ff; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card h3 {
+    font-size: 1.05rem; font-weight: 700;
+    margin-bottom: 12px; color: var(--text);
+  }
+  .card p, .card li { font-size: 0.95rem; color: #c8cbdf; line-height: 1.75; }
+  .card ul, .card ol { padding-left: 20px; }
+  .card li { margin-bottom: 6px; }
+
+  /* ── CALLOUTS ── */
+  .callout {
+    border-left: 3px solid;
+    background: var(--surface2);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 0.92rem;
+  }
+  .callout.idea { border-color: var(--accent3); }
+  .callout.warn { border-color: var(--accent4); }
+  .callout.exam { border-color: var(--accent2); }
+  .callout strong { display: block; margin-bottom: 4px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .callout.idea strong { color: var(--accent3); }
+  .callout.warn strong { color: var(--accent4); }
+  .callout.exam strong { color: var(--accent2); }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    overflow-x: auto;
+    margin: 16px 0;
+    position: relative;
+  }
+  pre code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #cdd6f4;
+  }
+  .code-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 5px 14px;
+    display: inline-block;
+    margin-bottom: -1px;
+    margin-top: 16px;
+  }
+  /* Syntax highlight colors */
+  .kw { color: #cba6f7; }   /* keywords */
+  .cl { color: #89dceb; }   /* class names */
+  .fn { color: #89b4fa; }   /* functions */
+  .st { color: #a6e3a1; }   /* strings */
+  .cm { color: #585b70; font-style: italic; }  /* comments */
+  .nb { color: #fab387; }   /* numbers */
+  .an { color: #f38ba8; }   /* annotations */
+
+  /* ── TWO COLUMNS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-table {
+    width: 100%; border-collapse: collapse;
+    margin: 20px 0; font-size: 0.88rem;
+  }
+  .compare-table th {
+    background: var(--surface2); color: var(--muted);
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 10px 14px; text-align: left; font-weight: 700;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-table td {
+    padding: 10px 14px; border-bottom: 1px solid #1e2130;
+    vertical-align: top; color: #c8cbdf;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: var(--surface2); }
+
+  /* ── QUIZ ── */
+  .quiz-container { margin-top: 12px; }
+  .quiz-q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .quiz-q p { font-size: 0.95rem; margin-bottom: 14px; font-weight: 600; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+    text-align: left;
+  }
+  .quiz-opt:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-opt.correct { border-color: var(--green); background: rgba(61,232,160,0.1); color: var(--green); }
+  .quiz-opt.wrong { border-color: var(--red); background: rgba(242,108,108,0.1); color: var(--red); }
+  .quiz-explanation {
+    margin-top: 10px; font-size: 0.85rem;
+    color: var(--muted); display: none;
+    padding: 10px 14px;
+    background: var(--code-bg);
+    border-radius: 6px;
+    border-left: 2px solid var(--accent3);
+  }
+
+  /* ── TAGS ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .tag {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em;
+    padding: 4px 12px; border-radius: 20px;
+    background: var(--surface2); color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ── PATTERN CARD ── */
+  .pattern-overview {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px; margin: 24px 0;
+  }
+  @media (max-width: 680px) { .pattern-overview { grid-template-columns: 1fr; } }
+  .pattern-mini {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+    font-size: 0.85rem;
+  }
+  .pattern-mini .pm-title { font-weight: 800; font-size: 0.9rem; margin-bottom: 6px; }
+  .pattern-mini .pm-cat { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 8px; }
+  .pattern-mini .pm-desc { color: #9fa3bb; line-height: 1.5; }
+
+  /* ── SCROLLTOP ── */
+  .top-btn {
+    position: fixed; bottom: 28px; right: 28px;
+    background: var(--accent); color: white;
+    border: none; border-radius: 50%;
+    width: 44px; height: 44px;
+    font-size: 1.2rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(124,106,247,0.4);
+    transition: transform 0.2s;
+  }
+  .top-btn:hover { transform: translateY(-2px); }
+
+  /* ── PROGRESS SUMMARY ── */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px; margin: 24px 0;
+  }
+  .summary-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .summary-item .s-num { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .summary-item .s-title { font-weight: 700; font-size: 0.92rem; }
+  .summary-item .s-cat { font-size: 0.78rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>POO2 — Design Patterns</h1>
+  <p>Guide de révision complet · Université Paris 13 · Marc Champesme</p>
+  <div class="subtitle">7 patterns · cours + TD + exemples + quiz</div>
+</header>
+
+<nav>
+  <a href="#intro">Intro</a>
+  <a href="#iterator">1. Iterator</a>
+  <a href="#singleton">2. Singleton/Enum</a>
+  <a href="#strategy">3. Strategy</a>
+  <a href="#decorator">4. Decorator</a>
+  <a href="#stream">5. Stream</a>
+  <a href="#command">6. Command/MVC</a>
+  <a href="#builder">7. Builder</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<main>
+
+<!-- ════════════════════════════════
+  INTRO
+════════════════════════════════ -->
+<section id="intro">
+  <div class="section-header">
+    <div class="section-number" style="background:rgba(100,200,255,0.15);color:#64c8ff">📚</div>
+    <h2>Introduction aux Design Patterns</h2>
+  </div>
+
+  <div class="card">
+    <h3>C'est quoi un design pattern ?</h3>
+    <p>Un <strong>design pattern</strong> (ou <em>motif de conception</em>) est une <strong>solution réutilisable</strong> à un problème de conception courant. Ce n'est pas du code copier-coller, c'est une <em>recette</em> : une façon bien connue de structurer ton code pour qu'il soit plus facile à maintenir et à faire évoluer.</p>
+  </div>
+
+  <div class="callout idea">
+    <strong>Analogie</strong>
+    Imagine que tu cuisines : un design pattern c'est comme une recette. Tu n'inventes pas à chaque fois comment faire une béchamel — tu suis la recette éprouvée. En programmation, pareil.
+  </div>
+
+  <p style="margin: 20px 0 12px; color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;">Les 3 catégories de patterns dans ce cours</p>
+  <div class="pattern-overview">
+    <div class="pattern-mini">
+      <div class="pm-cat">Création</div>
+      <div class="pm-title" style="color:#f26cf5">Singleton</div>
+      <div class="pm-desc">Comment créer des objets de façon contrôlée (ici : garantir qu'il n'existe qu'<em>une seule</em> instance)</div>
+    </div>
+    <div class="pattern-mini">
+      <div class="pm-cat">Structure</div>
+      <div class="pm-title" style="color:#f5a623">Decorator · Builder</div>
+      <div class="pm-desc">Comment assembler des objets entre eux pour former des structures plus complexes</div>
+    </div>
+    <div class="pattern-mini">
+      <div class="pm-cat">Comportement</div>
+      <div class="pm-title" style="color:#7c6af7">Iterator · Strategy · Command</div>
+      <div class="pm-desc">Comment les objets communiquent et se partagent les responsabilités</div>
+    </div>
+  </div>
+
+  <p style="margin: 24px 0 12px; color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;">Vue d'ensemble des 7 patterns du cours</p>
+  <div class="summary-grid">
+    <div class="summary-item"><span class="s-num">Pattern 1</span><span class="s-title" style="color:var(--accent)">Iterator</span><span class="s-cat">Comportement</span></div>
+    <div class="summary-item"><span class="s-num">Pattern 2</span><span class="s-title" style="color:var(--accent2)">Singleton / Enum</span><span class="s-cat">Création</span></div>
+    <div class="summary-item"><span class="s-num">Pattern 3</span><span class="s-title" style="color:var(--accent3)">Strategy</span><span class="s-cat">Comportement</span></div>
+    <div class="summary-item"><span class="s-num">Pattern 4</span><span class="s-title" style="color:var(--accent4)">Decorator</span><span class="s-cat">Structure</span></div>
+    <div class="summary-item"><span class="s-num">Pattern 5</span><span class="s-title" style="color:var(--green)">Stream</span><span class="s-cat">API Java 8+</span></div>
+    <div class="summary-item"><span class="s-num">Pattern 6</span><span class="s-title" style="color:var(--red)">Command + MVC</span><span class="s-cat">Comportement + Architecture</span></div>
+    <div class="summary-item"><span class="s-num">Pattern 7</span><span class="s-title" style="color:#c8b4ff">Builder</span><span class="s-cat">Création</span></div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+  1. ITERATOR
+════════════════════════════════ -->
+<section id="iterator" class="s1">
+  <div class="section-header">
+    <div class="section-number">01</div>
+    <h2>Le pattern Iterator</h2>
+    <span class="badge">Comportement</span>
+  </div>
+
+  <div class="card">
+    <h3>Le problème à résoudre</h3>
+    <p>Imagine que tu as une collection d'objets (une liste, un tableau, un ensemble...). Tu veux les parcourir <em>tous</em>, un par un. Le problème : selon la structure (ArrayList, LinkedList, tableau simple, Set...), la façon d'y accéder est différente.</p>
+    <p style="margin-top: 10px;">L'itérateur résout ça en fournissant une <strong>interface unifiée</strong> pour parcourir n'importe quelle collection, sans avoir à savoir comment elle est codée en interne.</p>
+  </div>
+
+  <div class="callout idea">
+    <strong>Analogie</strong>
+    C'est comme une télécommande universelle. Peu importe si ta TV est Sony ou Samsung, la télécommande a toujours les boutons ▶ (suivant) et ◆ (est-ce qu'il reste quelque chose ?).
+  </div>
+
+  <div class="card">
+    <h3>L'interface Iterator&lt;E&gt;</h3>
+    <p>En Java, un itérateur implémente cette interface :</p>
+  </div>
+  <div class="code-label">Iterator.java</div>
+  <pre><code><span class="kw">public interface</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">boolean</span> <span class="fn">hasNext</span>();   <span class="cm">// Reste-t-il un élément à lire ?</span>
+    E       <span class="fn">next</span>();       <span class="cm">// Renvoie l'élément suivant ET avance le curseur</span>
+    <span class="kw">void</span>    <span class="fn">remove</span>();     <span class="cm">// Supprime le dernier élément renvoyé (optionnel)</span>
+}</code></pre>
+
+  <div class="callout warn">
+    <strong>Attention !</strong>
+    Un itérateur ne peut servir qu'UNE SEULE FOIS. Une fois qu'on a parcouru tous les éléments, c'est terminé. Pour recommencer, il faut en créer un nouveau.
+  </div>
+
+  <div class="card">
+    <h3>Le lien avec le for-each</h3>
+    <p>Le <code>for (String s : uneCollection)</code> que tu utilises tout le temps, c'est <strong>exactement</strong> du sucre syntaxique pour :</p>
+  </div>
+  <div class="code-label">Équivalence for-each ↔ Iterator</div>
+  <pre><code><span class="cm">// Version for-each (ce qu'on écrit)</span>
+<span class="kw">for</span> (<span class="cl">String</span> s : uneListe) {
+    <span class="cl">System</span>.out.<span class="fn">println</span>(s);
+}
+
+<span class="cm">// Version Iterator (ce que Java fait vraiment)</span>
+<span class="cl">Iterator</span>&lt;<span class="cl">String</span>&gt; iter = uneListe.<span class="fn">iterator</span>();
+<span class="kw">while</span> (iter.<span class="fn">hasNext</span>()) {
+    <span class="cl">String</span> s = iter.<span class="fn">next</span>();
+    <span class="cl">System</span>.out.<span class="fn">println</span>(s);
+}</code></pre>
+
+  <div class="card">
+    <h3>L'interface Iterable&lt;E&gt;</h3>
+    <p>Pour qu'une classe soit utilisable dans un for-each, elle doit implémenter <code>Iterable&lt;E&gt;</code> :</p>
+  </div>
+  <div class="code-label">Iterable.java</div>
+  <pre><code><span class="kw">public interface</span> <span class="cl">Iterable</span>&lt;E&gt; {
+    <span class="cl">Iterator</span>&lt;E&gt; <span class="fn">iterator</span>();  <span class="cm">// Renvoie un nouvel itérateur</span>
+}</code></pre>
+
+  <div class="card">
+    <h3>Exemple concret : rendre une Pièce itérable (TD1)</h3>
+    <p>Si la classe <code>Piece</code> stocke ses objets dans un tableau (pas dans une ArrayList), voici comment lui ajouter un itérateur :</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="code-label">Piece.java</div>
+      <pre><code><span class="kw">public class</span> <span class="cl">Piece</span> <span class="kw">implements</span> <span class="cl">Iterable</span>&lt;<span class="cl">ObjetZork</span>&gt; {
+    <span class="kw">private</span> <span class="cl">ObjetZork</span>[] mesObjets;
+    <span class="kw">private int</span> nbObjets;
+
+    <span class="kw">public</span> <span class="cl">Iterator</span>&lt;<span class="cl">ObjetZork</span>&gt; <span class="fn">iterator</span>() {
+        <span class="kw">return new</span> <span class="cl">TableauIterator</span>(
+            mesObjets, nbObjets
+        );
+    }
+}</code></pre>
+    </div>
+    <div>
+      <div class="code-label">TableauIterator.java</div>
+      <pre><code><span class="kw">public class</span> <span class="cl">TableauIterator</span>
+    <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;<span class="cl">ObjetZork</span>&gt; {
+
+    <span class="kw">private</span> <span class="cl">ObjetZork</span>[] tab;
+    <span class="kw">private int</span> nbElts;
+    <span class="kw">private int</span> index = <span class="nb">0</span>;
+
+    <span class="kw">public</span> <span class="fn">TableauIterator</span>(
+            <span class="cl">ObjetZork</span>[] t, <span class="kw">int</span> n) {
+        tab = t; nbElts = n;
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() {
+        <span class="kw">return</span> index &lt; nbElts;
+    }
+
+    <span class="kw">public</span> <span class="cl">ObjetZork</span> <span class="fn">next</span>() {
+        <span class="kw">return</span> tab[index++];
+    }
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="callout exam">
+    <strong>À l'examen — ce qu'on peut te demander</strong>
+    Implémenter un itérateur custom (FilterNotNullIterator, FilterTransportableIterator...). La logique : <code>hasNext()</code> cherche le prochain élément valide, <code>next()</code> le renvoie et avance. La méthode <code>findNext()</code> (chercher le prochain index valide) est souvent le cœur de l'exercice.
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+  2. SINGLETON / ENUM
+════════════════════════════════ -->
+<section id="singleton" class="s2">
+  <div class="section-header">
+    <div class="section-number">02</div>
+    <h2>Singleton &amp; Enum</h2>
+    <span class="badge">Création</span>
+  </div>
+
+  <div class="card">
+    <h3>Le problème : garantir une seule instance</h3>
+    <p>Parfois, on veut qu'il n'existe <em>qu'un seul</em> objet d'une classe. Exemple : une classe <code>Comparator</code> sans état — pas besoin d'en créer 1000 exemplaires identiques. Le Singleton garantit qu'une seule instance sera créée.</p>
+  </div>
+
+  <div class="callout idea">
+    <strong>Analogie</strong>
+    Le Président de la République : il ne peut y en avoir qu'un à la fois. Si quelqu'un essaie d'en "créer" un nouveau, on lui dit non.
+  </div>
+
+  <div class="card">
+    <h3>Les 3 règles du Singleton en Java</h3>
+    <ol>
+      <li><strong>Constructeur privé</strong> → personne d'autre ne peut créer d'instance</li>
+      <li><strong>Variable statique finale</strong> → stocke l'unique instance</li>
+      <li><strong>Accès via variable publique ou méthode statique</strong> → pour récupérer l'instance</li>
+    </ol>
+  </div>
+
+  <div class="code-label">Singleton — Version 1 : variable publique (recommandée en cours)</div>
+  <pre><code><span class="kw">public class</span> <span class="cl">MonSingleton</span> {
+    <span class="cm">// L'unique instance, créée une seule fois au chargement de la classe</span>
+    <span class="kw">public static final</span> <span class="cl">MonSingleton</span> theInstance
+        = <span class="kw">new</span> <span class="cl">MonSingleton</span>();
+
+    <span class="cm">// Constructeur PRIVÉ : personne d'autre ne peut créer d'instance</span>
+    <span class="kw">private</span> <span class="fn">MonSingleton</span>() { }
+
+    <span class="cm">// Méthodes publiques normales...</span>
+    <span class="kw">public void</span> <span class="fn">faireTruc</span>() { ... }
+}</code></pre>
+
+  <div class="code-label">Utilisation</div>
+  <pre><code><span class="cm">// On accède à l'unique instance via theInstance</span>
+<span class="cl">MonSingleton</span>.theInstance.<span class="fn">faireTruc</span>();
+
+<span class="cm">// INTERDIT — ne compile pas car constructeur private</span>
+<span class="cl">MonSingleton</span> m = <span class="kw">new</span> <span class="cl">MonSingleton</span>(); <span class="cm">// ❌ ERREUR !</span></code></pre>
+
+  <div class="card">
+    <h3>Version 2 : méthode getInstance() (lazy initialization)</h3>
+    <p>L'instance n'est créée que quand on en a besoin pour la première fois :</p>
+  </div>
+  <div class="code-label">Singleton — Version 2 : getInstance()</div>
+  <pre><code><span class="kw">public class</span> <span class="cl">MonSingleton</span> {
+    <span class="kw">private static</span> <span class="cl">MonSingleton</span> theInstance;  <span class="cm">// null au départ</span>
+
+    <span class="kw">private</span> <span class="fn">MonSingleton</span>() { }
+
+    <span class="kw">public static</span> <span class="cl">MonSingleton</span> <span class="fn">getInstance</span>() {
+        <span class="kw">if</span> (theInstance == <span class="kw">null</span>) {         <span class="cm">// Première fois ?</span>
+            theInstance = <span class="kw">new</span> <span class="cl">MonSingleton</span>();  <span class="cm">// On crée l'instance</span>
+        }
+        <span class="kw">return</span> theInstance;  <span class="cm">// On renvoie toujours la même</span>
+    }
+}</code></pre>
+
+  <div class="card">
+    <h3>Les Enum en Java</h3>
+    <p>Une <code>enum</code> est une extension naturelle du Singleton : c'est un ensemble fini de Singletons. En Java, chaque valeur d'une enum est garantie être une instance unique.</p>
+  </div>
+  <div class="code-label">Enum simple</div>
+  <pre><code><span class="kw">public enum</span> <span class="cl">Direction</span> {
+    NORTH, SOUTH, EAST, WEST
+}
+<span class="cm">// Utilisation :</span>
+<span class="cl">Direction</span> d = <span class="cl">Direction</span>.NORTH;</code></pre>
+
+  <div class="code-label">Enum avec attributs et méthodes (comme ObjetZork)</div>
+  <pre><code><span class="kw">public enum</span> <span class="cl">ObjetZork</span> {
+    <span class="cm">// Les instances (Singletons) de l'enum</span>
+    EPEE(<span class="st">"Épée"</span>, <span class="nb">5</span>, <span class="kw">true</span>),
+    TRESOR(<span class="st">"Trésor"</span>, <span class="nb">20</span>, <span class="kw">false</span>),
+    POTION(<span class="st">"Potion"</span>, <span class="nb">1</span>, <span class="kw">true</span>);
+
+    <span class="cm">// Attributs (TOUJOURS finaux dans une enum)</span>
+    <span class="kw">private final</span> <span class="cl">String</span> nom;
+    <span class="kw">private final int</span> poids;
+    <span class="kw">private final boolean</span> transportable;
+
+    <span class="cm">// Constructeur PRIVÉ (implicitement)</span>
+    <span class="cl">ObjetZork</span>(<span class="cl">String</span> nom, <span class="kw">int</span> poids, <span class="kw">boolean</span> transportable) {
+        <span class="kw">this</span>.nom = nom;
+        <span class="kw">this</span>.poids = poids;
+        <span class="kw">this</span>.transportable = transportable;
+    }
+
+    <span class="kw">public</span> <span class="cl">String</span> <span class="fn">getNom</span>()           { <span class="kw">return</span> nom; }
+    <span class="kw">public int</span> <span class="fn">getPoids</span>()             { <span class="kw">return</span> poids; }
+    <span class="kw">public boolean</span> <span class="fn">estTransportable</span>() { <span class="kw">return</span> transportable; }
+}</code></pre>
+
+  <div class="callout warn">
+    <strong>Règle d'or des enum</strong>
+    Une enum doit être NON MODIFIABLE (immutable). Ses attributs sont toujours <code>final</code>. Si tu mets des setters dans une enum, tu casses la garantie de Singleton.
+  </div>
+
+  <div class="callout exam">
+    <strong>À l'examen</strong>
+    On peut te demander de transformer une classe ordinaire en enum (TD1, Ex.5), ou d'appliquer le Singleton à une classe Strategy/Comparator. La formule à retenir : constructeur private + static final theInstance.
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+  3. STRATEGY
+════════════════════════════════ -->
+<section id="strategy" class="s3">
+  <div class="section-header">
+    <div class="section-number">03</div>
+    <h2>Le pattern Strategy</h2>
+    <span class="badge">Comportement</span>
+  </div>
+
+  <div class="card">
+    <h3>Le problème : choisir un algorithme à l'exécution</h3>
+    <p>Tu as une classe qui doit faire quelque chose (trier, se déplacer, comparer...) de plusieurs façons différentes. Au lieu de coder tous les cas dans une seule méthode avec des <code>if/else</code>, on <strong>encapsule chaque algorithme dans sa propre classe</strong>.</p>
+  </div>
+
+  <div class="callout idea">
+    <strong>Analogie</strong>
+    GPS : plusieurs itinéraires possibles (le plus rapide, le plus court, éviter les péages). L'algorithme de calcul d'itinéraire est interchangeable. On choisit la "stratégie" au moment où on veut, sans changer le GPS lui-même.
+  </div>
+
+  <div class="card">
+    <h3>Exemple canonique : Comparator&lt;E&gt;</h3>
+    <p><code>Comparator</code> est exactement le pattern Strategy. On peut fournir différentes stratégies de comparaison à <code>list.sort()</code> :</p>
+  </div>
+  <div class="code-label">Strategy — Trier des ObjetZork</div>
+  <pre><code><span class="cm">// Stratégie 1 : trier par poids</span>
+<span class="kw">public class</span> <span class="cl">CompareWeight</span> <span class="kw">implements</span> <span class="cl">Comparator</span>&lt;<span class="cl">ObjetZork</span>&gt; {
+    <span class="kw">public int</span> <span class="fn">compare</span>(<span class="cl">ObjetZork</span> o1, <span class="cl">ObjetZork</span> o2) {
+        <span class="kw">return</span> o1.<span class="fn">getPoids</span>() - o2.<span class="fn">getPoids</span>();
+    }
+}
+
+<span class="cm">// Stratégie 2 : trier par nom</span>
+<span class="kw">public class</span> <span class="cl">CompareName</span> <span class="kw">implements</span> <span class="cl">Comparator</span>&lt;<span class="cl">ObjetZork</span>&gt; {
+    <span class="kw">public int</span> <span class="fn">compare</span>(<span class="cl">ObjetZork</span> o1, <span class="cl">ObjetZork</span> o2) {
+        <span class="kw">return</span> o1.<span class="fn">getNom</span>().<span class="fn">compareTo</span>(o2.<span class="fn">getNom</span>());
+    }
+}
+
+<span class="cm">// Utilisation : on change la stratégie en changeant l'objet passé</span>
+<span class="cl">List</span>&lt;<span class="cl">ObjetZork</span>&gt; liste = ...;
+liste.<span class="fn">sort</span>(<span class="kw">new</span> <span class="cl">CompareWeight</span>());  <span class="cm">// tri par poids</span>
+liste.<span class="fn">sort</span>(<span class="kw">new</span> <span class="cl">CompareName</span>());    <span class="cm">// tri par nom</span></code></pre>
+
+  <div class="card">
+    <h3>Predicate&lt;E&gt; : une autre functional interface</h3>
+    <p>Le pattern Strategy s'applique aussi avec <code>Predicate&lt;E&gt;</code>, qui est une interface avec une seule méthode : <code>boolean test(E e)</code>.</p>
+  </div>
+  <div class="code-label">Predicate — Tester des conditions</div>
+  <pre><code><span class="cm">// Predicate : tester si un objet est non null</span>
+<span class="kw">public class</span> <span class="cl">TestNotNull</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Predicate</span>&lt;E&gt; {
+    <span class="kw">public boolean</span> <span class="fn">test</span>(E e) {
+        <span class="kw">return</span> e != <span class="kw">null</span>;
+    }
+}
+
+<span class="cm">// Predicate : tester si un ObjetZork est transportable</span>
+<span class="kw">public class</span> <span class="cl">TestTransportable</span> <span class="kw">implements</span> <span class="cl">Predicate</span>&lt;<span class="cl">ObjetZork</span>&gt; {
+    <span class="kw">public boolean</span> <span class="fn">test</span>(<span class="cl">ObjetZork</span> oz) {
+        <span class="kw">return</span> oz.<span class="fn">estTransportable</span>();
+    }
+}</code></pre>
+
+  <div class="card">
+    <h3>Les lambdas : Strategy sans créer de classe</h3>
+    <p>Depuis Java 8, pour les <strong>interfaces fonctionnelles</strong> (une seule méthode abstraite), on peut utiliser une <strong>expression lambda</strong> au lieu de définir une classe entière. C'est beaucoup plus concis !</p>
+  </div>
+  <div class="code-label">Lambdas — Syntaxe (paramètres) -> corps</div>
+  <pre><code><span class="cm">// Sans lambda (verbose)</span>
+liste.<span class="fn">sort</span>(<span class="kw">new</span> <span class="cl">CompareWeight</span>());
+
+<span class="cm">// Avec lambda (concis)</span>
+liste.<span class="fn">sort</span>((o1, o2) -&gt; o1.<span class="fn">getPoids</span>() - o2.<span class="fn">getPoids</span>());
+
+<span class="cm">// Predicate avec lambda</span>
+<span class="cl">Predicate</span>&lt;<span class="cl">ObjetZork</span>&gt; pTransp = oz -&gt; oz.<span class="fn">estTransportable</span>();
+<span class="cl">Predicate</span>&lt;<span class="cl">String</span>&gt; pNotNull = s -&gt; s != <span class="kw">null</span>;
+<span class="cl">Predicate</span>&lt;<span class="cl">ObjetZork</span>&gt; pLourd = oz -&gt; oz.<span class="fn">getPoids</span>() &gt; <span class="nb">10</span>;</code></pre>
+
+  <div class="card">
+    <h3>Application : la classe FilterArrayIterator (TD2)</h3>
+    <p>Au lieu d'avoir une classe par type de filtre (<code>FilterNotNullIterator</code>, <code>FilterTransportableIterator</code>...), on crée <em>une seule</em> classe générique qui accepte un <code>Predicate</code> en paramètre :</p>
+  </div>
+  <div class="code-label">FilterArrayIterator.java — Le pattern Strategy appliqué aux itérateurs</div>
+  <pre><code><span class="kw">public class</span> <span class="cl">FilterArrayIterator</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">private</span> E[] tab;
+    <span class="kw">private int</span> nbElts;
+    <span class="kw">private</span> <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; predicate;  <span class="cm">// LA STRATÉGIE</span>
+    <span class="kw">private int</span> index;
+
+    <span class="kw">public</span> <span class="cl">FilterArrayIterator</span>(E[] tab, <span class="kw">int</span> n, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; p) {
+        <span class="kw">this</span>.tab = tab;
+        <span class="kw">this</span>.nbElts = n;
+        <span class="kw">this</span>.predicate = p;
+        index = <span class="fn">findNext</span>(<span class="nb">0</span>);  <span class="cm">// chercher le 1er élément valide</span>
+    }
+
+    <span class="kw">private int</span> <span class="fn">findNext</span>(<span class="kw">int</span> from) {
+        <span class="kw">while</span> (from &lt; nbElts &amp;&amp; !predicate.<span class="fn">test</span>(tab[from])) {
+            from++;
+        }
+        <span class="kw">return</span> from;
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> index &lt; nbElts; }
+
+    <span class="kw">public</span> E <span class="fn">next</span>() {
+        E elt = tab[index];
+        index = <span class="fn">findNext</span>(index + <span class="nb">1</span>);
+        <span class="kw">return</span> elt;
+    }
+}</code></pre>
+
+  <div class="callout exam">
+    <strong>À l'examen</strong>
+    Combiner Strategy + Singleton est très fréquent. Si une stratégie n'a pas d'état (pas d'attributs qui changent), on peut en faire un Singleton. Ex : <code>StrategieMaxPredicate.INSTANCE</code>.
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+  4. DECORATOR
+════════════════════════════════ -->
+<section id="decorator" class="s4">
+  <div class="section-header">
+    <div class="section-number">04</div>
+    <h2>Le pattern Decorator</h2>
+    <span class="badge">Structure</span>
+  </div>
+
+  <div class="card">
+    <h3>Le problème : ajouter des fonctionnalités dynamiquement</h3>
+    <p>On veut ajouter des comportements à un objet <em>pendant l'exécution</em>, sans toucher à sa classe d'origine. L'alternative serait l'héritage, mais ça explose le nombre de sous-classes (une par combinaison possible).</p>
+  </div>
+
+  <div class="callout idea">
+    <strong>Analogie — La pizzeria</strong>
+    Une pizza de base coûte 10€. On veut pouvoir ajouter des ingrédients (olives +2€, oignons +1€, mozzarella +3€...). Avec l'héritage, il faudrait une classe par combinaison : PizzaOlives, PizzaOignonsMozzarella, etc. → explosion ! Avec le Decorator, chaque ingrédient est un "enrobage" qui s'ajoute autour de la pizza.
+  </div>
+
+  <div class="card">
+    <h3>Principe</h3>
+    <ul>
+      <li>Le <strong>Decorator</strong> implémente la <em>même interface</em> que l'objet qu'il décore</li>
+      <li>Il contient une <em>référence</em> vers l'objet décoré</li>
+      <li>Il délègue les appels à l'objet décoré, en ajoutant son propre comportement</li>
+      <li>On peut empiler plusieurs décorateurs</li>
+    </ul>
+  </div>
+  <div class="code-label">Decorator — La pizzeria (exemple du cours)</div>
+  <pre><code><span class="cm">// Interface commune à tous (pizza + décorateurs)</span>
+<span class="kw">public interface</span> <span class="cl">Pizza</span> {
+    <span class="cl">String</span> <span class="fn">getDesc</span>();
+    <span class="kw">int</span>    <span class="fn">getPrice</span>();
+}
+
+<span class="cm">// La pizza de base (l'objet décoré)</span>
+<span class="kw">public class</span> <span class="cl">SimplePizza</span> <span class="kw">implements</span> <span class="cl">Pizza</span> {
+    <span class="kw">public</span> <span class="cl">String</span> <span class="fn">getDesc</span>()  { <span class="kw">return</span> <span class="st">"Pizza de base"</span>; }
+    <span class="kw">public int</span>    <span class="fn">getPrice</span>() { <span class="kw">return</span> <span class="nb">10</span>; }
+}
+
+<span class="cm">// Un décorateur : olives</span>
+<span class="kw">public class</span> <span class="cl">PizzaAvecOlives</span> <span class="kw">implements</span> <span class="cl">Pizza</span> {
+    <span class="kw">private</span> <span class="cl">Pizza</span> pizza;  <span class="cm">// Référence vers l'objet décoré</span>
+
+    <span class="kw">public</span> <span class="fn">PizzaAvecOlives</span>(<span class="cl">Pizza</span> p) { pizza = p; }
+
+    <span class="kw">public</span> <span class="cl">String</span> <span class="fn">getDesc</span>()  { <span class="kw">return</span> pizza.<span class="fn">getDesc</span>() + <span class="st">" avec olives"</span>; }
+    <span class="kw">public int</span>    <span class="fn">getPrice</span>() { <span class="kw">return</span> pizza.<span class="fn">getPrice</span>() + <span class="nb">2</span>; }
+}
+
+<span class="cm">// Utilisation : on peut empiler les décorateurs !</span>
+<span class="cl">Pizza</span> p = <span class="kw">new</span> <span class="cl">SimplePizza</span>();
+p = <span class="kw">new</span> <span class="cl">PizzaAvecOlives</span>(p);     <span class="cm">// 12€ : "Pizza de base avec olives"</span>
+p = <span class="kw">new</span> <span class="cl">PizzaAvecOignons</span>(p);    <span class="cm">// 13€ : "Pizza de base avec olives avec oignons"</span></code></pre>
+
+  <div class="card">
+    <h3>Application au TD : FilterIterator (TD3)</h3>
+    <p>Au TD2, <code>FilterArrayIterator</code> ne fonctionnait que sur des <em>tableaux</em>. Avec le Decorator, on crée <code>FilterIterator</code> qui fonctionne sur <em>n'importe quel</em> itérateur :</p>
+  </div>
+  <div class="code-label">FilterIterator.java — Décorateur d'itérateur</div>
+  <pre><code><span class="kw">public class</span> <span class="cl">FilterIterator</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">private</span> <span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> E&gt; supportIter; <span class="cm">// L'itérateur décoré</span>
+    <span class="kw">private</span> <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; predicate;
+    <span class="kw">private boolean</span> nextFound;
+    <span class="kw">private</span> E nextElt;
+
+    <span class="kw">public</span> <span class="cl">FilterIterator</span>(<span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> E&gt; iter, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; p) {
+        supportIter = iter;
+        predicate = p;
+        <span class="fn">findNext</span>();  <span class="cm">// Préparer le premier élément valide</span>
+    }
+
+    <span class="kw">private void</span> <span class="fn">findNext</span>() {
+        nextFound = <span class="kw">false</span>;
+        <span class="kw">while</span> (supportIter.<span class="fn">hasNext</span>()) {
+            E candidate = supportIter.<span class="fn">next</span>();
+            <span class="kw">if</span> (predicate.<span class="fn">test</span>(candidate)) {
+                nextElt = candidate;
+                nextFound = <span class="kw">true</span>;
+                <span class="kw">return</span>;
+            }
+        }
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> nextFound; }
+
+    <span class="kw">public</span> E <span class="fn">next</span>() {
+        E result = nextElt;
+        <span class="fn">findNext</span>();   <span class="cm">// Préparer le suivant</span>
+        <span class="kw">return</span> result;
+    }
+}
+
+<span class="cm">// Utilisation — fonctionne sur TOUT itérateur (List, Set, tableau...)</span>
+<span class="cl">List</span>&lt;<span class="cl">String</span>&gt; list = <span class="cl">Arrays</span>.<span class="fn">asList</span>(<span class="kw">null</span>, <span class="st">"aa"</span>, <span class="kw">null</span>, <span class="st">"bb"</span>);
+<span class="cl">Iterator</span>&lt;<span class="cl">String</span>&gt; iter = <span class="kw">new</span> <span class="cl">FilterIterator</span>&lt;&gt;(list.<span class="fn">iterator</span>(), s -&gt; s != <span class="kw">null</span>);
+<span class="cm">// Affichera :aa:bb</span></code></pre>
+
+  <div class="callout exam">
+    <strong>Différence clé : FilterArrayIterator vs FilterIterator</strong>
+    <br>• FilterArrayIterator (TD2, Strategy) : travaille sur un tableau, avance avec un index
+    <br>• FilterIterator (TD3, Decorator) : enrobe <em>n'importe quel</em> Iterator, délègue hasNext/next à l'itérateur interne
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+  5. STREAM
+════════════════════════════════ -->
+<section id="stream" class="s5">
+  <div class="section-header">
+    <div class="section-number">05</div>
+    <h2>Les Streams Java</h2>
+    <span class="badge">Java 8+</span>
+  </div>
+
+  <div class="card">
+    <h3>C'est quoi un Stream ?</h3>
+    <p>Un <code>Stream&lt;E&gt;</code> est une API Java 8 qui permet de faire des opérations en chaîne sur des collections de données (filtrer, transformer, compter...) de façon très lisible.</p>
+  </div>
+
+  <div class="card">
+    <h3>Opérations intermédiaires vs terminales</h3>
+    <table class="compare-table">
+      <thead><tr><th>Type</th><th>Ce que ça fait</th><th>Exemples</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:var(--accent3)">Intermédiaire</strong></td><td>Produit un nouveau Stream (calcul différé)</td><td><code>filter()</code>, <code>map()</code></td></tr>
+        <tr><td><strong style="color:var(--accent4)">Terminale</strong></td><td>Déclenche le calcul, produit un résultat final</td><td><code>iterator()</code>, <code>toList()</code>, <code>count()</code>, <code>anyMatch()</code></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.88rem; color:var(--muted); margin-top: 8px;">Après une opération terminale, le Stream est "consumé" et ne peut plus être utilisé.</p>
+  </div>
+
+  <div class="callout warn">
+    <strong>Attention — Stream à usage unique !</strong>
+    Un Stream ne peut être parcouru qu'une fois. Si tu essaies de l'utiliser après une opération terminale → <code>IllegalStateException</code>.
+  </div>
+
+  <div class="code-label">Stream — Opérations de base</div>
+  <pre><code><span class="cm">// Créer un Stream</span>
+<span class="cl">Stream</span>&lt;<span class="cl">Direction</span>&gt; s1 = <span class="cl">Stream</span>.<span class="fn">of</span>(<span class="cl">Direction</span>.<span class="fn">values</span>());
+
+<span class="cm">// filter() : garder seulement les éléments satisfaisant un prédicat</span>
+<span class="cl">Stream</span>&lt;<span class="cl">Piece</span>&gt; s2 = s1.<span class="fn">map</span>(d -&gt; p.<span class="fn">pieceSuivante</span>(d))   <span class="cm">// transformer</span>
+                      .<span class="fn">filter</span>(v -&gt; v != <span class="kw">null</span>);              <span class="cm">// filtrer</span>
+
+<span class="cm">// Opérations terminales</span>
+<span class="cl">List</span>&lt;<span class="cl">Piece</span>&gt; pieces = s2.<span class="fn">toList</span>();          <span class="cm">// → liste</span>
+<span class="kw">long</span> nb = s2.<span class="fn">count</span>();                       <span class="cm">// → compter</span>
+<span class="kw">boolean</span> ok = s2.<span class="fn">anyMatch</span>(v -&gt; v.<span class="fn">hasOr</span>()); <span class="cm">// → au moins un satisfait ?</span>
+<span class="kw">boolean</span> all = s2.<span class="fn">allMatch</span>(v -&gt; v != <span class="kw">null</span>);<span class="cm">// → tous satisfont ?</span></code></pre>
+
+  <div class="card">
+    <h3>Exemple — StrategieMaxPredicate avec Stream (TD4)</h3>
+    <p>Trouver la pièce voisine contenant le plus d'objets satisfaisant un prédicat :</p>
+  </div>
+  <div class="code-label">StrategieMaxPredicate — Version sans Stream puis avec</div>
+  <pre><code><span class="cm">// Version sans Stream (avec boucles for — vue en cours)</span>
+<span class="kw">public</span> <span class="cl">Piece</span> <span class="fn">choisirPiece</span>(<span class="cl">Piece</span> p, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">ObjetZork</span>&gt; pred) {
+    <span class="cl">Piece</span> result = <span class="kw">null</span>;
+    <span class="kw">int</span> max = <span class="nb">0</span>;
+    <span class="kw">for</span> (<span class="cl">Direction</span> d : <span class="cl">Direction</span>.<span class="fn">values</span>()) {
+        <span class="cl">Piece</span> voisine = p.<span class="fn">pieceSuivante</span>(d);
+        <span class="kw">if</span> (voisine != <span class="kw">null</span>) {
+            <span class="kw">int</span> count = <span class="nb">0</span>;
+            <span class="kw">for</span> (<span class="cl">ObjetZork</span> oz : voisine) {
+                <span class="kw">if</span> (pred.<span class="fn">test</span>(oz)) count++;
+            }
+            <span class="kw">if</span> (count &gt; max) { max = count; result = voisine; }
+        }
+    }
+    <span class="kw">return</span> result;
+}
+
+<span class="cm">// Version avec Stream (plus concise)</span>
+<span class="kw">public</span> <span class="cl">Piece</span> <span class="fn">choisirPiece</span>(<span class="cl">Piece</span> p, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">ObjetZork</span>&gt; pred) {
+    <span class="kw">return</span> <span class="cl">Stream</span>.<span class="fn">of</span>(<span class="cl">Direction</span>.<span class="fn">values</span>())
+        .<span class="fn">map</span>(d -&gt; p.<span class="fn">pieceSuivante</span>(d))
+        .<span class="fn">filter</span>(v -&gt; v != <span class="kw">null</span>)
+        .<span class="fn">max</span>((a, b) -&gt; <span class="kw">/* comparer count */</span>)
+        .<span class="fn">orElse</span>(<span class="kw">null</span>);
+}</code></pre>
+</section>
+
+
+<!-- ════════════════════════════════
+  6. COMMAND + MVC
+════════════════════════════════ -->
+<section id="command" class="s6">
+  <div class="section-header">
+    <div class="section-number">06</div>
+    <h2>Command &amp; Architecture MVC</h2>
+    <span class="badge">Comportement + Architecture</span>
+  </div>
+
+  <div class="card">
+    <h3>L'architecture MVC</h3>
+    <p>MVC = <strong>Model – View – Controller</strong>. C'est un principe qui sépare le code en 3 couches indépendantes :</p>
+    <table class="compare-table" style="margin-top:12px">
+      <thead><tr><th>Couche</th><th>Rôle</th><th>Contrainte</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--accent3)">Model</strong></td>
+          <td>Les données du jeu (Piece, Gamer, ObjetZork, ZorkMap...)</td>
+          <td>Aucun affichage, aucune interaction utilisateur</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent4)">View</strong></td>
+          <td>Les classes qui affichent/lisent (console, GUI, menus)</td>
+          <td>Ne dépend pas du Model ni du Controller</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--red)">Controller</strong></td>
+          <td>Commandes de l'utilisateur (GoCommand, TakeObject...)</td>
+          <td>Appelle le Model pour exécuter, appelle la View pour afficher</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout idea">
+    <strong>Analogie</strong>
+    Application bancaire : le <em>Model</em> = la base de données des comptes. La <em>View</em> = l'interface web que tu vois. Le <em>Controller</em> = ce qui traite ton clic "Virer 100€" en appelant la base ET en mettant à jour l'affichage.
+  </div>
+
+  <div class="card">
+    <h3>Le design pattern Command</h3>
+    <p>Chaque action de l'utilisateur est encapsulée dans une classe implémentant l'interface <code>Command</code> :</p>
+  </div>
+  <div class="code-label">Command.java — L'interface</div>
+  <pre><code><span class="kw">public interface</span> <span class="cl">Command</span> {
+    <span class="kw">void</span> <span class="fn">execute</span>();  <span class="cm">// Exécuter la commande</span>
+}</code></pre>
+
+  <div class="code-label">RoomInventory.java — Afficher les objets de la pièce courante</div>
+  <pre><code><span class="kw">public class</span> <span class="cl">RoomInventory</span> <span class="kw">implements</span> <span class="cl">Command</span> {
+    <span class="kw">private</span> <span class="cl">Gamer</span> gamer;
+    <span class="kw">private</span> <span class="cl">Game</span> game;
+
+    <span class="kw">public</span> <span class="fn">RoomInventory</span>(<span class="cl">Gamer</span> gamer, <span class="cl">Game</span> game) {
+        <span class="kw">this</span>.gamer = gamer;
+        <span class="kw">this</span>.game = game;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">execute</span>() {
+        <span class="cm">// Récupérer la pièce courante (Model)</span>
+        <span class="cl">Room</span> room = gamer.<span class="fn">getCurrentRoom</span>();
+        <span class="cm">// Afficher la liste des objets (View)</span>
+        <span class="cl">ListView</span>&lt;<span class="cl">ObjetZork</span>&gt; view = <span class="cl">View</span>.<span class="fn">buildMenu</span>(room);
+        view.<span class="fn">show</span>();
+        <span class="cm">// Afficher le menu principal (View)</span>
+        game.<span class="fn">showMenu</span>();
+    }
+}</code></pre>
+
+  <div class="code-label">GoCommand.java — Se déplacer vers une pièce voisine</div>
+  <pre><code><span class="kw">public class</span> <span class="cl">GoCommand</span> <span class="kw">implements</span> <span class="cl">Command</span> {
+    <span class="kw">private</span> <span class="cl">Gamer</span> gamer;
+    <span class="kw">private</span> <span class="cl">ZorkMap</span> map;
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">execute</span>() {
+        <span class="cl">Room</span> current = gamer.<span class="fn">getCurrentRoom</span>();
+        <span class="cm">// Récupérer les directions valides (Model)</span>
+        <span class="cl">EnumMap</span>&lt;<span class="cl">Direction</span>, <span class="cl">Room</span>&gt; voisines = map.<span class="fn">nextValidLocation</span>(current);
+        <span class="cm">// Afficher les directions et lire le choix (View)</span>
+        <span class="cl">ListView</span>&lt;<span class="cl">Direction</span>&gt; dirMenu = <span class="cl">View</span>.<span class="fn">buildMenu</span>(voisines.<span class="fn">keySet</span>());
+        dirMenu.<span class="fn">show</span>();
+        <span class="cl">Direction</span> choice = dirMenu.<span class="fn">readChoice</span>();
+        <span class="cm">// Déplacer le joueur (Model)</span>
+        gamer.<span class="fn">moveTo</span>(voisines.<span class="fn">get</span>(choice));
+    }
+}</code></pre>
+
+  <div class="callout exam">
+    <strong>À l'examen — comprendre le MVC</strong>
+    La règle principale : le Model ne sait pas que la View existe. La View ne sait pas que le Model existe. Seul le Controller fait le lien. On te demandera souvent de classer des classes dans les bonnes couches, ou d'implémenter une Command.
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+  7. BUILDER
+════════════════════════════════ -->
+<section id="builder" class="s7">
+  <div class="section-header">
+    <div class="section-number">07</div>
+    <h2>Le pattern Builder</h2>
+    <span class="badge">Création</span>
+  </div>
+
+  <div class="card">
+    <h3>Le problème : constructeurs à trop de paramètres</h3>
+    <p>Imagine une classe <code>UniteEnseignement</code> avec 7 attributs. Son constructeur ressemblerait à :</p>
+    <pre style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:10px;"><code style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:#cdd6f4"><span class="kw">new</span> <span class="cl">UniteEnseignement</span>(<span class="st">"POO2"</span>, <span class="st">"Design Patterns"</span>, <span class="nb">4</span>, <span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">1</span>, <span class="nb">4</span>);
+<span class="cm">// Que signifient 4, 1, 2, 1, 4 ? Impossible à lire !</span></code></pre>
+  </div>
+
+  <div class="callout idea">
+    <strong>Analogie — Commander un burger</strong>
+    Au lieu de dire "Je veux un burger pain-brioche-steak-cheddar-salade-tomate-pickles-sauce", tu coches les options sur une fiche. Le Builder c'est cette fiche : tu remplis ce que tu veux, le reste prend les valeurs par défaut.
+  </div>
+
+  <div class="card">
+    <h3>Structure du Builder</h3>
+    <ol>
+      <li>Une classe <strong>Builder</strong> distincte avec les mêmes attributs que la classe cible</li>
+      <li>Constructeur du Builder : uniquement les paramètres <em>obligatoires</em></li>
+      <li>Méthodes <code>withXxx()</code> pour les paramètres <em>optionnels</em> — renvoient <code>this</code> pour le chaînage</li>
+      <li>Méthode <code>build()</code> qui crée l'objet final</li>
+      <li>La classe cible a un constructeur <em>package-private</em> prenant le Builder</li>
+    </ol>
+  </div>
+  <div class="code-label">Builder — Exemple complet (UEBuilder)</div>
+  <pre><code><span class="cm">// 1. La classe Builder</span>
+<span class="kw">public class</span> <span class="cl">UEBuilder</span> {
+    <span class="cl">String</span> name;
+    <span class="cl">String</span> description;
+    <span class="kw">int</span> ects = <span class="nb">4</span>;         <span class="cm">// valeur par défaut</span>
+    <span class="kw">int</span> coefP1 = <span class="nb">1</span>;       <span class="cm">// valeur par défaut</span>
+    <span class="kw">int</span> coefP2 = <span class="nb">2</span>;       <span class="cm">// valeur par défaut</span>
+    <span class="kw">int</span> coefTP = <span class="nb">1</span>;       <span class="cm">// valeur par défaut</span>
+    <span class="kw">int</span> numSemestre = <span class="nb">1</span>;  <span class="cm">// valeur par défaut</span>
+
+    <span class="cm">// Constructeur : uniquement les paramètres obligatoires</span>
+    <span class="kw">public</span> <span class="fn">UEBuilder</span>(<span class="cl">String</span> name, <span class="cl">String</span> description) {
+        <span class="kw">if</span> (name == <span class="kw">null</span> || description == <span class="kw">null</span>) <span class="kw">throw new</span> <span class="cl">NullPointerException</span>();
+        <span class="kw">this</span>.name = name;
+        <span class="kw">this</span>.description = description;
+    }
+
+    <span class="cm">// Méthodes optionnelles — renvoient this pour le chaînage</span>
+    <span class="kw">public</span> <span class="cl">UEBuilder</span> <span class="fn">withEcts</span>(<span class="kw">int</span> val)        { ects = val;        <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">UEBuilder</span> <span class="fn">withCoefP1</span>(<span class="kw">int</span> val)     { coefP1 = val;     <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">UEBuilder</span> <span class="fn">withCoefP2</span>(<span class="kw">int</span> val)     { coefP2 = val;     <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">UEBuilder</span> <span class="fn">withNumSemestre</span>(<span class="kw">int</span> val){ numSemestre = val; <span class="kw">return this</span>; }
+
+    <span class="cm">// build() : crée l'objet final</span>
+    <span class="kw">public</span> <span class="cl">UniteEnseignement</span> <span class="fn">build</span>() {
+        <span class="kw">return new</span> <span class="cl">UniteEnseignement</span>(<span class="kw">this</span>);
+    }
+}
+
+<span class="cm">// 2. La classe cible — constructeur package-private prend le Builder</span>
+<span class="kw">public class</span> <span class="cl">UniteEnseignement</span> {
+    <span class="kw">private final</span> <span class="cl">String</span> name;
+    <span class="kw">private final int</span> ects;
+    <span class="kw">private final int</span> coefP1, coefP2, coefTP, numSemestre;
+
+    <span class="cm">// Package-private : seul UEBuilder.build() peut appeler ça</span>
+    <span class="cl">UniteEnseignement</span>(<span class="cl">UEBuilder</span> b) {
+        name = b.name;
+        ects = b.ects;
+        coefP1 = b.coefP1;
+        coefP2 = b.coefP2;
+        coefTP = b.coefTP;
+        numSemestre = b.numSemestre;
+    }
+}
+
+<span class="cm">// 3. Utilisation — lisible grâce au chaînage !</span>
+<span class="cl">UniteEnseignement</span> poo2 = <span class="kw">new</span> <span class="cl">UEBuilder</span>(<span class="st">"POO2"</span>, <span class="st">"Design Patterns"</span>)
+    .<span class="fn">withEcts</span>(<span class="nb">4</span>)
+    .<span class="fn">withCoefP2</span>(<span class="nb">2</span>)
+    .<span class="fn">withNumSemestre</span>(<span class="nb">4</span>)
+    .<span class="fn">build</span>();  <span class="cm">// ← crée l'objet final</span></code></pre>
+
+  <div class="callout exam">
+    <strong>À l'examen — les 3 points clés du Builder</strong>
+    <br>1. Méthodes <code>withXxx()</code> retournent <code>this</code> (pour le chaînage)
+    <br>2. Le constructeur de la classe cible est <em>package-private</em> (ni public ni private)
+    <br>3. <code>build()</code> est la seule façon de créer l'objet
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════
+  QUIZ
+════════════════════════════════ -->
+<section id="quiz">
+  <div class="section-header">
+    <div class="section-number" style="background:rgba(255,215,0,0.15);color:#ffd700">🎯</div>
+    <h2>Quiz de révision</h2>
+  </div>
+
+  <div class="quiz-container">
+
+    <div class="quiz-q">
+      <p>1. Quelle méthode de l'interface Iterator permet de savoir s'il reste des éléments à parcourir ?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false)">next()</button>
+        <button class="quiz-opt" onclick="answer(this, true)">hasNext()</button>
+        <button class="quiz-opt" onclick="answer(this, false)">size()</button>
+        <button class="quiz-opt" onclick="answer(this, false)">peek()</button>
+      </div>
+      <div class="quiz-explanation">hasNext() renvoie true s'il reste au moins un élément. next() renvoie l'élément et avance le curseur. size() n'existe pas dans Iterator. peek() n'existe pas dans Iterator.</div>
+    </div>
+
+    <div class="quiz-q">
+      <p>2. Pour qu'une classe soit utilisable dans un for-each, elle doit implémenter :</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false)">Iterator&lt;E&gt;</button>
+        <button class="quiz-opt" onclick="answer(this, true)">Iterable&lt;E&gt;</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Comparable&lt;E&gt;</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Serializable</button>
+      </div>
+      <div class="quiz-explanation">Iterable&lt;E&gt; possède la méthode iterator() qui renvoie un Iterator. Java utilise cette méthode en coulisse pour le for-each. Un Iterator en lui-même ne suffit pas — c'est Iterable qui "ouvre la porte" au for-each.</div>
+    </div>
+
+    <div class="quiz-q">
+      <p>3. Dans le pattern Singleton, pourquoi le constructeur est-il déclaré private ?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false)">Pour que la classe soit plus rapide</button>
+        <button class="quiz-opt" onclick="answer(this, true)">Pour empêcher toute création d'instance depuis l'extérieur</button>
+        <button class="quiz-opt" onclick="answer(this, false)">C'est une obligation du langage Java</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Pour hériter de la classe plus facilement</button>
+      </div>
+      <div class="quiz-explanation">Le constructeur private empêche d'écrire "new MonSingleton()" depuis une autre classe. Seule la classe elle-même peut créer son instance (via la variable static finale theInstance).</div>
+    </div>
+
+    <div class="quiz-q">
+      <p>4. Quel est l'avantage principal du pattern Strategy par rapport aux if/else imbriqués ?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false)">Le code est plus court</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Il est plus rapide à l'exécution</button>
+        <button class="quiz-opt" onclick="answer(this, true)">On peut changer l'algorithme à l'exécution sans modifier la classe principale</button>
+        <button class="quiz-opt" onclick="answer(this, false)">On évite d'écrire des interfaces</button>
+      </div>
+      <div class="quiz-explanation">Le pattern Strategy encapsule chaque algorithme dans une classe séparée. La classe principale reçoit la stratégie en paramètre, donc on peut la changer dynamiquement sans toucher au code de la classe — respect du principe "ouvert/fermé".</div>
+    </div>
+
+    <div class="quiz-q">
+      <p>5. Dans le pattern Decorator (PizzaAvecOlives), quelle interface implémente le décorateur ?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false)">Une interface différente de celle de la pizza de base</button>
+        <button class="quiz-opt" onclick="answer(this, true)">La même interface que l'objet décoré (Pizza)</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Il n'implémente pas d'interface</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Il hérite directement de SimplePizza</button>
+      </div>
+      <div class="quiz-explanation">C'est LA clé du Decorator : le décorateur implémente la MÊME interface que ce qu'il décore. Ça permet de les empiler : PizzaAvecOlives(PizzaAvecOignons(new SimplePizza())). Chaque couche peut être une pizza comme les autres.</div>
+    </div>
+
+    <div class="quiz-q">
+      <p>6. Quelle est la différence entre une opération intermédiaire et une opération terminale sur un Stream ?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false)">Intermédiaire est plus lente, terminale est plus rapide</button>
+        <button class="quiz-opt" onclick="answer(this, true)">Intermédiaire produit un nouveau Stream (calcul différé), terminale déclenche le calcul et produit un résultat final</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Il n'y a pas de différence, c'est juste du vocabulaire</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Terminale produit un Stream, intermédiaire produit un résultat</button>
+      </div>
+      <div class="quiz-explanation">Les opérations intermédiaires (filter, map) sont "paresseuses" : elles ne font rien toutes seules, elles produisent un nouveau Stream configuré. Le calcul réel ne se déclenche que quand on appelle une opération terminale (toList, count, iterator...). Après ça, le Stream est consommé.</div>
+    </div>
+
+    <div class="quiz-q">
+      <p>7. Dans l'architecture MVC, quelle couche NE DOIT PAS avoir d'affichage ni d'interaction utilisateur ?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, true)">Model</button>
+        <button class="quiz-opt" onclick="answer(this, false)">View</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Controller</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Toutes les couches peuvent afficher</button>
+      </div>
+      <div class="quiz-explanation">Le Model contient uniquement les données et la logique métier (Piece, Gamer, ObjetZork...). Il ne doit JAMAIS faire de System.out.println() ni lire de saisie utilisateur. C'est la View qui gère tout ce qui est affiché, et le Controller qui fait le lien.</div>
+    </div>
+
+    <div class="quiz-q">
+      <p>8. Dans le pattern Builder, que renvoient les méthodes withXxx() ?</p>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="answer(this, false)">void (rien)</button>
+        <button class="quiz-opt" onclick="answer(this, false)">L'objet final construit</button>
+        <button class="quiz-opt" onclick="answer(this, true)">this (l'instance du Builder lui-même)</button>
+        <button class="quiz-opt" onclick="answer(this, false)">Un nouveau Builder</button>
+      </div>
+      <div class="quiz-explanation">Les méthodes withXxx() retournent this pour permettre le chaînage : new UEBuilder("POO2", "...").withEcts(4).withCoefP2(2).build(). C'est build() qui renvoie l'objet final. Si withXxx() retournait void, on ne pourrait pas chaîner.</div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<button class="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Quiz logic
+function answer(btn, correct) {
+  const q = btn.closest('.quiz-q');
+  if (q.dataset.answered) return;
+  q.dataset.answered = '1';
+  const opts = q.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    // Show correct
+    opts.forEach(o => {
+      if (o !== btn && o.onclick.toString().includes('true')) {
+        o.classList.add('correct');
+      }
+    });
+  }
+  q.querySelector('.quiz-explanation').style.display = 'block';
+}
+
+// Nav active state on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+</script>
+
+</body>
+</html>

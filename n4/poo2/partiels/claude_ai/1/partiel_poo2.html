@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sujet de Partiel — POO2</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink2: #2d2d4a;
+    --muted: #6b6b8a;
+    --light: #f4f4f8;
+    --border: #d4d4e8;
+    --accent: #3b2fc9;
+    --accent-light: #ebe9ff;
+    --green: #1a7a4a;
+    --green-light: #e6f4ec;
+    --red: #9b1c1c;
+    --red-light: #fdf0f0;
+    --orange: #7c3d0e;
+    --orange-light: #fff4e6;
+    --code-bg: #f0f0f8;
+    --page-bg: #fafafa;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #e8e8f0;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    max-width: 860px;
+    margin: 32px auto;
+    background: var(--page-bg);
+    box-shadow: 0 4px 40px rgba(0,0,0,0.18);
+    padding: 56px 72px;
+  }
+  @media (max-width: 700px) { .page { padding: 32px 24px; margin: 0; } }
+
+  /* ── HEADER ── */
+  .exam-header {
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 20px;
+    margin-bottom: 32px;
+  }
+  .exam-header .university {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .exam-header h1 {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .exam-header .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .exam-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 24px 0 0;
+    padding: 16px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .exam-meta .meta-item label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .exam-meta .meta-item span {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ── INSTRUCTIONS ── */
+  .instructions {
+    background: var(--orange-light);
+    border: 1px solid #e8c49a;
+    border-left: 4px solid #c97a2a;
+    border-radius: 0 4px 4px 0;
+    padding: 14px 18px;
+    margin-bottom: 36px;
+    font-size: 0.9rem;
+  }
+  .instructions strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--orange);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .instructions ul { padding-left: 20px; }
+  .instructions li { margin-bottom: 4px; }
+
+  /* ── CONTEXT ── */
+  .context-box {
+    background: var(--accent-light);
+    border: 1px solid #c0b8f8;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 16px 20px;
+    margin-bottom: 36px;
+    font-size: 0.92rem;
+  }
+  .context-box strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .context-box p + p { margin-top: 8px; }
+
+  /* ── EXERCISES ── */
+  .exercise {
+    margin-bottom: 52px;
+    padding-top: 8px;
+  }
+  .exercise-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .exercise-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    background: var(--ink);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .exercise-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    flex: 1;
+  }
+  .exercise-points {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    background: var(--accent-light);
+    padding: 3px 10px;
+    border-radius: 2px;
+    border: 1px solid #c0b8f8;
+  }
+  .exercise .intro {
+    margin-bottom: 16px;
+    color: var(--ink2);
+    font-size: 0.93rem;
+  }
+
+  /* ── QUESTIONS ── */
+  .question {
+    margin-bottom: 22px;
+    padding-left: 0;
+  }
+  .q-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .q-label .qnum {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px; height: 24px; min-width: 24px;
+    border-radius: 50%;
+    background: var(--light);
+    border: 1.5px solid var(--border);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .q-label .qpts {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-left: auto;
+    font-weight: 500;
+  }
+  .question p {
+    font-size: 0.92rem;
+    padding-left: 34px;
+    color: var(--ink2);
+    line-height: 1.65;
+  }
+  .question p + p { margin-top: 6px; }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin: 12px 0 12px 34px;
+    overflow-x: auto;
+    position: relative;
+  }
+  pre code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+  .code-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-left: 34px;
+    margin-bottom: -6px;
+    margin-top: 10px;
+    display: block;
+  }
+  /* Syntax */
+  .kw  { color: #3b2fc9; font-weight: 600; }
+  .cl  { color: #1a5276; }
+  .fn  { color: #1a7a4a; }
+  .st  { color: #7d3c00; }
+  .cm  { color: #9b9bb8; font-style: italic; }
+  .nb  { color: #c0392b; }
+  .an  { color: #884ea0; }
+  .todo { background: #fffbcc; color: #7d6608; padding: 0 4px; border-radius: 2px; font-weight: 700; }
+
+  /* ── ANSWER BOX ── */
+  .answer-box {
+    margin: 10px 0 10px 34px;
+    border: 1.5px dashed var(--border);
+    border-radius: 4px;
+    min-height: 80px;
+    background: white;
+    position: relative;
+  }
+  .answer-box::after {
+    content: attr(data-lines);
+    position: absolute;
+    right: 10px; top: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    color: #ccc;
+    font-style: italic;
+  }
+  .answer-lines {
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .answer-line {
+    border-bottom: 1px solid #eee;
+    height: 28px;
+    width: 100%;
+  }
+
+  /* ── SEPARATOR ── */
+  .sep {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 32px 0;
+  }
+
+  /* ── HINT ── */
+  .hint {
+    background: var(--green-light);
+    border: 1px solid #a8d5bb;
+    border-left: 3px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin: 8px 0 8px 34px;
+    font-size: 0.84rem;
+    color: var(--green);
+  }
+  .hint strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* ── POINTS SUMMARY ── */
+  .points-summary {
+    margin-top: 48px;
+    border-top: 3px double var(--ink);
+    padding-top: 24px;
+  }
+  .points-summary h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .pts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+  }
+  .pts-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+  }
+  .pts-row .label { color: var(--ink2); font-weight: 500; }
+  .pts-row .pts { font-weight: 700; color: var(--accent); }
+  .pts-total {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: var(--ink);
+    color: white;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  /* ── CLASS DIAGRAM BOX ── */
+  .diagram-box {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    margin: 12px 0 12px 34px;
+    background: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.8;
+    color: var(--ink2);
+  }
+  .diagram-box .class-name {
+    font-weight: 700;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+    font-size: 0.82rem;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; padding: 40px 60px; }
+    pre { break-inside: avoid; }
+    .exercise { break-inside: avoid; }
+  }
+  .print-btn {
+    position: fixed; top: 20px; right: 20px;
+    background: var(--ink); color: white;
+    border: none; border-radius: 4px;
+    padding: 8px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; letter-spacing: 0.05em;
+  }
+  .print-btn:hover { background: var(--accent); }
+  @media print { .print-btn { display: none; } }
+
+  /* ── CORRECTION TOGGLE ── */
+  .correction { display: none; }
+  .correction.visible { display: block; }
+  .correction-content {
+    margin: 10px 0 10px 34px;
+    background: var(--green-light);
+    border: 1px solid #a8d5bb;
+    border-left: 3px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 14px 16px;
+  }
+  .correction-content h4 {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .correction-content pre {
+    margin: 8px 0 0;
+    background: #f0faf4;
+    border-color: #a8d5bb;
+  }
+  .toggle-correction {
+    margin: 6px 0 6px 34px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    background: none;
+    border: 1px solid #c0b8f8;
+    border-radius: 3px;
+    padding: 4px 10px;
+    background: var(--accent-light);
+    letter-spacing: 0.03em;
+  }
+  .toggle-correction:hover { background: #d5d0fc; }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨 Imprimer</button>
+
+<div class="page">
+
+  <!-- ══ EN-TÊTE ══ -->
+  <div class="exam-header">
+    <div class="university">Université Sorbonne Paris Nord · Institut Galilée · Licence Informatique L2</div>
+    <h1>Programmation Orientée Objet 2<br><span style="font-size:1.1rem;font-weight:400;color:var(--muted)">Épreuve de Partiel — Design Patterns en Java</span></h1>
+    <div class="subtitle">Marc Champesme · Département d'Informatique</div>
+    <div class="exam-meta">
+      <div class="meta-item"><label>Durée</label><span>1h30</span></div>
+      <div class="meta-item"><label>Barème total</label><span>35 points</span></div>
+      <div class="meta-item"><label>Documents</label><span>Aucun autorisé</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CONSIGNES ══ -->
+  <div class="instructions">
+    <strong>Consignes</strong>
+    <ul>
+      <li>Répondre directement sur ce sujet dans les espaces prévus. Les réponses hors de ces espaces ne seront pas prises en compte.</li>
+      <li>Soigner la <strong>syntaxe Java</strong> (accolades, points-virgules, types génériques...). Les erreurs de syntaxe seront pénalisées.</li>
+      <li>Toutes les classes et interfaces nécessaires sont supposées importées.</li>
+      <li>Le code à compléter est indiqué par <span style="background:#fffbcc;padding:1px 5px;border-radius:2px;font-size:0.85rem;">// À COMPLÉTER</span>.</li>
+    </ul>
+  </div>
+
+  <!-- ══ CONTEXTE ══ -->
+  <div class="context-box">
+    <strong>Contexte général — Le jeu « DonjonQuest »</strong>
+    <p>Tout au long de ce sujet, on s'appuie sur un jeu d'aventure textuel appelé <strong>DonjonQuest</strong>. Le joueur (<code>Héros</code>) explore des pièces (<code>Salle</code>) reliées entre elles via une carte (<code>DonjonMap</code>). Chaque salle peut contenir des <strong>trésors</strong> (<code>Tresor</code>) et des <strong>monstres</strong> (<code>Monstre</code>). Le héros peut ramasser des trésors, fuir ou combattre les monstres.</p>
+    <p>Les classes de base sont les suivantes (leurs détails seront précisés au fil des exercices) :</p>
+    <p style="margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--accent);">
+      Tresor · Monstre · Salle · Héros · DonjonMap · Direction (enum : NORD, SUD, EST, OUEST)
+    </p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════
+       EXERCICE 1 — ITERATOR
+  ══════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 1</span>
+      <span class="exercise-title">Design pattern Iterator — Parcourir les trésors d'une Salle</span>
+      <span class="exercise-points">7 points</span>
+    </div>
+
+    <p class="intro">
+      La classe <code>Salle</code> mémorise ses trésors dans un tableau de taille fixe. On souhaite rendre la classe <code>Salle</code> itérable afin de pouvoir écrire <code>for (Tresor t : uneSalle) { ... }</code>.
+    </p>
+
+    <p class="code-label">Tresor.java — extrait</p>
+    <pre><code><span class="kw">public class</span> <span class="cl">Tresor</span> {
+    <span class="kw">private final</span> <span class="cl">String</span> nom;
+    <span class="kw">private final int</span> valeur;
+    <span class="kw">private final boolean</span> rare;
+
+    <span class="kw">public</span> <span class="fn">Tresor</span>(<span class="cl">String</span> nom, <span class="kw">int</span> valeur, <span class="kw">boolean</span> rare) { <span class="cm">/* ... */</span> }
+    <span class="kw">public</span> <span class="cl">String</span>  <span class="fn">getNom</span>()    { <span class="kw">return</span> nom; }
+    <span class="kw">public int</span>    <span class="fn">getValeur</span>() { <span class="kw">return</span> valeur; }
+    <span class="kw">public boolean</span> <span class="fn">estRare</span>()  { <span class="kw">return</span> rare; }
+}</code></pre>
+
+    <p class="code-label">Salle.java — extrait</p>
+    <pre><code><span class="kw">public class</span> <span class="cl">Salle</span> {
+    <span class="kw">private</span> <span class="cl">Tresor</span>[] tresors;
+    <span class="kw">private int</span> nbTresors;
+
+    <span class="kw">public</span> <span class="fn">Salle</span>() { tresors = <span class="kw">new</span> <span class="cl">Tresor</span>[<span class="nb">20</span>]; nbTresors = <span class="nb">0</span>; }
+    <span class="kw">public void</span> <span class="fn">ajouterTresor</span>(<span class="cl">Tresor</span> t) { tresors[nbTresors++] = t; }
+    <span class="cm">// ... autres méthodes ...</span>
+}</code></pre>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">1</span>
+        <span>Quelle interface Java faut-il implémenter pour que <code>Salle</code> soit utilisable dans un for-each ? Donnez le nom complet de cette interface (avec son paramètre de type).</span>
+        <span class="qpts">1 pt</span>
+      </div>
+      <div class="answer-box" data-lines="2 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div>
+          <div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <p style="font-size:0.88rem; color:var(--green);">Il faut implémenter <code>Iterable&lt;Tresor&gt;</code></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">2</span>
+        <span>Définissez la classe <code>SalleIterator</code> implémentant l'interface <code>Iterator&lt;Tresor&gt;</code> pour parcourir le tableau de trésors d'une <code>Salle</code>.</span>
+        <span class="qpts">3 pts</span>
+      </div>
+      <p class="code-label">SalleIterator.java — à compléter</p>
+      <pre><code><span class="kw">public class</span> <span class="cl">SalleIterator</span> <span class="kw">implements</span> <span class="todo">// À COMPLÉTER</span> {
+
+    <span class="kw">private</span> <span class="cl">Tresor</span>[] tab;
+    <span class="kw">private int</span> nbElts;
+    <span class="kw">private int</span> index;
+
+    <span class="kw">public</span> <span class="fn">SalleIterator</span>(<span class="cl">Tresor</span>[] tab, <span class="kw">int</span> nbElts) {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+
+    <span class="kw">public</span> <span class="cl">Tresor</span> <span class="fn">next</span>() {
+        <span class="todo">// À COMPLÉTER</span>
+    }
+}</code></pre>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public class</span> <span class="cl">SalleIterator</span> <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;<span class="cl">Tresor</span>&gt; {
+
+    <span class="kw">private</span> <span class="cl">Tresor</span>[] tab;
+    <span class="kw">private int</span> nbElts;
+    <span class="kw">private int</span> index;
+
+    <span class="kw">public</span> <span class="fn">SalleIterator</span>(<span class="cl">Tresor</span>[] tab, <span class="kw">int</span> nbElts) {
+        <span class="kw">this</span>.tab = tab;
+        <span class="kw">this</span>.nbElts = nbElts;
+        <span class="kw">this</span>.index = <span class="nb">0</span>;
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() {
+        <span class="kw">return</span> index &lt; nbElts;
+    }
+
+    <span class="kw">public</span> <span class="cl">Tresor</span> <span class="fn">next</span>() {
+        <span class="kw">return</span> tab[index++];
+    }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">3</span>
+        <span>Modifiez la déclaration de <code>Salle</code> pour qu'elle implémente l'interface identifiée à la question 1. Ajoutez uniquement la déclaration de classe et la méthode nécessaire (pas le reste du code).</span>
+        <span class="qpts">2 pts</span>
+      </div>
+      <div class="answer-box" data-lines="7 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public class</span> <span class="cl">Salle</span> <span class="kw">implements</span> <span class="cl">Iterable</span>&lt;<span class="cl">Tresor</span>&gt; {
+    <span class="cm">// ... attributs inchangés ...</span>
+
+    <span class="kw">public</span> <span class="cl">Iterator</span>&lt;<span class="cl">Tresor</span>&gt; <span class="fn">iterator</span>() {
+        <span class="kw">return new</span> <span class="cl">SalleIterator</span>(tresors, nbTresors);
+    }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">4</span>
+        <span>Un étudiant écrit le code suivant pour afficher tous les trésors d'une salle, puis les recompter. Expliquez le problème et comment le corriger.</span>
+        <span class="qpts">1 pt</span>
+      </div>
+      <pre><code><span class="cl">Salle</span> s = <span class="cm">/* ... */</span>;
+<span class="cl">Iterator</span>&lt;<span class="cl">Tresor</span>&gt; it = s.<span class="fn">iterator</span>();
+<span class="kw">while</span> (it.<span class="fn">hasNext</span>()) { <span class="cl">System</span>.out.<span class="fn">println</span>(it.<span class="fn">next</span>()); }
+<span class="kw">int</span> count = <span class="nb">0</span>;
+<span class="kw">while</span> (it.<span class="fn">hasNext</span>()) { count++; it.<span class="fn">next</span>(); } <span class="cm">// count vaut toujours 0 !</span></code></pre>
+      <div class="answer-box" data-lines="3 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <p style="font-size:0.88rem; color:var(--green);">Un itérateur est à <strong>usage unique</strong> : après le premier while, il est épuisé (hasNext() renvoie false). Pour recompter, il faut créer un nouvel itérateur : <code>it = s.iterator();</code> avant le second while.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ══════════════════════════════════════
+       EXERCICE 2 — SINGLETON + ENUM
+  ══════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 2</span>
+      <span class="exercise-title">Design patterns Singleton &amp; Enum — Types de monstres</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <p class="intro">
+      Dans DonjonQuest, les monstres ont un type parmi quatre valeurs possibles. Le nombre de types est fixé à l'avance et ne changera pas durant l'exécution du jeu.
+    </p>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">1</span>
+        <span>Définissez la classe <code>TypeMonstre</code> comme un <code>enum</code> Java possédant quatre valeurs : <code>GOBELIN</code>, <code>DRAGON</code>, <code>ZOMBIE</code>, <code>SPECTRE</code>. Chaque valeur doit posséder deux attributs : un <code>String nomAffiche</code> et un <code>int degatsBase</code> (dégâts infligés au héros). Fournissez les constructeur et getter appropriés.</span>
+        <span class="qpts">3 pts</span>
+      </div>
+      <div class="answer-box" data-lines="18 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public enum</span> <span class="cl">TypeMonstre</span> {
+    GOBELIN(<span class="st">"Gobelin"</span>, <span class="nb">5</span>),
+    DRAGON(<span class="st">"Dragon"</span>, <span class="nb">30</span>),
+    ZOMBIE(<span class="st">"Zombie"</span>, <span class="nb">10</span>),
+    SPECTRE(<span class="st">"Spectre"</span>, <span class="nb">15</span>);
+
+    <span class="kw">private final</span> <span class="cl">String</span> nomAffiche;
+    <span class="kw">private final int</span> degatsBase;
+
+    <span class="cl">TypeMonstre</span>(<span class="cl">String</span> nomAffiche, <span class="kw">int</span> degatsBase) {
+        <span class="kw">this</span>.nomAffiche = nomAffiche;
+        <span class="kw">this</span>.degatsBase = degatsBase;
+    }
+
+    <span class="kw">public</span> <span class="cl">String</span> <span class="fn">getNomAffiche</span>()  { <span class="kw">return</span> nomAffiche; }
+    <span class="kw">public int</span>    <span class="fn">getDegatsBase</span>()  { <span class="kw">return</span> degatsBase; }
+}</code></pre>
+          <p style="font-size:0.82rem;color:var(--green);margin-top:8px;">⚠ Les attributs sont obligatoirement <code>final</code> dans une enum (non modifiable).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">2</span>
+        <span>On dispose d'une classe <code>LoggerCombat</code> qui n'a pas d'état (pas d'attributs variables) et dont on veut une seule instance dans tout le programme. Appliquez le pattern Singleton en complétant la classe ci-dessous :</span>
+        <span class="qpts">2 pts</span>
+      </div>
+      <p class="code-label">LoggerCombat.java — à compléter</p>
+      <pre><code><span class="kw">public class</span> <span class="cl">LoggerCombat</span> {
+
+    <span class="todo">// À COMPLÉTER : déclarer l'unique instance</span>
+
+
+    <span class="todo">// À COMPLÉTER : constructeur</span>
+
+
+    <span class="kw">public void</span> <span class="fn">logAttaque</span>(<span class="cl">Monstre</span> m, <span class="cl">Héros</span> h) {
+        <span class="cl">System</span>.out.<span class="fn">println</span>(m.<span class="fn">getNom</span>() + <span class="st">" attaque "</span> + h.<span class="fn">getNom</span>()
+            + <span class="st">" pour "</span> + m.<span class="fn">getType</span>().<span class="fn">getDegatsBase</span>() + <span class="st">" dégâts"</span>);
+    }
+}</code></pre>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public class</span> <span class="cl">LoggerCombat</span> {
+
+    <span class="kw">public static final</span> <span class="cl">LoggerCombat</span> theInstance = <span class="kw">new</span> <span class="cl">LoggerCombat</span>();
+
+    <span class="kw">private</span> <span class="fn">LoggerCombat</span>() { }  <span class="cm">// Constructeur privé !</span>
+
+    <span class="kw">public void</span> <span class="fn">logAttaque</span>(<span class="cl">Monstre</span> m, <span class="cl">Héros</span> h) { <span class="cm">/* ... */</span> }
+}</code></pre>
+          <p style="font-size:0.82rem;color:var(--green);margin-top:8px;">Utilisation : <code>LoggerCombat.theInstance.logAttaque(m, h);</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ══════════════════════════════════════
+       EXERCICE 3 — STRATEGY + LAMBDA
+  ══════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 3</span>
+      <span class="exercise-title">Design pattern Strategy — Stratégie de déplacement du Héros</span>
+      <span class="exercise-points">7 points</span>
+    </div>
+
+    <p class="intro">
+      On souhaite que le Héros puisse choisir sa salle de destination selon différentes <strong>stratégies</strong>. On définit pour cela une interface fonctionnelle :
+    </p>
+
+    <p class="code-label">StrategieDeplacement.java</p>
+    <pre><code><span class="kw">public interface</span> <span class="cl">StrategieDeplacement</span> {
+    <span class="cm">/**
+     * Renvoie la salle voisine recommandée depuis la salle p,
+     * ou null si aucune salle voisine n'existe.
+     * @param pred le critère de sélection des trésors d'intérêt
+     */</span>
+    <span class="cl">Salle</span> <span class="fn">choisirSalle</span>(<span class="cl">Salle</span> p, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">Tresor</span>&gt; pred);
+}</code></pre>
+
+    <p class="code-label">Salle.java — méthodes utiles</p>
+    <pre><code><span class="kw">public</span> <span class="cl">Salle</span> <span class="fn">salleSuivante</span>(<span class="cl">Direction</span> d)  { <span class="cm">/* renvoie null si pas de voisin */</span> }
+<span class="kw">public</span> <span class="cl">Iterator</span>&lt;<span class="cl">Tresor</span>&gt; <span class="fn">iterator</span>()           { <span class="cm">/* voir exercice 1 */</span> }</code></pre>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">1</span>
+        <span>Définissez la classe <code>StrategieMaxTresors</code> implémentant <code>StrategieDeplacement</code>. La méthode <code>choisirSalle</code> renvoie la <strong>salle voisine contenant le plus grand nombre de trésors satisfaisant le prédicat</strong>. Si aucune salle voisine n'existe, elle renvoie <code>null</code>. Appliquez également le pattern <strong>Singleton</strong> à cette classe.</span>
+        <span class="qpts">4 pts</span>
+      </div>
+      <div class="answer-box" data-lines="22 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public class</span> <span class="cl">StrategieMaxTresors</span> <span class="kw">implements</span> <span class="cl">StrategieDeplacement</span> {
+
+    <span class="kw">public static final</span> <span class="cl">StrategieMaxTresors</span> INSTANCE = <span class="kw">new</span> <span class="cl">StrategieMaxTresors</span>();
+    <span class="kw">private</span> <span class="fn">StrategieMaxTresors</span>() { }
+
+    <span class="an">@Override</span>
+    <span class="kw">public</span> <span class="cl">Salle</span> <span class="fn">choisirSalle</span>(<span class="cl">Salle</span> p, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> <span class="cl">Tresor</span>&gt; pred) {
+        <span class="cl">Salle</span> result = <span class="kw">null</span>;
+        <span class="kw">int</span> max = <span class="nb">0</span>;
+        <span class="kw">for</span> (<span class="cl">Direction</span> d : <span class="cl">Direction</span>.<span class="fn">values</span>()) {
+            <span class="cl">Salle</span> voisine = p.<span class="fn">salleSuivante</span>(d);
+            <span class="kw">if</span> (voisine != <span class="kw">null</span>) {
+                <span class="kw">int</span> count = <span class="nb">0</span>;
+                <span class="kw">for</span> (<span class="cl">Tresor</span> t : voisine) {     <span class="cm">// possible grâce à Iterable</span>
+                    <span class="kw">if</span> (pred.<span class="fn">test</span>(t)) count++;
+                }
+                <span class="kw">if</span> (count &gt; max) { max = count; result = voisine; }
+            }
+        }
+        <span class="kw">return</span> result;  <span class="cm">// null si aucune salle voisine</span>
+    }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">2</span>
+        <span>Appelez <code>choisirSalle</code> sur une instance <code>salleCourante</code> de deux façons : <strong>(a)</strong> avec un prédicat cherchant les trésors <em>rares</em> — en définissant une classe <code>TestRare</code>, <strong>(b)</strong> avec une <strong>lambda</strong> cherchant les trésors de valeur strictement supérieure à 100.</span>
+        <span class="qpts">3 pts</span>
+      </div>
+      <div class="answer-box" data-lines="10 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="cm">// (a) Avec une classe implémentant Predicate</span>
+<span class="kw">public class</span> <span class="cl">TestRare</span> <span class="kw">implements</span> <span class="cl">Predicate</span>&lt;<span class="cl">Tresor</span>&gt; {
+    <span class="kw">public boolean</span> <span class="fn">test</span>(<span class="cl">Tresor</span> t) { <span class="kw">return</span> t.<span class="fn">estRare</span>(); }
+}
+<span class="cl">Salle</span> dest1 = <span class="cl">StrategieMaxTresors</span>.INSTANCE
+    .<span class="fn">choisirSalle</span>(salleCourante, <span class="kw">new</span> <span class="cl">TestRare</span>());
+
+<span class="cm">// (b) Avec une lambda</span>
+<span class="cl">Salle</span> dest2 = <span class="cl">StrategieMaxTresors</span>.INSTANCE
+    .<span class="fn">choisirSalle</span>(salleCourante, t -&gt; t.<span class="fn">getValeur</span>() &gt; <span class="nb">100</span>);</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ══════════════════════════════════════
+       EXERCICE 4 — DECORATOR
+  ══════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 4</span>
+      <span class="exercise-title">Design pattern Decorator — Itérateur filtrant les trésors rares</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <p class="intro">
+      On dispose de la classe <code>FilterIterator&lt;E&gt;</code> suivante (vue en TD), qui décore n'importe quel <code>Iterator</code> pour ne garder que les éléments satisfaisant un prédicat :
+    </p>
+
+    <p class="code-label">FilterIterator.java — fournie</p>
+    <pre><code><span class="kw">public class</span> <span class="cl">FilterIterator</span>&lt;E&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;E&gt; {
+    <span class="kw">private</span> <span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> E&gt; supportIter;
+    <span class="kw">private</span> <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; predicate;
+    <span class="kw">private boolean</span> nextFound;
+    <span class="kw">private</span> E nextElt;
+
+    <span class="kw">public</span> <span class="fn">FilterIterator</span>(<span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> E&gt; iter, <span class="cl">Predicate</span>&lt;? <span class="kw">super</span> E&gt; p) {
+        supportIter = iter; predicate = p; <span class="fn">findNext</span>();
+    }
+    <span class="kw">private void</span> <span class="fn">findNext</span>() {
+        nextFound = <span class="kw">false</span>;
+        <span class="kw">while</span> (supportIter.<span class="fn">hasNext</span>()) {
+            E c = supportIter.<span class="fn">next</span>();
+            <span class="kw">if</span> (predicate.<span class="fn">test</span>(c)) { nextElt = c; nextFound = <span class="kw">true</span>; <span class="kw">return</span>; }
+        }
+    }
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> nextFound; }
+    <span class="kw">public</span> E <span class="fn">next</span>() { E r = nextElt; <span class="fn">findNext</span>(); <span class="kw">return</span> r; }
+}</code></pre>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">1</span>
+        <span>En utilisant <code>FilterIterator</code>, écrivez le code qui crée un itérateur parcourant <strong>uniquement les trésors rares d'une <code>Salle s</code></strong>, sans modifier la classe <code>Salle</code>. Utilisez une lambda.</span>
+        <span class="qpts">2 pts</span>
+      </div>
+      <div class="answer-box" data-lines="4 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="cl">Iterator</span>&lt;<span class="cl">Tresor</span>&gt; iter = <span class="kw">new</span> <span class="cl">FilterIterator</span>&lt;&gt;(
+    s.<span class="fn">iterator</span>(),
+    t -&gt; t.<span class="fn">estRare</span>()
+);</code></pre>
+          <p style="font-size:0.82rem;color:var(--green);margin-top:8px;">C'est le pattern Decorator : <code>FilterIterator</code> <em>enrobe</em> l'itérateur de la salle sans en modifier le code.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">2</span>
+        <span>Expliquez en 2-3 phrases pourquoi <code>FilterIterator</code> est un Decorator et pas une Strategy. En quoi les deux patterns diffèrent-ils ici ?</span>
+        <span class="qpts">2 pts</span>
+      </div>
+      <div class="answer-box" data-lines="4 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <p style="font-size:0.88rem;color:var(--green);">
+            <code>FilterIterator</code> est un <strong>Decorator</strong> car il implémente la <em>même interface</em> (<code>Iterator&lt;E&gt;</code>) que l'objet qu'il enrobe, et il lui <em>délègue</em> les appels en ajoutant un comportement (le filtrage). Il peut s'appliquer à <em>n'importe quel</em> itérateur.
+            <br><br>
+            La <strong>Strategy</strong> (<code>Predicate</code>) est ici utilisée <em>à l'intérieur</em> du Decorator pour paramétrer le critère de filtrage. La distinction clé : le Decorator modifie la façon dont on parcourt une structure ; la Strategy détermine le critère de sélection.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">3</span>
+        <span>Définissez une interface fonctionnelle <code>Function&lt;T,R&gt;</code> avec une méthode <code>R apply(T t)</code>. Puis définissez la classe <code>MappingIterator&lt;T,R&gt;</code> qui prend un <code>Iterator&lt;T&gt;</code> et une <code>Function&lt;T,R&gt;</code> et renvoie les éléments transformés. (Squelette donné — compléter la méthode next uniquement.)</span>
+        <span class="qpts">1 pt</span>
+      </div>
+      <p class="code-label">MappingIterator.java — à compléter</p>
+      <pre><code><span class="kw">public class</span> <span class="cl">MappingIterator</span>&lt;T,R&gt; <span class="kw">implements</span> <span class="cl">Iterator</span>&lt;R&gt; {
+    <span class="kw">private</span> <span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> T&gt; iter;
+    <span class="kw">private</span> <span class="cl">Function</span>&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> R&gt; func;
+
+    <span class="kw">public</span> <span class="fn">MappingIterator</span>(<span class="cl">Iterator</span>&lt;? <span class="kw">extends</span> T&gt; it, <span class="cl">Function</span>&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> R&gt; f)
+        { iter = it; func = f; }
+
+    <span class="kw">public boolean</span> <span class="fn">hasNext</span>() { <span class="kw">return</span> iter.<span class="fn">hasNext</span>(); }
+
+    <span class="kw">public</span> R <span class="fn">next</span>() {
+        <span class="todo">// À COMPLÉTER (1 ligne)</span>
+    }
+}</code></pre>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public</span> R <span class="fn">next</span>() {
+    <span class="kw">return</span> func.<span class="fn">apply</span>(iter.<span class="fn">next</span>());
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ══════════════════════════════════════
+       EXERCICE 5 — STREAM
+  ══════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 5</span>
+      <span class="exercise-title">Streams Java — Calculs sur les salles voisines</span>
+      <span class="exercise-points">4 points</span>
+    </div>
+
+    <p class="intro">
+      On dispose des méthodes suivantes sur la classe <code>Salle</code> :
+    </p>
+    <p class="code-label">Salle.java — méthodes utiles</p>
+    <pre><code><span class="kw">public</span> <span class="cl">Salle</span>  <span class="fn">salleSuivante</span>(<span class="cl">Direction</span> d) { <span class="cm">/* null si pas de voisin */</span> }
+<span class="kw">public int</span>   <span class="fn">getNbMonstres</span>()               { <span class="cm">/* nombre de monstres dans la salle */</span> }
+<span class="kw">public</span> <span class="cl">Stream</span>&lt;<span class="cl">Tresor</span>&gt; <span class="fn">streamTresors</span>()    { <span class="cm">/* stream des trésors de la salle */</span> }</code></pre>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">1</span>
+        <span>En utilisant les Streams, écrivez le code qui renvoie la <strong>liste de toutes les salles voisines non nulles</strong> de la salle courante <code>salleCourante</code>.</span>
+        <span class="qpts">1.5 pt</span>
+      </div>
+      <div class="answer-box" data-lines="5 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="cl">List</span>&lt;<span class="cl">Salle</span>&gt; voisines = <span class="cl">Stream</span>.<span class="fn">of</span>(<span class="cl">Direction</span>.<span class="fn">values</span>())
+    .<span class="fn">map</span>(d -&gt; salleCourante.<span class="fn">salleSuivante</span>(d))
+    .<span class="fn">filter</span>(s -&gt; s != <span class="kw">null</span>)
+    .<span class="fn">toList</span>();</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">2</span>
+        <span>Écrivez le code qui détermine s'il existe <strong>au moins une salle voisine sans aucun monstre</strong> (utiliser <code>anyMatch</code>).</span>
+        <span class="qpts">1.5 pt</span>
+      </div>
+      <div class="answer-box" data-lines="5 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">boolean</span> salveSansMonstreDispo = <span class="cl">Stream</span>.<span class="fn">of</span>(<span class="cl">Direction</span>.<span class="fn">values</span>())
+    .<span class="fn">map</span>(d -&gt; salleCourante.<span class="fn">salleSuivante</span>(d))
+    .<span class="fn">filter</span>(s -&gt; s != <span class="kw">null</span>)
+    .<span class="fn">anyMatch</span>(s -&gt; s.<span class="fn">getNbMonstres</span>() == <span class="nb">0</span>);</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">3</span>
+        <span>Un étudiant écrit <code>Stream&lt;Direction&gt; s = Stream.of(Direction.values());</code> puis appelle <code>s.filter(...)</code> <em>deux fois</em>. Que se passe-t-il ? Pourquoi ?</span>
+        <span class="qpts">1 pt</span>
+      </div>
+      <div class="answer-box" data-lines="3 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <p style="font-size:0.88rem;color:var(--green);">Une <code>IllegalStateException</code> est levée au deuxième appel. Un Stream est à <strong>usage unique</strong> : dès qu'une opération terminale (ou la première opération intermédiaire sur certaines implémentations) a été exécutée, le Stream est "consommé" et ne peut plus être utilisé. Il faut créer un nouveau Stream pour chaque chaîne de calcul.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ══════════════════════════════════════
+       EXERCICE 6 — COMMAND + MVC
+  ══════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 6</span>
+      <span class="exercise-title">Architecture MVC &amp; design pattern Command</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <p class="intro">On s'appuie sur l'architecture MVC. Les interfaces disponibles sont :</p>
+    <p class="code-label">Command.java</p>
+    <pre><code><span class="kw">public interface</span> <span class="cl">Command</span> {
+    <span class="kw">void</span> <span class="fn">execute</span>();
+}</code></pre>
+    <p class="code-label">ListView.java — View</p>
+    <pre><code><span class="kw">public interface</span> <span class="cl">ListView</span>&lt;E&gt; {
+    <span class="kw">void</span>  <span class="fn">show</span>();           <span class="cm">// affiche la liste numérotée</span>
+    E     <span class="fn">readChoice</span>();    <span class="cm">// lit le choix de l'utilisateur</span>
+    <span class="kw">static</span> &lt;T&gt; <span class="cl">ListView</span>&lt;T&gt; <span class="fn">buildMenu</span>(<span class="cl">Iterable</span>&lt;T&gt; items) { <span class="cm">/* ... */</span> }
+}</code></pre>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">1</span>
+        <span>Les classes suivantes appartiennent-elles au <strong>Model</strong>, à la <strong>View</strong> ou au <strong>Controller</strong> ? Justifiez en une phrase chacune.</span>
+        <span class="qpts">1.5 pt</span>
+      </div>
+      <p style="padding-left:34px; font-size:0.9rem; color:var(--ink2); margin-bottom:8px;">
+        <strong>(a)</strong> <code>Salle</code> &nbsp;·&nbsp; <strong>(b)</strong> <code>RamassrTresor</code> (commande "ramasser un trésor") &nbsp;·&nbsp; <strong>(c)</strong> <code>ListView</code>
+      </p>
+      <div class="answer-box" data-lines="6 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <p style="font-size:0.88rem;color:var(--green);">
+            <strong>(a) Model</strong> : <code>Salle</code> gère les données du jeu (trésors, monstres) sans aucune interaction utilisateur.<br>
+            <strong>(b) Controller</strong> : <code>RamassrTresor</code> exécute une commande utilisateur en faisant appel au Model (retire le trésor de la salle, l'ajoute à l'inventaire) et à la View (affiche le résultat).<br>
+            <strong>(c) View</strong> : <code>ListView</code> interagit directement avec l'utilisateur (affichage + lecture du choix) sans dépendre du Model.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">2</span>
+        <span>Définissez la classe <code>RamassrTresor</code> implémentant <code>Command</code>. Sa méthode <code>execute()</code> doit : afficher la liste des trésors de la salle courante via <code>ListView</code>, lire le choix du héros, puis retirer le trésor choisi de la salle et l'ajouter à l'inventaire du héros. Supposez que <code>Salle implements Iterable&lt;Tresor&gt;</code> et que <code>Héros</code> expose <code>getSalleCourante()</code> et <code>ajouterInventaire(Tresor t)</code>.</span>
+        <span class="qpts">3.5 pts</span>
+      </div>
+      <div class="answer-box" data-lines="20 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public class</span> <span class="cl">RamassrTresor</span> <span class="kw">implements</span> <span class="cl">Command</span> {
+    <span class="kw">private</span> <span class="cl">Héros</span> heros;
+
+    <span class="kw">public</span> <span class="fn">RamassrTresor</span>(<span class="cl">Héros</span> heros) {
+        <span class="kw">this</span>.heros = heros;
+    }
+
+    <span class="an">@Override</span>
+    <span class="kw">public void</span> <span class="fn">execute</span>() {
+        <span class="cl">Salle</span> salle = heros.<span class="fn">getSalleCourante</span>();
+
+        <span class="cm">// View : construire et afficher la liste des trésors</span>
+        <span class="cl">ListView</span>&lt;<span class="cl">Tresor</span>&gt; menu = <span class="cl">ListView</span>.<span class="fn">buildMenu</span>(salle);
+        menu.<span class="fn">show</span>();
+
+        <span class="cm">// View : lire le choix</span>
+        <span class="cl">Tresor</span> choix = menu.<span class="fn">readChoice</span>();
+
+        <span class="cm">// Model : retirer de la salle et ajouter à l'inventaire</span>
+        salle.<span class="fn">retirerTresor</span>(choix);
+        heros.<span class="fn">ajouterInventaire</span>(choix);
+    }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sep">
+
+  <!-- ══════════════════════════════════════
+       EXERCICE 7 — BUILDER
+  ══════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 7</span>
+      <span class="exercise-title">Design pattern Builder — Création d'un Héros</span>
+      <span class="exercise-points">7 points</span>
+    </div>
+
+    <p class="intro">
+      La classe <code>Héros</code> possède de nombreux attributs, dont certains ont des valeurs par défaut raisonnables. On souhaite appliquer le pattern Builder pour faciliter sa construction.
+    </p>
+    <p class="code-label">Attributs de la classe Héros</p>
+    <pre><code><span class="cm">// Obligatoires (pas de valeur par défaut)</span>
+<span class="cl">String</span> nom;          <span class="cm">// Nom du personnage</span>
+
+<span class="cm">// Optionnels (valeurs par défaut)</span>
+<span class="kw">int</span> pointsDeVie = <span class="nb">100</span>;
+<span class="kw">int</span> force       = <span class="nb">10</span>;
+<span class="kw">int</span> agilite     = <span class="nb">10</span>;
+<span class="kw">int</span> magie       = <span class="nb">0</span>;
+<span class="kw">boolean</span> invincible = <span class="kw">false</span>;</code></pre>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">1</span>
+        <span>Définissez la classe <code>HérosBuilder</code> avec son constructeur, ses méthodes <code>withXxx()</code> et sa méthode <code>build()</code>.</span>
+        <span class="qpts">4 pts</span>
+      </div>
+      <div class="answer-box" data-lines="26 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public class</span> <span class="cl">HérosBuilder</span> {
+    <span class="cl">String</span>  nom;
+    <span class="kw">int</span>     pointsDeVie = <span class="nb">100</span>;
+    <span class="kw">int</span>     force       = <span class="nb">10</span>;
+    <span class="kw">int</span>     agilite     = <span class="nb">10</span>;
+    <span class="kw">int</span>     magie       = <span class="nb">0</span>;
+    <span class="kw">boolean</span> invincible  = <span class="kw">false</span>;
+
+    <span class="cm">// Constructeur : uniquement le paramètre obligatoire</span>
+    <span class="kw">public</span> <span class="fn">HérosBuilder</span>(<span class="cl">String</span> nom) {
+        <span class="kw">if</span> (nom == <span class="kw">null</span>) <span class="kw">throw new</span> <span class="cl">NullPointerException</span>();
+        <span class="kw">this</span>.nom = nom;
+    }
+
+    <span class="cm">// Méthodes optionnelles — renvoient this pour le chaînage</span>
+    <span class="kw">public</span> <span class="cl">HérosBuilder</span> <span class="fn">withPdv</span>(<span class="kw">int</span> v)        { pointsDeVie = v; <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">HérosBuilder</span> <span class="fn">withForce</span>(<span class="kw">int</span> v)      { force = v;       <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">HérosBuilder</span> <span class="fn">withAgilite</span>(<span class="kw">int</span> v)    { agilite = v;     <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">HérosBuilder</span> <span class="fn">withMagie</span>(<span class="kw">int</span> v)      { magie = v;       <span class="kw">return this</span>; }
+    <span class="kw">public</span> <span class="cl">HérosBuilder</span> <span class="fn">withInvincible</span>()      { invincible = <span class="kw">true</span>; <span class="kw">return this</span>; }
+
+    <span class="cm">// build() : crée l'objet final</span>
+    <span class="kw">public</span> <span class="cl">Héros</span> <span class="fn">build</span>() {
+        <span class="kw">return new</span> <span class="cl">Héros</span>(<span class="kw">this</span>);
+    }
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">2</span>
+        <span>Donnez la déclaration minimale de la classe <code>Héros</code> nécessaire pour que <code>HérosBuilder.build()</code> fonctionne. Précisez en particulier la <strong>visibilité</strong> du constructeur de <code>Héros</code> et expliquez pourquoi.</span>
+        <span class="qpts">2 pts</span>
+      </div>
+      <div class="answer-box" data-lines="12 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="kw">public class</span> <span class="cl">Héros</span> {
+    <span class="kw">private final</span> <span class="cl">String</span>  nom;
+    <span class="kw">private final int</span>    pointsDeVie, force, agilite, magie;
+    <span class="kw">private final boolean</span> invincible;
+
+    <span class="cm">// Package-private : ni public, ni private</span>
+    <span class="cm">// Accessible depuis HérosBuilder (même package),</span>
+    <span class="cm">// mais pas depuis n'importe quelle classe externe</span>
+    <span class="cl">Héros</span>(<span class="cl">HérosBuilder</span> b) {
+        nom         = b.nom;
+        pointsDeVie = b.pointsDeVie;
+        force       = b.force;
+        agilite     = b.agilite;
+        magie       = b.magie;
+        invincible  = b.invincible;
+    }
+    <span class="cm">// ... getters ...</span>
+}</code></pre>
+          <p style="font-size:0.82rem;color:var(--green);margin-top:8px;">Le constructeur est <strong>package-private</strong> (sans modificateur de visibilité) pour que seul <code>HérosBuilder</code> (dans le même package) puisse créer un <code>Héros</code>. Pas de <code>public</code> pour forcer l'utilisation du Builder.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">
+        <span class="qnum">3</span>
+        <span>Utilisez <code>HérosBuilder</code> pour créer deux héros : <strong>Aragorn</strong> (force 20, agilite 15, magie 0) et <strong>Gandalf</strong> (magie 50, force 5, invincible).</span>
+        <span class="qpts">1 pt</span>
+      </div>
+      <div class="answer-box" data-lines="6 lignes">
+        <div class="answer-lines">
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+          <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+        </div>
+      </div>
+      <button class="toggle-correction" onclick="toggleCorr(this)">▶ Voir la correction</button>
+      <div class="correction">
+        <div class="correction-content">
+          <h4>Correction</h4>
+          <pre><code><span class="cl">Héros</span> aragorn = <span class="kw">new</span> <span class="cl">HérosBuilder</span>(<span class="st">"Aragorn"</span>)
+    .<span class="fn">withForce</span>(<span class="nb">20</span>)
+    .<span class="fn">withAgilite</span>(<span class="nb">15</span>)
+    .<span class="fn">build</span>();
+
+<span class="cl">Héros</span> gandalf = <span class="kw">new</span> <span class="cl">HérosBuilder</span>(<span class="st">"Gandalf"</span>)
+    .<span class="fn">withMagie</span>(<span class="nb">50</span>)
+    .<span class="fn">withForce</span>(<span class="nb">5</span>)
+    .<span class="fn">withInvincible</span>()
+    .<span class="fn">build</span>();</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RÉCAPITULATIF ══ -->
+  <div class="points-summary">
+    <h3>Récapitulatif du barème</h3>
+    <div class="pts-grid">
+      <div class="pts-row"><span class="label">Exercice 1 — Iterator</span><span class="pts">7 pts</span></div>
+      <div class="pts-row"><span class="label">Exercice 2 — Singleton &amp; Enum</span><span class="pts">5 pts</span></div>
+      <div class="pts-row"><span class="label">Exercice 3 — Strategy</span><span class="pts">7 pts</span></div>
+      <div class="pts-row"><span class="label">Exercice 4 — Decorator</span><span class="pts">5 pts</span></div>
+      <div class="pts-row"><span class="label">Exercice 5 — Stream</span><span class="pts">4 pts</span></div>
+      <div class="pts-row"><span class="label">Exercice 6 — Command &amp; MVC</span><span class="pts">5 pts</span></div>
+      <div class="pts-row"><span class="label">Exercice 7 — Builder</span><span class="pts">7 pts</span></div>
+    </div>
+    <div class="pts-total">
+      <span>TOTAL</span>
+      <span>35 points</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleCorr(btn) {
+  const div = btn.nextElementSibling;
+  const visible = div.classList.toggle('visible');
+  btn.textContent = visible ? '▼ Masquer la correction' : '▶ Voir la correction';
+}
+</script>
+</body>
+</html>
