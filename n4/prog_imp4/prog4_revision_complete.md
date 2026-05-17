@@ -1123,3 +1123,138 @@ clean:
 - `-I"chemin"` : ajouter un dossier de recherche des headers
 - `-o nom` : nom de l'exécutable
 - Les recettes commencent par une **tabulation** (jamais des espaces)
+
+---
+
+## Fonctions vues en CM / TD (hors TP)
+
+> Ces fonctions sont apparues dans les TD2 à TD6 et les cours magistraux.
+> Elles ne font pas partie de la bibliothèque fournie mais peuvent tomber à l'examen.
+
+### `parse_aux` + `parse_expr` — version TD2 avec `const char**`
+
+```c
+/*
+ * Version TD2 — utilise const char** au lieu de int*pos.
+ *
+ * POURQUOI const char** et pas char* ?
+ * Avec char*  : chaque appel récursif reçoit une COPIE du pointeur.
+ *               Impossible de faire avancer le curseur partagé.
+ * Avec char** : tous les appels voient et modifient le MÊME pointeur.
+ *               **s  = lire le caractère courant
+ *               (*s)++ = avancer d'un cran dans la chaîne
+ *
+ * Pas d'espaces dans la chaîne (contrairement à la version TP).
+ */
+static link parse_aux(const char **s) {
+    char c = **s;        /* lire le caractère courant              */
+    (*s)++;              /* avancer le curseur partagé             */
+    if (c == '+' || c == '-' || c == '*' || c == '/') {
+        link gauche = parse_aux(s);
+        link droite = parse_aux(s);
+        return cons_binary_tree(c, gauche, droite);
+    } else {
+        /* c est un chiffre : nœud feuille */
+        return cons_binary_tree(c, NULL, NULL);
+    }
+}
+
+/* Point d'entrée : prend une const char*, passe son adresse à parse_aux */
+link parse_expr(const char *s) {
+    return parse_aux(&s);
+}
+```
+
+### `max_binary_tree` — TD1
+
+```c
+/* Retourne le maximum des étiquettes de l'arbre.
+   Requiert bt non vide (item = char, comparaison via less()).
+   Complexité : O(n) */
+item max_binary_tree(const link bt) {
+    if (is_empty_binary_tree(bt)) return bt->label; /* cas à gérer par l'appelant */
+    item root_val = get_binary_tree_root(bt);
+    if (is_empty_binary_tree(bt->left) && is_empty_binary_tree(bt->right))
+        return root_val;  /* feuille */
+    if (is_empty_binary_tree(bt->left)) {
+        item right_max = max_binary_tree(bt->right);
+        return less(root_val, right_max) ? right_max : root_val;
+    }
+    if (is_empty_binary_tree(bt->right)) {
+        item left_max = max_binary_tree(bt->left);
+        return less(root_val, left_max) ? left_max : root_val;
+    }
+    item lm = max_binary_tree(bt->left);
+    item rm = max_binary_tree(bt->right);
+    item child_max = less(lm, rm) ? rm : lm;
+    return less(root_val, child_max) ? child_max : root_val;
+}
+```
+
+### `count_leaves_binary_tree` — TD1
+
+```c
+/* Compte le nombre de feuilles (nœuds sans enfants).
+   Complexité : O(n) */
+int count_leaves_binary_tree(const link bt) {
+    if (is_empty_binary_tree(bt)) return 0;
+    if (is_empty_binary_tree(bt->left) && is_empty_binary_tree(bt->right))
+        return 1;  /* c'est une feuille */
+    return count_leaves_binary_tree(bt->left)
+         + count_leaves_binary_tree(bt->right);
+}
+```
+
+### `sum_binary_tree` — TD / partiel
+
+```c
+/* Retourne la somme de toutes les étiquettes (item = int).
+   Complexité : O(n) */
+int sum_binary_tree(const link bt) {
+    if (is_empty_binary_tree(bt)) return 0;
+    return bt->label
+         + sum_binary_tree(bt->left)
+         + sum_binary_tree(bt->right);
+}
+```
+
+### `infix_RB` + `tri_RB` — TD5/TD6
+
+```c
+/*
+ * Parcours infixe du LLRBT pour remplir un tableau.
+ * Identique à inorder_LLRBT mais avec le nom utilisé dans les TD.
+ * Complexité : O(n)
+ */
+static int infix_RB(llrbt_link h, item *a, int i) {
+    if (h == NULL) return i;
+    i = infix_RB(h->left, a, i);  /* parcourir gauche */
+    a[i++] = h->label;             /* écrire la racine */
+    i = infix_RB(h->right, a, i); /* parcourir droite */
+    return i;
+}
+
+/*
+ * Trie le tableau a[0..n-1] par tri LLRBT :
+ *   Phase 1 : insérer les n éléments dans un LLRBT — O(n log n)
+ *   Phase 2 : parcours infixe → tableau trié croissant — O(n)
+ * Total : O(n log n)
+ *
+ * Avantage sur heap_sort : stable dans la structure, les doublons
+ * sont conservés (insertions à droite pour les égaux).
+ */
+void tri_RB(item *a, int n) {
+    llrbt_link root = NULL;
+
+    /* Phase 1 : construction du LLRBT */
+    for (int i = 0; i < n; i++)
+        root = insert_LLRBT(root, a[i]);
+    if (root != NULL) root->color = BLACK;  /* racine toujours noire */
+
+    /* Phase 2 : lecture infixe → tableau trié */
+    infix_RB(root, a, 0);
+
+    /* Libérer la mémoire */
+    delete_llrbt(&root);
+}
+```
