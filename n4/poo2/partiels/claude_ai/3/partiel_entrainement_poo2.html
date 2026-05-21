@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partiel d'entraînement — POO2</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink2: #2d2d4a;
+    --muted: #6b6b8a;
+    --light: #f4f4f8;
+    --border: #d4d4e8;
+    --accent: #3b2fc9;
+    --accent-light: #ebe9ff;
+    --green: #1a7a4a;
+    --green-light: #e6f4ec;
+    --red: #9b1c1c;
+    --red-light: #fdf0f0;
+    --orange: #7c3d0e;
+    --orange-light: #fff4e6;
+    --code-bg: #f0f0f8;
+    --page-bg: #fafafa;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #dcdcec;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.75;
+  }
+
+  .page {
+    max-width: 880px;
+    margin: 36px auto;
+    background: var(--page-bg);
+    box-shadow: 0 6px 48px rgba(0,0,0,0.22);
+    padding: 60px 76px;
+  }
+  @media (max-width: 720px) { .page { padding: 32px 24px; margin: 0; } }
+
+  /* ── HEADER ── */
+  .exam-header {
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 22px;
+    margin-bottom: 36px;
+  }
+  .university {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .exam-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .exam-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 22px;
+    padding: 16px 18px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .meta-item label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .meta-item span {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ── INSTRUCTIONS ── */
+  .instructions {
+    background: var(--orange-light);
+    border: 1px solid #e8c49a;
+    border-left: 4px solid #c97a2a;
+    border-radius: 0 4px 4px 0;
+    padding: 14px 18px;
+    margin-bottom: 36px;
+    font-size: 0.9rem;
+  }
+  .instructions strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--orange);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .instructions ul { padding-left: 20px; }
+  .instructions li { margin-bottom: 3px; }
+
+  /* ── CONTEXT ── */
+  .context-box {
+    background: var(--accent-light);
+    border: 1px solid #c0b8f8;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 18px 22px;
+    margin-bottom: 40px;
+    font-size: 0.93rem;
+  }
+  .context-box strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+  }
+  .context-box p + p { margin-top: 8px; }
+
+  /* ── EXERCISE ── */
+  .exercise { margin-bottom: 56px; }
+  .exercise-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .exercise-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    background: var(--ink);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .exercise-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    flex: 1;
+  }
+  .exercise-points {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── QUESTIONS ── */
+  .question {
+    margin: 18px 0;
+    padding-left: 0;
+  }
+  .question-num {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--accent);
+    margin-right: 6px;
+  }
+  .sub-question {
+    margin: 10px 0 10px 24px;
+    font-size: 0.93rem;
+  }
+  .sub-question::before {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-right: 6px;
+  }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin: 14px 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: #1a1a3e;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: #2a2a5e;
+  }
+
+  /* ── CALLOUTS ── */
+  .note {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 0.88rem;
+    color: #1a4a30;
+  }
+  .note strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .warn {
+    background: var(--red-light);
+    border-left: 4px solid #c53030;
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 0.88rem;
+    color: var(--red);
+  }
+
+  /* ── ANSWER ZONE ── */
+  .answer-zone {
+    border: 1px dashed #b0b0cc;
+    border-radius: 4px;
+    background: #fafafe;
+    padding: 14px 16px;
+    margin: 12px 0;
+    min-height: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: #aaa;
+  }
+  .answer-zone::before {
+    content: '// Votre réponse ici';
+    display: block;
+  }
+
+  /* ── SCORE TABLE ── */
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+  }
+  .score-table th {
+    background: var(--ink);
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .score-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .score-table tr:nth-child(even) td { background: var(--light); }
+  .score-table .total td {
+    font-weight: 700;
+    border-top: 2px solid var(--ink);
+    font-size: 0.95rem;
+  }
+
+  /* ── DIVIDER ── */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 36px 0;
+  }
+
+  p { margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+
+  ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="exam-header">
+    <div class="university">Université Paris XIII — Institut Galilée — Département Informatique</div>
+    <h1>Partiel d'entraînement — Programmation Orientée Objet 2</h1>
+    <div class="subtitle">Design Patterns en Java — Sujet complet</div>
+    <div class="exam-meta">
+      <div class="meta-item"><label>Durée</label><span>2 heures</span></div>
+      <div class="meta-item"><label>Total</label><span>20 points</span></div>
+      <div class="meta-item"><label>Documents</label><span>Aucun</span></div>
+      <div class="meta-item"><label>Niveau</label><span>Licence 2</span></div>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="instructions">
+    <strong>Consignes</strong>
+    <ul>
+      <li>Aucun document autorisé. Aucun appareil électronique.</li>
+      <li>Lisez l'intégralité du sujet avant de commencer.</li>
+      <li>Le code Java doit être syntaxiquement correct et compilable.</li>
+      <li>Vous pouvez utiliser les classes fournies sans les redéfinir.</li>
+      <li>Justifiez vos choix de conception lorsque c'est demandé.</li>
+    </ul>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="context-box">
+    <strong>Contexte — Le Château Maudit</strong>
+    <p>
+      On développe un jeu de rôle textuel dans lequel un <strong>Chasseur</strong> explore un château hanté.
+      Le château est constitué de <strong>Salle</strong>s reliées entre elles par des passages
+      (NORD, SUD, EST, OUEST). Chaque salle contient des <strong>Relique</strong>s : des objets anciens,
+      certains maudits, d'une puissance variable.
+    </p>
+    <p>
+      Les classes suivantes sont fournies et <em>ne sont pas à redéfinir</em> :
+    </p>
+    <pre>
+public class Relique {
+    private String nom;
+    private int puissance;
+    private boolean estMaudite;
+
+    public Relique(String nom, int puissance, boolean estMaudite) {
+        this.nom = nom;
+        this.puissance = puissance;
+        this.estMaudite = estMaudite;
+    }
+    public String getNom()        { return nom; }
+    public int getPuissance()     { return puissance; }
+    public boolean estMaudite()   { return estMaudite; }
+}
+
+public enum Direction { NORD, SUD, EST, OUEST }
+
+public interface Predicate&lt;E&gt; {
+    boolean test(E e);
+}
+
+public interface Function&lt;T, R&gt; {
+    R apply(T t);
+}</pre>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- EXERCICE 1                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 1</span>
+      <span class="exercise-title">Design pattern Itérateur</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <p>
+      La classe <code>Salle</code> stocke ses reliques dans un tableau et doit permettre
+      leur parcours avec le <em>for amélioré</em>.
+    </p>
+
+    <pre>
+public class Salle implements Iterable&lt;Relique&gt; {
+    private Relique[] reliques;
+    private int nbReliques;
+
+    public Salle() {
+        reliques = new Relique[20];
+        nbReliques = 0;
+    }
+    public void ajouterRelique(Relique r) {
+        reliques[nbReliques++] = r;
+    }
+    public Salle salleSuivante(Direction d) { /* fourni, peut renvoyer null */ }
+
+    public Iterator&lt;Relique&gt; iterator() { /* À compléter — question 2 */ }
+}</pre>
+
+    <div class="question">
+      <span class="question-num">1.</span>
+      Définissez la classe <code>SalleIterator</code> qui implémente <code>Iterator&lt;Relique&gt;</code>
+      et permet de parcourir le tableau <code>reliques</code> de taille <code>nbReliques</code>.
+      Elle doit implémenter les méthodes <code>hasNext()</code> et <code>next()</code>.
+    </div>
+
+    <div class="question">
+      <span class="question-num">2.</span>
+      Complétez la méthode <code>iterator()</code> de la classe <code>Salle</code>.
+    </div>
+
+    <div class="question">
+      <span class="question-num">3.</span>
+      En utilisant le <em>for amélioré</em>, écrivez le code qui affiche
+      le nom de toutes les reliques d'une salle <code>s</code> dont la puissance est strictement supérieure à 30.
+    </div>
+
+    <div class="note">
+      <strong>Rappel</strong>
+      Le for amélioré <code>for (Relique r : s) { ... }</code> est utilisable dès que
+      <code>Salle</code> implémente <code>Iterable&lt;Relique&gt;</code>.
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- EXERCICE 2                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 2</span>
+      <span class="exercise-title">Design patterns Singleton &amp; Enum</span>
+      <span class="exercise-points">4 points</span>
+    </div>
+
+    <div class="question">
+      <span class="question-num">1.</span>
+      Définissez un <code>enum</code> Java <code>TypeGardien</code> avec les trois valeurs
+      <code>SQUELETTE</code>, <code>VAMPIRE</code> et <code>SPECTRE</code>.
+      Chaque valeur possède un attribut <code>int dangerosité</code> et une méthode
+      <code>getDangerosité()</code>. Choisissez librement les valeurs de dangerosité
+      (ex : SQUELETTE moins dangereux que VAMPIRE, SPECTRE le plus dangereux).
+    </div>
+
+    <div class="question">
+      <span class="question-num">2.</span>
+      On souhaite une classe <code>JournalChateau</code> dont il ne doit exister
+      <em>qu'une seule instance</em> dans tout le programme. Elle possède une unique méthode :
+    </div>
+    <pre>void enregistrer(String message)  // affiche "[LOG] " + message</pre>
+
+    <p style="margin-left:0">
+      Définissez la classe <code>JournalChateau</code> en appliquant le design pattern
+      <strong>Singleton</strong>. Votre implémentation devra :
+    </p>
+    <ul style="padding-left:24px; margin-bottom:12px;">
+      <li>rendre impossible la création d'une seconde instance depuis l'extérieur,</li>
+      <li>interdire explicitement le clonage,</li>
+      <li>exposer l'instance unique via un attribut <code>public static final</code>.</li>
+    </ul>
+
+    <div class="warn">
+      Ne pas oublier d'interdire le clonage (<code>clone()</code>) — c'est une condition nécessaire pour un vrai Singleton.
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- EXERCICE 3                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 3</span>
+      <span class="exercise-title">Design pattern Strategy &amp; Lambda expressions</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <p>
+      Pour décider vers quelle salle se déplacer, le chasseur utilise une stratégie.
+      L'interface suivante est fournie :
+    </p>
+    <pre>
+public interface StrategieExploration {
+    /**
+     * Renvoie la salle voisine recommandée depuis la salle p,
+     * en fonction d'un critère pred sur les Relique,
+     * ou null si aucune salle voisine n'existe.
+     */
+    Salle choisirSalle(Salle p, Predicate&lt;? super Relique&gt; pred);
+}</pre>
+
+    <div class="question">
+      <span class="question-num">1.</span>
+      Définissez la classe <code>StrategieMaxReliques</code> implémentant
+      <code>StrategieExploration</code> de façon à ce que <code>choisirSalle</code>
+      renvoie la salle voisine contenant le <strong>plus grand nombre</strong> de reliques
+      satisfaisant le prédicat <code>pred</code>.
+      Si plusieurs salles sont à égalité, renvoyez n'importe laquelle.
+      Si aucune salle voisine n'existe, renvoyez <code>null</code>.
+    </div>
+
+    <div class="note">
+      <strong>Rappel — itérer sur les directions</strong>
+      <code>Direction.values()</code> renvoie un tableau de toutes les valeurs de l'enum,
+      utilisable dans un for amélioré. <code>salleSuivante(d)</code> peut renvoyer <code>null</code>.
+    </div>
+
+    <div class="question">
+      <span class="question-num">2.</span>
+      Appliquez le design pattern <strong>Singleton</strong> à la classe
+      <code>StrategieMaxReliques</code>. Justifiez en une phrase pourquoi le Singleton
+      est approprié ici.
+    </div>
+
+    <div class="question">
+      <span class="question-num">3.</span>
+      Donnez la lambda expression Java correspondant à chacun des prédicats suivants :
+    </div>
+    <div class="sub-question">
+      <strong>a)</strong> La relique est non maudite et de puissance strictement supérieure à 50.
+    </div>
+    <div class="sub-question">
+      <strong>b)</strong> La relique est non nulle et son nom commence par <code>"Or"</code>
+      (rappel : <code>String.startsWith(String prefix)</code>).
+    </div>
+    <div class="sub-question">
+      <strong>c)</strong> La relique satisfait simultanément : non maudite, puissance &gt; 20,
+      et nom commençant par <code>"A"</code>.
+    </div>
+
+    <div class="question">
+      <span class="question-num">4.</span>
+      En une phrase, expliquez pourquoi <code>Predicate&lt;E&gt;</code> est une
+      <em>functional interface</em> et ce que cela implique pour l'usage des lambdas.
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- EXERCICE 4                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 4</span>
+      <span class="exercise-title">Design pattern Decorator</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <p>
+      On dispose des classes suivantes, vues en TD (constructeurs uniquement) :
+    </p>
+    <pre>
+// Filtre les éléments d'un itérateur selon un prédicat
+public class FilterIterator&lt;E&gt; implements Iterator&lt;E&gt; {
+    public FilterIterator(Iterator&lt;? extends E&gt; iter, Predicate&lt;? super E&gt; p) { ... }
+    // hasNext() et next() déjà implémentés
+}
+
+// Transforme les éléments d'un itérateur via une fonction
+public class MappingIterator&lt;T, R&gt; implements Iterator&lt;R&gt; {
+    public MappingIterator(Iterator&lt;? extends T&gt; iter, Function&lt;? super T, ? extends R&gt; f) { ... }
+    // hasNext() et next() déjà implémentés
+}</pre>
+
+    <div class="question">
+      <span class="question-num">1.</span>
+      Définissez la classe <code>FilterIterator&lt;E&gt;</code> en entier
+      (attributs, constructeur, <code>findNext()</code>, <code>hasNext()</code>, <code>next()</code>).
+      Aidez-vous du squelette suivant :
+    </div>
+    <pre>
+public class FilterIterator&lt;E&gt; implements Iterator&lt;E&gt; {
+    private Iterator&lt;? extends E&gt; supportIter;
+    private Predicate&lt;? super E&gt; predicate;
+    private boolean nextFound;
+    private E nextElt;
+
+    public FilterIterator(Iterator&lt;? extends E&gt; iter, Predicate&lt;? super E&gt; p) {
+        // À compléter
+    }
+    private void findNext() {
+        // À compléter : cherche le prochain élément satisfaisant le prédicat
+    }
+    public boolean hasNext() { /* À compléter */ }
+    public E next()          { /* À compléter */ }
+}</pre>
+
+    <div class="question">
+      <span class="question-num">2.</span>
+      En utilisant <code>SalleIterator</code> et <code>FilterIterator</code>,
+      écrivez le code qui crée un itérateur sur les reliques <strong>maudites</strong>
+      d'une salle <code>s</code>, et affiche leur nom.
+    </div>
+
+    <div class="question">
+      <span class="question-num">3.</span>
+      En chaînant <code>SalleIterator</code>, <code>FilterIterator</code>
+      et <code>MappingIterator</code>, écrivez le code qui crée un
+      <code>Iterator&lt;String&gt;</code> donnant les <strong>noms</strong> des reliques
+      non maudites de puissance supérieure à 40 d'une salle <code>s</code>.
+    </div>
+
+    <div class="question">
+      <span class="question-num">4.</span>
+      En une phrase, expliquez pourquoi <code>FilterIterator</code>
+      est préférable à une classe <code>FilterSalleIterator</code>
+      (qui ne fonctionnerait que sur les <code>Salle</code>).
+    </div>
+
+    <div class="question">
+      <span class="question-num">5.</span>
+      On souhaite maintenant appliquer deux filtres à la suite :
+      garder uniquement les reliques dont le nom commence par <code>"S"</code>
+      parmi les reliques non maudites.
+      Écrivez le code qui crée cet itérateur en chaînant deux <code>FilterIterator</code>.
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- EXERCICE 5                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 5</span>
+      <span class="exercise-title">Architecture MVC &amp; Design pattern Command</span>
+      <span class="exercise-points">4 points</span>
+    </div>
+
+    <p>
+      On applique le pattern MVC au jeu. L'interface <code>Command</code>
+      et les classes du modèle sont fournies :
+    </p>
+    <pre>
+public interface Command {
+    void execute();
+}
+
+// MODEL
+public class Chasseur {
+    public void prendreRelique(Relique r) { ... }   // ajoute r à l'inventaire
+    public void deposerRelique(Relique r) { ... }   // retire r de l'inventaire
+    public Salle getSalleActuelle()       { ... }
+    public Iterable&lt;Relique&gt; getInventaire() { ... }
+}
+
+public class ChateauMap {
+    public boolean salleExiste(Salle s, Direction d) { ... }
+    public void deplacer(Chasseur c, Direction d)    { ... }
+}
+
+// VIEW
+public class ListView&lt;E&gt; {
+    public static &lt;T&gt; ListView&lt;T&gt; buildMenu(Iterable&lt;T&gt; items) { ... }
+    public void show()       { ... }  // affiche la liste numérotée
+    public E readChoice()    { ... }  // attend et renvoie le choix de l'utilisateur
+}</pre>
+
+    <div class="question">
+      <span class="question-num">1.</span>
+      Définissez la classe <code>PrendreRelique</code> implémentant <code>Command</code>.
+      Sa méthode <code>execute()</code> doit :
+      <ol style="margin-top:8px; padding-left:20px;">
+        <li>Afficher la liste des reliques de la salle actuelle du chasseur.</li>
+        <li>Lire le choix de l'utilisateur.</li>
+        <li>Faire prendre la relique choisie par le chasseur.</li>
+      </ol>
+    </div>
+
+    <div class="question">
+      <span class="question-num">2.</span>
+      Définissez la classe <code>SeDeplacer</code> implémentant <code>Command</code>.
+      Sa méthode <code>execute()</code> doit :
+      <ol style="margin-top:8px; padding-left:20px;">
+        <li>Construire la liste des directions valides (celles pour lesquelles <code>salleExiste</code> renvoie <code>true</code>) et l'afficher.</li>
+        <li>Lire le choix de direction de l'utilisateur.</li>
+        <li>Effectuer le déplacement.</li>
+      </ol>
+    </div>
+
+    <div class="note">
+      <strong>Rappel — Direction.values()</strong>
+      Vous pouvez itérer sur toutes les directions avec <code>for (Direction d : Direction.values())</code>.
+      Pour construire une liste de directions valides, utilisez par exemple une <code>ArrayList&lt;Direction&gt;</code>.
+    </div>
+
+    <div class="question">
+      <span class="question-num">3.</span>
+      En une ou deux phrases, expliquez ce que garantit la séparation MVC :
+      quelle partie du code peut-on remplacer (passer d'une interface console
+      à une interface graphique) sans toucher aux autres ?
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- SCORE TABLE                                  -->
+  <!-- ═══════════════════════════════════════════ -->
+  <hr>
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>Exercice</th>
+        <th>Thème</th>
+        <th>Barème</th>
+        <th>Note obtenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Exercice 1</td><td>Design pattern Itérateur</td><td>5 pts</td><td></td></tr>
+      <tr><td>Exercice 2</td><td>Singleton &amp; Enum</td><td>4 pts</td><td></td></tr>
+      <tr><td>Exercice 3</td><td>Strategy &amp; Lambda</td><td>5 pts</td><td></td></tr>
+      <tr><td>Exercice 4</td><td>Decorator</td><td>5 pts</td><td></td></tr>
+      <tr><td>Exercice 5</td><td>MVC &amp; Command</td><td>4 pts</td><td></td></tr>
+      <tr class="total"><td colspan="2"><strong>Total</strong></td><td><strong>20 pts</strong></td><td></td></tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>

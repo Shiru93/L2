@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correction — Partiel d'entraînement POO2</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --muted: #6b6b8a;
+    --light: #f4f4f8;
+    --border: #d4d4e8;
+    --accent: #3b2fc9;
+    --accent-light: #ebe9ff;
+    --green: #1a7a4a;
+    --green-light: #e6f4ec;
+    --green-border: #7abf9a;
+    --red: #9b1c1c;
+    --red-light: #fdf0f0;
+    --orange: #7c3d0e;
+    --orange-light: #fff4e6;
+    --code-bg: #f0f0f8;
+    --page-bg: #fafafa;
+    --gold: #b8860b;
+    --gold-light: #fffbea;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #2a2a1a;
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.75;
+  }
+  .page {
+    max-width: 880px;
+    margin: 36px auto;
+    background: var(--page-bg);
+    box-shadow: 0 6px 48px rgba(0,0,0,0.3);
+    padding: 60px 76px;
+  }
+  @media (max-width: 720px) { .page { padding: 32px 20px; margin: 0; } }
+
+  /* ── HEADER ── */
+  .corr-header {
+    border-bottom: 3px solid var(--green);
+    padding-bottom: 22px;
+    margin-bottom: 36px;
+  }
+  .university {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .corr-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    color: var(--green);
+  }
+  .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .corr-badge {
+    display: inline-block;
+    margin-top: 12px;
+    background: var(--green);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 2px;
+  }
+
+  /* ── EXERCISE ── */
+  .exercise { margin-bottom: 60px; }
+  .exercise-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--green);
+  }
+  .exercise-number {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    background: var(--green);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .exercise-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    flex: 1;
+  }
+  .exercise-points {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* ── QUESTION BLOCK ── */
+  .q-block { margin: 24px 0; }
+  .q-label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid #c0b8f8;
+    border-radius: 3px;
+    padding: 2px 10px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+  .q-block p { margin-bottom: 8px; }
+
+  /* ── CODE ── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 16px 18px;
+    margin: 12px 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.81rem;
+    line-height: 1.7;
+    color: #1a1a3e;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.84em;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: #2a2a5e;
+  }
+
+  /* ── CALLOUTS ── */
+  .expl {
+    background: var(--green-light);
+    border-left: 4px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.89rem;
+    color: #1a4a30;
+  }
+  .expl strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--green);
+  }
+  .warn {
+    background: var(--orange-light);
+    border-left: 4px solid #c97a2a;
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 0.89rem;
+    color: var(--orange);
+  }
+  .warn strong {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .pts {
+    float: right;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--green);
+    background: var(--green-light);
+    border: 1px solid var(--green-border);
+    border-radius: 12px;
+    padding: 1px 10px;
+    margin-left: 10px;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+  p { margin-bottom: 8px; }
+  ul, ol { padding-left: 22px; margin-bottom: 8px; }
+  li { margin-bottom: 4px; }
+
+  /* ── SCORE ── */
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+  }
+  .score-table th {
+    background: var(--green);
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .score-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .score-table tr:nth-child(even) td { background: var(--light); }
+  .score-table .total td { font-weight: 700; border-top: 2px solid var(--green); }
+
+  .comment { font-style: italic; color: var(--muted); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="corr-header">
+    <div class="university">Université Paris XIII — Institut Galilée — Correction officielle</div>
+    <h1>Correction — Partiel d'entraînement POO2</h1>
+    <div class="subtitle">Design Patterns en Java · Le Château Maudit</div>
+    <div class="corr-badge">✓ Correction complète avec explications</div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EXERCICE 1                                     -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 1</span>
+      <span class="exercise-title">Design pattern Itérateur</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-label">Question 1 — SalleIterator <span class="pts">2 pts</span></div>
+      <p>On crée une classe qui mémorise le tableau, sa taille, et un curseur <code>index</code> qui avance à chaque appel de <code>next()</code>.</p>
+<pre>
+import java.util.Iterator;
+
+public class SalleIterator implements Iterator&lt;Relique&gt; {
+    private Relique[] tab;
+    private int size;
+    private int index;
+
+    public SalleIterator(Relique[] tab, int size) {
+        this.tab   = tab;
+        this.size  = size;
+        this.index = 0;          // le curseur commence au début
+    }
+
+    @Override
+    public boolean hasNext() {
+        return index &lt; size;     // il reste des éléments si le curseur n'a pas atteint la fin
+    }
+
+    @Override
+    public Relique next() {
+        return tab[index++];     // renvoie l'élément courant et avance le curseur
+    }
+}
+</pre>
+      <div class="expl">
+        <strong>Pourquoi index++ et pas ++index ?</strong>
+        <code>tab[index++]</code> renvoie d'abord <code>tab[index]</code>, puis incrémente.
+        Avec <code>tab[++index]</code> on incrémenterait avant et on sauterait le premier élément.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-label">Question 2 — Méthode iterator() <span class="pts">1 pt</span></div>
+      <p>On instancie simplement un <code>SalleIterator</code> en lui passant le tableau interne et le nombre d'éléments.</p>
+<pre>
+// Dans la classe Salle :
+@Override
+public Iterator&lt;Relique&gt; iterator() {
+    return new SalleIterator(reliques, nbReliques);
+}
+</pre>
+      <div class="expl">
+        <strong>Pourquoi pas new SalleIterator(reliques, reliques.length) ?</strong>
+        Le tableau a une capacité de 20, mais seules <code>nbReliques</code> cases sont remplies.
+        Passer <code>reliques.length</code> ferait itérer sur les cases vides (null).
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-label">Question 3 — For amélioré avec filtre <span class="pts">2 pts</span></div>
+<pre>
+Salle s = ...;
+
+for (Relique r : s) {                     // for amélioré possible car Salle implements Iterable
+    if (r.getPuissance() &gt; 30) {
+        System.out.println(r.getNom());
+    }
+}
+</pre>
+      <div class="expl">
+        <strong>Mécanisme</strong>
+        Le compilateur Java traduit <code>for (Relique r : s)</code> en appel de
+        <code>s.iterator()</code>, puis boucle sur <code>hasNext()</code> / <code>next()</code>.
+        C'est exactement pour ça qu'on a fait implémenter <code>Iterable&lt;Relique&gt;</code> à <code>Salle</code>.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EXERCICE 2                                     -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 2</span>
+      <span class="exercise-title">Design patterns Singleton &amp; Enum</span>
+      <span class="exercise-points">4 points</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-label">Question 1 — Enum TypeGardien <span class="pts">2 pts</span></div>
+<pre>
+public enum TypeGardien {
+    SQUELETTE(10),
+    VAMPIRE(50),
+    SPECTRE(90);
+
+    private final int dangerosité;
+
+    // Le constructeur d'un enum est TOUJOURS private (implicitement ou explicitement)
+    private TypeGardien(int dangerosité) {
+        this.dangerosité = dangerosité;
+    }
+
+    public int getDangerosité() {
+        return dangerosité;
+    }
+}
+</pre>
+      <div class="expl">
+        <strong>Points clés</strong>
+        <ul>
+          <li>Les valeurs de l'enum (<code>SQUELETTE</code>, etc.) sont déclarées en premier, séparées par des virgules, terminées par un point-virgule avant les attributs.</li>
+          <li>Le constructeur est <strong>toujours privé</strong> pour un enum — c'est obligatoire.</li>
+          <li>Les attributs sont <code>final</code> car un enum doit être non modifiable (immuable).</li>
+          <li>Les valeurs de dangerosité sont libres, l'essentiel est qu'elles soient cohérentes (croissantes ici).</li>
+        </ul>
+      </div>
+      <div class="warn">
+        <strong>Erreur fréquente</strong>
+        Oublier le point-virgule après la dernière valeur (<code>SPECTRE(90);</code>) avant de déclarer les attributs. C'est une erreur de compilation.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-label">Question 2 — Singleton JournalChateau <span class="pts">2 pts</span></div>
+<pre>
+public class JournalChateau {
+
+    // 1. L'unique instance, créée une seule fois, non modifiable
+    public static final JournalChateau theInstance = new JournalChateau();
+
+    // 2. Constructeur PRIVÉ : personne d'autre ne peut créer d'instance
+    private JournalChateau() {
+        // rien à initialiser ici
+    }
+
+    // 3. Interdire explicitement le clonage (même pour les sous-classes)
+    @Override
+    protected final JournalChateau clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
+
+    // 4. La méthode métier
+    public void enregistrer(String message) {
+        System.out.println("[LOG] " + message);
+    }
+}
+</pre>
+      <p>Utilisation :</p>
+<pre>
+JournalChateau.theInstance.enregistrer("Le chasseur entre dans la salle Nord.");
+// Affiche : [LOG] Le chasseur entre dans la salle Nord.
+</pre>
+      <div class="expl">
+        <strong>Pourquoi interdire clone() ?</strong>
+        Sans cette précaution, n'importe quelle sous-classe pourrait appeler
+        <code>super.clone()</code> et créer une seconde instance, contournant le Singleton.
+        Le <code>final</code> sur la méthode empêche aussi une sous-classe de la redéfinir.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EXERCICE 3                                     -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 3</span>
+      <span class="exercise-title">Design pattern Strategy &amp; Lambda expressions</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <!-- Q1 + Q2 -->
+    <div class="q-block">
+      <div class="q-label">Questions 1 &amp; 2 — StrategieMaxReliques + Singleton <span class="pts">2 pts</span></div>
+<pre>
+public class StrategieMaxReliques implements StrategieExploration {
+
+    // Singleton : une seule instance, accessible via INSTANCE
+    public static final StrategieMaxReliques INSTANCE = new StrategieMaxReliques();
+
+    // Constructeur privé
+    private StrategieMaxReliques() {}
+
+    @Override
+    public Salle choisirSalle(Salle p, Predicate&lt;? super Relique&gt; pred) {
+        Salle meilleure = null;
+        int max = 0;
+
+        for (Direction d : Direction.values()) {
+            Salle voisine = p.salleSuivante(d);
+
+            if (voisine != null) {
+                // Compter les reliques satisfaisant le prédicat dans cette salle
+                int count = 0;
+                for (Relique r : voisine) {     // possible car Salle implements Iterable
+                    if (pred.test(r)) {
+                        count++;
+                    }
+                }
+                // On garde la salle si elle a strictement plus de reliques valides
+                if (count &gt; max) {
+                    max = count;
+                    meilleure = voisine;
+                }
+            }
+        }
+
+        return meilleure; // null si aucune salle voisine, ou si toutes ont count == 0
+    }
+}
+</pre>
+      <div class="expl">
+        <strong>Justification du Singleton</strong>
+        <code>StrategieMaxReliques</code> n'a aucun état (pas d'attribut modifiable) :
+        deux instances seraient strictement identiques. Une seule suffit,
+        ce qui évite des allocations mémoire inutiles. C'est exactement le cas
+        d'usage du Singleton décrit dans le cours (cf. <code>Comparator</code>).
+      </div>
+      <p>Utilisation :</p>
+<pre>
+Salle prochaine = StrategieMaxReliques.INSTANCE.choisirSalle(
+    salleCourante,
+    r -> !r.estMaudite()
+);
+</pre>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-label">Question 3 — Lambda expressions <span class="pts">2 pts</span></div>
+
+      <p><strong>a) Relique non maudite et puissance &gt; 50 :</strong></p>
+<pre>
+Predicate&lt;Relique&gt; pred = r -> !r.estMaudite() &amp;&amp; r.getPuissance() &gt; 50;
+</pre>
+
+      <p><strong>b) Relique non nulle dont le nom commence par "Or" :</strong></p>
+<pre>
+Predicate&lt;Relique&gt; pred = r -> r != null &amp;&amp; r.getNom().startsWith("Or");
+</pre>
+      <div class="expl">
+        <strong>Ordre des conditions</strong>
+        On teste <code>r != null</code> en premier. Si on écrivait
+        <code>r.getNom().startsWith("Or") &amp;&amp; r != null</code> et que <code>r</code> est null,
+        Java évaluerait quand même <code>r.getNom()</code> en premier → <code>NullPointerException</code>.
+        Grâce à l'évaluation paresseuse de <code>&amp;&amp;</code>, si le premier membre est <code>false</code>,
+        le second n'est jamais évalué.
+      </div>
+
+      <p><strong>c) Non maudite, puissance &gt; 20, et nom commençant par "A" :</strong></p>
+<pre>
+Predicate&lt;Relique&gt; pred = r -> !r.estMaudite()
+                             &amp;&amp; r.getPuissance() &gt; 20
+                             &amp;&amp; r.getNom().startsWith("A");
+</pre>
+      <div class="expl">
+        <strong>Lisibilité</strong>
+        On peut écrire une lambda sur plusieurs lignes pour la rendre lisible.
+        La règle est : si l'expression est complexe, sauter des lignes est conseillé.
+        Si elle tient bien en une ligne, une seule ligne est préférable.
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-block">
+      <div class="q-label">Question 4 — Functional interface <span class="pts">1 pt</span></div>
+      <p>
+        <code>Predicate&lt;E&gt;</code> est une <em>functional interface</em> car elle ne possède
+        qu'une seule méthode abstraite (<code>boolean test(E e)</code>). Cela permet au compilateur Java
+        d'accepter une <strong>lambda expression</strong> partout où un <code>Predicate</code> est attendu,
+        sans avoir à créer une classe explicite : la lambda est automatiquement convertie en
+        instance anonyme de l'interface.
+      </p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EXERCICE 4                                     -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 4</span>
+      <span class="exercise-title">Design pattern Decorator</span>
+      <span class="exercise-points">5 points</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-label">Question 1 — Implémentation complète de FilterIterator <span class="pts">2 pts</span></div>
+<pre>
+import java.util.Iterator;
+
+public class FilterIterator&lt;E&gt; implements Iterator&lt;E&gt; {
+    private Iterator&lt;? extends E&gt; supportIter;
+    private Predicate&lt;? super E&gt; predicate;
+    private boolean nextFound;   // true si nextElt contient un élément valide
+    private E nextElt;           // prochain élément valide mis en réserve
+
+    public FilterIterator(Iterator&lt;? extends E&gt; iter, Predicate&lt;? super E&gt; p) {
+        this.supportIter = iter;
+        this.predicate   = p;
+        findNext();              // on prépare immédiatement le premier élément
+    }
+
+    // Cherche le prochain élément satisfaisant le prédicat dans l'itérateur source
+    private void findNext() {
+        nextFound = false;
+        while (supportIter.hasNext()) {
+            E candidate = supportIter.next();
+            if (predicate.test(candidate)) {
+                nextElt   = candidate;
+                nextFound = true;
+                return;          // trouvé, on s'arrête
+            }
+        }
+        // Si on sort de la boucle sans avoir trouvé : nextFound reste false
+    }
+
+    @Override
+    public boolean hasNext() {
+        return nextFound;
+    }
+
+    @Override
+    public E next() {
+        E result = nextElt;  // on retourne l'élément mis en réserve
+        findNext();          // et on prépare déjà le suivant
+        return result;
+    }
+}
+</pre>
+      <div class="expl">
+        <strong>Pourquoi findNext() dans le constructeur ?</strong>
+        Si on ne cherchait pas le premier élément à la construction,
+        <code>hasNext()</code> renverrait <code>false</code> au premier appel
+        (car <code>nextFound</code> vaut <code>false</code> par défaut),
+        même si des éléments valides existent. Il faut "amorcer" l'itérateur.
+      </div>
+      <div class="expl">
+        <strong>Pourquoi stocker l'élément à l'avance (nextElt) ?</strong>
+        Parce que pour répondre à <code>hasNext()</code> il faut déjà savoir
+        si le prochain élément satisfait le prédicat.
+        On ne peut pas le savoir sans consommer l'itérateur source.
+        Stocker l'élément en avance permet de le "rendre" proprement au prochain appel de <code>next()</code>.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-label">Question 2 — Reliques maudites d'une salle <span class="pts">1 pt</span></div>
+<pre>
+Salle s = ...;
+
+Iterator&lt;Relique&gt; iterMaudites = new FilterIterator&lt;&gt;(
+    s.iterator(),              // itérateur source : toutes les reliques de la salle
+    r -> r.estMaudite()        // prédicat : garder seulement les maudites
+);
+
+while (iterMaudites.hasNext()) {
+    System.out.println(iterMaudites.next().getNom());
+}
+</pre>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-label">Question 3 — Iterator&lt;String&gt; des noms, filtrés et transformés <span class="pts">1 pt</span></div>
+<pre>
+Salle s = ...;
+
+// Étape 1 : itérateur de base sur les reliques de la salle
+Iterator&lt;Relique&gt; iterBase = s.iterator();
+
+// Étape 2 : on filtre (non maudites ET puissance > 40)
+Iterator&lt;Relique&gt; iterFiltre = new FilterIterator&lt;&gt;(
+    iterBase,
+    r -> !r.estMaudite() &amp;&amp; r.getPuissance() &gt; 40
+);
+
+// Étape 3 : on transforme chaque Relique en son nom (String)
+Iterator&lt;String&gt; iterNoms = new MappingIterator&lt;&gt;(
+    iterFiltre,
+    r -> r.getNom()      // Function&lt;Relique, String&gt;
+);
+
+// Utilisation
+while (iterNoms.hasNext()) {
+    System.out.println(iterNoms.next());
+}
+</pre>
+      <div class="expl">
+        <strong>Ordre des opérations</strong>
+        On filtre <em>avant</em> de transformer. Si on faisait l'inverse
+        (transformer d'abord en <code>String</code>, puis filtrer), on n'aurait plus
+        accès à <code>estMaudite()</code> ni à <code>getPuissance()</code> sur les chaînes.
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q-block">
+      <div class="q-label">Question 4 — Avantage de FilterIterator vs FilterSalleIterator <span class="pts">0.5 pt</span></div>
+      <p>
+        <code>FilterIterator</code> fonctionne avec <strong>n'importe quel itérateur</strong>
+        (sur un tableau, une liste, un set, ou même un autre <code>FilterIterator</code>),
+        alors qu'un <code>FilterSalleIterator</code> ne pourrait filtrer que les reliques
+        d'une <code>Salle</code>, obligeant à redéfinir une nouvelle classe filtrante
+        pour chaque structure de données.
+      </p>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q-block">
+      <div class="q-label">Question 5 — Deux FilterIterator empilés <span class="pts">0.5 pt</span></div>
+<pre>
+Salle s = ...;
+
+// Premier filtre : reliques non maudites
+Iterator&lt;Relique&gt; iter1 = new FilterIterator&lt;&gt;(
+    s.iterator(),
+    r -> !r.estMaudite()
+);
+
+// Deuxième filtre (appliqué SUR le premier) : nom commençant par "S"
+Iterator&lt;Relique&gt; iter2 = new FilterIterator&lt;&gt;(
+    iter1,
+    r -> r.getNom().startsWith("S")
+);
+
+while (iter2.hasNext()) {
+    System.out.println(iter2.next().getNom());
+}
+</pre>
+      <div class="expl">
+        <strong>C'est ça le pattern Decorator !</strong>
+        On enveloppe un décorateur dans un autre décorateur.
+        <code>iter2</code> ne sait pas que <code>iter1</code> est lui-même un <code>FilterIterator</code>.
+        Il le traite comme n'importe quel <code>Iterator&lt;Relique&gt;</code>.
+        On peut ainsi empiler autant de filtres/transformations que nécessaire.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- EXERCICE 5                                     -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="exercise">
+    <div class="exercise-header">
+      <span class="exercise-number">Exercice 5</span>
+      <span class="exercise-title">Architecture MVC &amp; Design pattern Command</span>
+      <span class="exercise-points">4 points</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="q-block">
+      <div class="q-label">Question 1 — Classe PrendreRelique <span class="pts">1.5 pts</span></div>
+<pre>
+public class PrendreRelique implements Command {
+    private Chasseur chasseur;
+    private ListView&lt;Relique&gt; view; // on pourrait aussi la recréer dans execute()
+
+    public PrendreRelique(Chasseur chasseur) {
+        this.chasseur = chasseur;
+    }
+
+    @Override
+    public void execute() {
+        // 1. Construire et afficher la liste des reliques de la salle courante
+        Salle salleCourante = chasseur.getSalleActuelle();
+        ListView&lt;Relique&gt; menu = ListView.buildMenu(salleCourante);
+        menu.show();
+
+        // 2. Lire le choix de l'utilisateur
+        Relique choisie = menu.readChoice();
+
+        // 3. Le chasseur prend la relique choisie
+        chasseur.prendreRelique(choisie);
+    }
+}
+</pre>
+      <div class="expl">
+        <strong>Respect du MVC</strong>
+        <code>PrendreRelique</code> est une classe du <em>Controller</em> :
+        elle fait appel à la <em>View</em> (<code>ListView</code>) pour l'affichage
+        et le choix, et au <em>Model</em> (<code>Chasseur</code>) pour exécuter l'action.
+        Elle ne fait aucun <code>System.out.println</code> directement.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q-block">
+      <div class="q-label">Question 2 — Classe SeDeplacer <span class="pts">1.5 pts</span></div>
+<pre>
+import java.util.ArrayList;
+import java.util.List;
+
+public class SeDeplacer implements Command {
+    private Chasseur chasseur;
+    private ChateauMap carte;
+
+    public SeDeplacer(Chasseur chasseur, ChateauMap carte) {
+        this.chasseur = chasseur;
+        this.carte    = carte;
+    }
+
+    @Override
+    public void execute() {
+        Salle salleCourante = chasseur.getSalleActuelle();
+
+        // 1. Construire la liste des directions valides
+        List&lt;Direction&gt; directionsValides = new ArrayList&lt;&gt;();
+        for (Direction d : Direction.values()) {
+            if (carte.salleExiste(salleCourante, d)) {
+                directionsValides.add(d);
+            }
+        }
+
+        // 2. Afficher les directions disponibles
+        ListView&lt;Direction&gt; menu = ListView.buildMenu(directionsValides);
+        menu.show();
+
+        // 3. Lire le choix de direction
+        Direction directionChoisie = menu.readChoice();
+
+        // 4. Effectuer le déplacement
+        carte.deplacer(chasseur, directionChoisie);
+    }
+}
+</pre>
+      <div class="expl">
+        <strong>Pourquoi une ArrayList et pas un tableau ?</strong>
+        On ne sait pas à l'avance combien de directions sont valides (entre 0 et 4).
+        Une <code>ArrayList</code> grandit dynamiquement. On aurait pu aussi utiliser un tableau
+        de taille 4 et compter les valides, mais c'est plus lourd.
+      </div>
+      <div class="warn">
+        <strong>Erreur fréquente</strong>
+        Passer <code>Direction.values()</code> directement à <code>buildMenu</code>
+        afficherait toutes les directions, y compris celles sans salle voisine.
+        Il faut bien filtrer d'abord avec <code>salleExiste</code>.
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q-block">
+      <div class="q-label">Question 3 — Apport du MVC <span class="pts">1 pt</span></div>
+      <p>
+        La séparation MVC garantit que la <strong>View</strong> (l'affichage et la saisie)
+        est totalement indépendante du <strong>Model</strong> (les données) et du <strong>Controller</strong>.
+        On peut donc remplacer l'interface console (<code>ListView</code> en texte)
+        par une interface graphique Swing (<code>GUIView</code>) <strong>sans modifier
+        une seule ligne</strong> des classes du Model (<code>Chasseur</code>, <code>Salle</code>, etc.)
+        ni des classes Command — il suffit de changer les implémentations de <code>ListView</code>.
+      </p>
+      <div class="expl">
+        <strong>Dans l'autre sens</strong>
+        On peut aussi modifier les règles du jeu (comment fonctionne <code>prendreRelique</code>)
+        sans toucher à l'affichage. Chaque couche peut évoluer indépendamment.
+        C'est le principe fondamental du MVC.
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SCORE -->
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>Exercice</th>
+        <th>Thème</th>
+        <th>Détail du barème</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Exercice 1</td>
+        <td>Itérateur</td>
+        <td>SalleIterator (2) · iterator() (1) · for amélioré (2)</td>
+        <td>5 pts</td>
+      </tr>
+      <tr>
+        <td>Exercice 2</td>
+        <td>Singleton &amp; Enum</td>
+        <td>TypeGardien (2) · JournalChateau Singleton (2)</td>
+        <td>4 pts</td>
+      </tr>
+      <tr>
+        <td>Exercice 3</td>
+        <td>Strategy &amp; Lambda</td>
+        <td>StrategieMaxReliques (1.5) · Singleton + justif. (0.5) · 3 lambdas (2) · functional interface (1)</td>
+        <td>5 pts</td>
+      </tr>
+      <tr>
+        <td>Exercice 4</td>
+        <td>Decorator</td>
+        <td>FilterIterator complet (2) · Q2 (1) · Q3 (1) · Q4 (0.5) · Q5 (0.5)</td>
+        <td>5 pts</td>
+      </tr>
+      <tr>
+        <td>Exercice 5</td>
+        <td>MVC &amp; Command</td>
+        <td>PrendreRelique (1.5) · SeDeplacer (1.5) · explication MVC (1)</td>
+        <td>4 pts</td>
+      </tr>
+      <tr class="total">
+        <td colspan="3"><strong>Total</strong></td>
+        <td><strong>20 pts</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>
