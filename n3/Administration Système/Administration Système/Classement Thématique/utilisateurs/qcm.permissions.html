@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<title>QCM d'administration système : permissions<br /> (on suppose ici qu'un seul système de fichiers est monté sur l'arborescence)</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+</style>
+<script src="jquery-3.5.0.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="qcm.css" type="text/css" media="projection, screen, tv" />
+<script type="text/javascript">
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">QCM d'administration système : permissions<br /> (on suppose ici qu'un seul système de fichiers est monté sur l'arborescence)</h1>
+
+
+  <script type="text/javascript">
+    "use strict";
+    var content;
+
+
+    function hasard(a, b) {
+      var r;
+      r = Math.floor(Math.random() * (b - a + 1)) + a;
+      return r;
+    }
+    function pick_question() {
+     $('#board').empty();
+     $('#boardbool').html('');
+     $('#boardbool').removeClass('anime');
+      var list = content.find('.outline-text-4');
+      var n = list.length;
+      var question = $(list.get(hasard(0, n - 1)));
+      question.find("#hint").hide();
+      var ul = question.find('ul');
+      if (ul.length != 1) {
+        $('#board').html('Fin du questionnaire.');
+        return;
+      }
+      ul.find('li:first').addClass('bonneReponse'); /* la première réponse est la bonne */
+      var reponses = ul.find('li').toArray();
+      var i;
+      var r = reponses.length;
+      for (i = r - 1; i > 0; i += -1) {/* on mélange les réponses */
+         var j = hasard(0, i);
+         /* deplacer un li au hasard à la fin */
+         ul.append(reponses[j]);
+         reponses[j] = reponses[i]; /* on n'a plus besoin de reponses[j] */
+      }
+      $('#board').removeClass('qcmactive');
+      $('#board').append(question);
+      $('#board').on('click', 'li', got_answer);
+      $('#board li').addClass('qcmactive');
+
+    }
+
+    function got_answer(e) {
+      $('#board').off('click', 'li', got_answer);
+      $('#board li').removeClass('qcmactive');
+      $('#nbquestions').text(parseFloat($('#nbquestions').text()) + 1);
+      if ($(this).hasClass("bonneReponse")) {
+         $('#nbreponsesjustes').text(parseFloat($('#nbreponsesjustes').text()) + 1);
+         $(this).css('background-color','#7CFC00'); /* vert */
+         $('#boardbool').html('Exact');
+      } else {
+         $(this).css('background-color','#FF4500'); /* rouge */
+         $('#board .bonneReponse').css('border','2pt dashed #7CFC00');
+         $('#boardbool').html('Faux');
+      }
+      $('#board').find("#hint").show();
+    $('#boardbool').addClass('anime');
+      $('#board').one('click',pick_question);
+      $('#board').addClass('qcmactive');
+      return false;
+    }
+
+    $(document).ready(function () {
+      content = $('#outline-container-1'); /* à changer pour un véritable passage de paramètre */
+      if (content.length > 0) {
+        content.before('<div id="score">Score : <span id="nbreponsesjustes">0</span> réponses justes sur <span id="nbquestions">0</span> questions.</div><div id="board"></div><div id="boardbool"></div>');
+        content.hide();
+        pick_question();
+      }
+    });
+  </script>
+
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> questions </h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+
+
+
+<div id="outline-container-1.1" class="outline-4">
+<h4 id="sec-1.1"><span class="section-number-4">1.1</span> question n° 1 </h4>
+<div class="outline-text-4" id="text-1.1">
+<p>La commande <code>ls -lah</code> retourne <pre>total 16K
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 .
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 ..
+drwxrwx--- 2 tata tata 4,0K 16 mars  09:33 autre
+--w------- 1 toto toto    8 16 mars  09:33 .secrets
+lrwxrwxrwx 1 toto toto    8 16 mars  09:32 .very.hidden -> .secrets </pre>
+Est-ce que l'user <code>toto</code> pourra exécuter la commande <code>cp .secrets .precieux</code> sans erreur ?</p>
+<ul>
+<li>Non</li>
+<li>Oui</li>
+<li>Ça dépend</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Pour copier le fichier nommé <code>.secrets</code>, il faut pouvoir lire son contenu, or l'user <code>toto</code> n'a pas la permission en lecture sur le fichier nommé <code>.secrets</code>. Si vous n'y croyez pas, mettez en place une expérimentation.
+</div>
+</div>
+
+
+<div id="outline-container-1.2" class="outline-4">
+<h4 id="sec-1.2"><span class="section-number-4">1.2</span> question n° 2 </h4>
+<div class="outline-text-4" id="text-1.2">
+<p>La commande <code>ls -lah</code> retourne <pre>total 16K
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 .
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 ..
+drwxrwx--- 2 tata tata 4,0K 16 mars  09:33 autre
+--w------- 1 toto toto    8 16 mars  09:33 .secrets
+lrwxrwxrwx 1 toto toto    8 16 mars  09:32 .very.hidden -> .secrets </pre>
+Est-ce que l'user <code>toto</code> pourra exécuter la commande <code>cp -l .secrets .precieux</code> sans erreur ?</p>
+<ul>
+<li>Oui</li>
+<li>Non</li>
+<li>Ça dépend</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Pour créer un lien physique nommé <code>.precieux</code> vers le fichier nommé <code>.secrets</code>, il suffit de pouvoir modifier le contenu du répertoire courant, et l'user <code>toto</code> a la permission en écriture sur le répertoire courant. Si vous n'y croyez pas, mettez en place une expérimentation.
+</div>
+</div>
+
+
+<div id="outline-container-1.3" class="outline-4">
+<h4 id="sec-1.3"><span class="section-number-4">1.3</span> question n° 3 </h4>
+<div class="outline-text-4" id="text-1.3">
+<p>La commande <code>ls -lah</code> retourne <pre>total 16K
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 .
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 ..
+drwxrwx--- 2 tata tata 4,0K 16 mars  09:33 autre
+--w------- 1 toto toto    8 16 mars  09:33 .secrets
+lrwxrwxrwx 1 toto toto    8 16 mars  09:32 .very.hidden -> .secrets </pre>
+Est-ce que l'user <code>toto</code> pourra exécuter la commande <code>echo 4xEzdW51 >> .secrets</code> sans erreur ?</p>
+<ul>
+<li>Oui</li>
+<li>Non</li>
+<li>Ça dépend</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Pour ajouter du contenu au fichier nommé <code>.secrets</code>, il suffit de pouvoir modifier le contenu de ce fichier, et l'user <code>toto</code> a la permission en écriture sur ce fichier. Remarque : il n'est pas nécessaire de lire le contenu du fichier. En effet, l'inode du fichier <code>.secrets</code> contient des pointeurs vers les blocs de son contenu, ainsi que sa taille, il est donc possible de savoir où écrire à la suite du contenu existant sans lire ce contenu au préalable. Si vous n'y croyez pas, mettez en place une expérimentation.
+</div>
+</div>
+
+
+<div id="outline-container-1.4" class="outline-4">
+<h4 id="sec-1.4"><span class="section-number-4">1.4</span> question n° 4 </h4>
+<div class="outline-text-4" id="text-1.4">
+<p>La commande <code>ls -lah</code> retourne <pre>total 16K
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 .
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 ..
+drwxrwx--- 2 tata tata 4,0K 16 mars  09:33 autre
+--w------- 1 toto toto    8 16 mars  09:33 .secrets
+lrwxrwxrwx 1 toto toto    8 16 mars  09:32 .very.hidden -> .secrets </pre>
+Est-ce que l'user <code>toto</code> pourra exécuter la commande <code>cat .very.hidden</code> sans erreur ?</p>
+<ul>
+<li>Non</li>
+<li>Oui</li>
+<li>Ça dépend</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le fichier nommé <code>.very_hiden</code> est un lien symbolique qui pointe vers le fichier régulier nommé <code>.secrets</code>. Ainsi, la commande <code>cat .very.hidden</code> doit afficher le contenu du fichier nommé <code>.secrets</code> (déréférencement). L'user <code>toto</code> n'a pas la permission en lecture sur le fichier nommé <code>.secrets</code>. Au passage, notez que si c'étaient les permissions du lien symbolique qui s'appliquaient, il serai possible de lire n'importe quel fichier, simplement en créant un lien symbolique vers celui-ci, ce qui créerait un problème de sécurité.
+</div>
+</div>
+
+
+<div id="outline-container-1.5" class="outline-4">
+<h4 id="sec-1.5"><span class="section-number-4">1.5</span> question n° 5 </h4>
+<div class="outline-text-4" id="text-1.5">
+<p>La commande <code>ls -lah</code> retourne <pre>total 16K
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 .
+drwxr-xr-x 3 toto toto 4,0K 16 mars  09:33 ..
+drwxrwx--- 2 tata tata 4,0K 16 mars  09:33 autre
+--w------- 1 toto toto    8 16 mars  09:33 .secrets
+lrwxrwxrwx 1 toto toto    8 16 mars  09:32 .very.hidden -> .secrets </pre>
+Est-ce que l'user <code>toto</code> pourra exécuter la commande <code>mv .secrets autre/</code> sans erreur ?</p>
+<ul>
+<li>Ça dépend</li>
+<li>Non</li>
+<li>Oui</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Au sein d'un même système de fichiers, la commande <code>mv</code> supprime un lien du répertoire nommant le fichier source (en l'occurrence le répertoire courant) et ajoute un lien dans le répertoire nommant le fichier de destination (en l'occurrence le répertoire nommé <code>autre/</code> par le répertoire courant). L'user <code>toto</code> a la permission de modifier le répertoire courant. Concernant le répertoire nommé <code>autre/</code> par le répertoire courant, si l'user <code>toto</code> fait partie du groupe <code>tata</code>, alors il peut écrire dans le répertoire <code>autre/</code>, sinon, il ne peut pas (les permissions de « other » s'appliquent). Si vous n'y croyez pas, mettez en place une expérimentation.
+</div>
+</div>
+
+
+
+
+</div>
+<div id="postamble">
+</div>
+</div>
+</body>
+</html>
+

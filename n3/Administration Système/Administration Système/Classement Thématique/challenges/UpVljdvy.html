@@ -1,0 +1,117 @@
+<h1 id="challenges">Challenges</h1>
+<h2 id="fonctionnement">Fonctionnement</h2>
+<p>Les challenges sont des petits exercices pratiques auto-correctifs
+(vous vérifiez vous-mêmes que votre solution est correcte).</p>
+<p>Chaque challenge est une tarball compressée qu'il est possible de
+décompresser et extraire avec la commande <code>tar</code> :</p>
+<blockquote>
+<pre><code>$ tar xvf challenge_&lt;num&gt;.tar.gz</code></pre>
+</blockquote>
+<p>Un répertoire <code>challenge_&lt;num&gt;</code> est créé, et
+contient 3 fichiers :</p>
+<blockquote>
+<ul>
+<li><p>un fichier texte <code>README.txt</code> qui contient les
+instructions du ou des exercices.</p></li>
+<li><p>un répertoire <code>sandbox/</code> qui contient les fichiers sur
+lesquels agir (modifier, ajouter, supprimer, déplacer, etc). Ce
+répertoire peut être initialement vide.</p></li>
+<li><p>un script Python 3 exécutable <code>autovalidation.py</code> qui
+doit être exécuté comme suit lorsque vous voulez vérifier si votre
+solution est correcte :</p>
+<blockquote>
+<pre><code>$ ./autovalidation.py</code></pre>
+</blockquote></li>
+</ul>
+</blockquote>
+<h2 id="liste-des-challenges">Liste des challenges</h2>
+<ul>
+<li><a href="./challenge_0.tar.gz">challenge_0</a> (arborescence)</li>
+<li><a href="./challenge_1.tar.gz">challenge_1</a> (arborescence)</li>
+<li><a href="./challenge_2.tar.gz">challenge_2</a> (arborescence)</li>
+<li><a href="./challenge_3.tar.gz">challenge_3</a> (arborescence)</li>
+<li><a href="./challenge_4.tar.gz">challenge_4</a> (arborescence)</li>
+<li><a href="./challenge_5.tar.gz">challenge_5</a> (arborescence, pas
+facile, laissez chercher vos camarades si vous trouvez, pas de spoiler
+!)</li>
+<li><a href="./challenge_6.tar.gz">challenge_6</a> (arborescence)</li>
+<li><a href="./challenge_7.tar.gz">challenge_7</a> (shell)</li>
+<li><a href="./challenge_8.tar.gz">challenge_8</a> (vim)</li>
+<li><a href="./challenge_9.tar.gz">challenge_9</a> (man)</li>
+<li><a href="./challenge_10.tar.gz">challenge_10</a> (le chat de
+Sasmithan)</li>
+<li><a href="./challenge_11.tar.gz">challenge_11</a> (arborescence)</li>
+<li><a href="./challenge_12.tar.gz">challenge_12</a> (arborescence)</li>
+<li><a href="./challenge_13.tar.gz">challenge_13</a> (arborescence)</li>
+<li><a href="./challenge_14.tar.gz">challenge_14</a> (arborescence)</li>
+<li><a href="./challenge_15.tar.gz">challenge_15</a> (filesystem)</li>
+<li><a href="./challenge_16.tar.gz">challenge_16</a> (filesystem)</li>
+<li><a href="./challenge_17.tar.gz">challenge_17</a> (filesystem)</li>
+<li><a href="./challenge_18.tar.gz">challenge_18</a> (man, à faire sur
+votre conteneur)</li>
+<li><a href="./challenge_19.tar.gz">challenge_19</a> (text
+processing)</li>
+<li><a href="./challenge_20.tar.gz">challenge_20</a> (text
+processing)</li>
+<li><a href="./challenge_21.tar.gz">challenge_21</a> (text
+processing)</li>
+<li><a href="./challenge_22.tar.gz">challenge_22</a> (arborescence, text
+processing)</li>
+<li><a href="./challenge_23.tar.gz">challenge_23</a> (text
+processing)</li>
+<li><a href="./challenge_24.tar.gz">challenge_24</a> (text
+processing)</li>
+<li><a href="./challenge_25.tar.gz">challenge_25</a> (text
+processing)</li>
+<li><a href="./challenge_26.tar.gz">challenge_26</a> (arborescence, text
+processing, difficile)</li>
+</ul>
+<p>La numérotation des challenges ne suit pas nécessairement la
+progression du cours et ne correspond pas à sa difficulté, mais juste à
+l'ordre de rédaction par un·e enseignant·e.</p>
+<h2 id="télécharger-depuis-un-shell">Télécharger depuis un shell</h2>
+<p>Les exercices sont censés être effectués depuis un shell sous
+GNU/Linux (ou macOS), la plupart du temps sur votre système personnel
+local (sauf mention contraire).</p>
+<p>Pour télécharger un fichier sur le web depuis la ligne de commande,
+vous pouvez utiliser <code>wget</code> :</p>
+<blockquote>
+<pre><code>$ wget https://sysadmin2526.netlib.re/cours/challenges/challenge_&lt;num&gt;.tar.gz</code></pre>
+</blockquote>
+<p>Pour télécharger ou mettre à jour l'ensemble des challenges en une
+seule commande :</p>
+<blockquote>
+<pre><code>$ wget --accept .tar.gz --mirror --execute robots=off --no-directories https://sysadmin2526.netlib.re/cours/challenges/</code></pre>
+<p>Cette commande télécharge le fichier <code>index.html</code> puis
+télécharge tous les fichiers <code>.tar.gz</code> qui sont plus récents
+sur le serveur que dans le répertoire, du coup si un challenge est
+modifié, il est retéléchargé.</p>
+<ul>
+<li>L'option <code>--accept .tar.gz</code> limite le téléchargement aux
+fichiers dont le nom finit par <code>.tar.gz</code>,</li>
+<li>l'option <code>--mirror</code> permet de faire du téléchargement
+récursif, c'est aussi l'option qui dit de ne pas retélécharger les
+fichiers qui sont plus vieux sur le serveur que chez vous,</li>
+<li>l'option <code>-e robots=off</code> permet que wget ne se sente pas
+interdit par le fichiers <code>robots.txt</code> du serveur qui lui
+demande gentiment de ne pas faire de téléchargement récursif,</li>
+<li>l'option <code>--no-directories</code> évite de créer des
+répertoires emboîtés
+<code>sysadmin2526.netlib.re/cours/challenges/</code> comme c'est le cas
+par défaut pour les miroirs (c'est en général utile pour éviter que 2
+fichiers avec le même nom apparaissant dans des répertoires différents
+soient écrasés, utile aussi pour pas que les liens relatifs dans les
+pages web soient cassés).</li>
+</ul>
+<p>Vous pouvez faire un <code>man wget</code> pour voir l'étendue des
+options de <code>wget</code>.</p>
+</blockquote>
+<h2 id="aide">Aide</h2>
+<p>Il n'y a <strong>pas d'entraide sur les challenges</strong>, ou vous
+serez traité·es de spoiler ! Laissez-vous le plaisir de la recherche
+!</p>
+<p>En cas de blocage total (plusieurs heures de recherche), vous pouvez
+contacter un·e enseignant·e, mais ne vous refilez pas la solution, ça
+gâche le plaisir de trouver.</p>
+<p>Des indications ou des debriefings seront parfois discutés sur le
+salon <code>sysadmin_challenges</code> du mattermost.</p>

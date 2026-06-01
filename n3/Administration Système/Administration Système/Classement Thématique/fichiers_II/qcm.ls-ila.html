@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<title>QCM d'administration système : comprendre la sortie de la commande ls -ila<br /> (les ??? signifient que l'information a été enlevée pour corser le QCM)</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+</style>
+<script src="jquery-3.5.0.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="qcm.css" type="text/css" media="projection, screen, tv" />
+<script type="text/javascript">
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">QCM d'administration système : comprendre la sortie de la commande ls -ila<br /> (les ??? signifient que l'information a été enlevée pour corser le QCM)</h1>
+
+
+  <script type="text/javascript">
+    "use strict";
+    var content;
+
+
+    function hasard(a, b) {
+      var r;
+      r = Math.floor(Math.random() * (b - a + 1)) + a;
+      return r;
+    }
+    function pick_question() {
+     $('#board').empty();
+     $('#boardbool').html('');
+     $('#boardbool').removeClass('anime');
+      var list = content.find('.outline-text-4');
+      var n = list.length;
+      var question = $(list.get(hasard(0, n - 1)));
+      question.find("#hint").hide();
+      var ul = question.find('ul');
+      if (ul.length != 1) {
+        $('#board').html('Fin du questionnaire.');
+        return;
+      }
+      ul.find('li:first').addClass('bonneReponse'); /* la première réponse est la bonne */
+      var reponses = ul.find('li').toArray();
+      var i;
+      var r = reponses.length;
+      for (i = r - 1; i > 0; i += -1) {/* on mélange les réponses */
+         var j = hasard(0, i);
+         /* deplacer un li au hasard à la fin */
+         ul.append(reponses[j]);
+         reponses[j] = reponses[i]; /* on n'a plus besoin de reponses[j] */
+      }
+      $('#board').removeClass('qcmactive');
+      $('#board').append(question);
+      $('#board').on('click', 'li', got_answer);
+      $('#board li').addClass('qcmactive');
+
+    }
+
+    function got_answer(e) {
+      $('#board').off('click', 'li', got_answer);
+      $('#board li').removeClass('qcmactive');
+      $('#nbquestions').text(parseFloat($('#nbquestions').text()) + 1);
+      if ($(this).hasClass("bonneReponse")) {
+         $('#nbreponsesjustes').text(parseFloat($('#nbreponsesjustes').text()) + 1);
+         $(this).css('background-color','#7CFC00'); /* vert */
+         $('#boardbool').html('Exact');
+      } else {
+         $(this).css('background-color','#FF4500'); /* rouge */
+         $('#board .bonneReponse').css('border','2pt dashed #7CFC00');
+         $('#boardbool').html('Faux');
+      }
+      $('#board').find("#hint").show();
+    $('#boardbool').addClass('anime');
+      $('#board').one('click',pick_question);
+      $('#board').addClass('qcmactive');
+      return false;
+    }
+
+    $(document).ready(function () {
+      content = $('#outline-container-1'); /* à changer pour un véritable passage de paramètre */
+      if (content.length > 0) {
+        content.before('<div id="score">Score : <span id="nbreponsesjustes">0</span> réponses justes sur <span id="nbquestions">0</span> questions.</div><div id="board"></div><div id="boardbool"></div>');
+        content.hide();
+        pick_question();
+      }
+    });
+  </script>
+
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> questions </h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+
+
+
+<div id="outline-container-1.1" class="outline-4">
+<h4 id="sec-1.1"><span class="section-number-4">1.1</span> question n° 1 </h4>
+<div class="outline-text-4" id="text-1.1">
+<p>Dans la sortie de <code>ls -l</code> suivante, que signifie le premier <code>bibi</code> ? <pre>drwxr-xr-x 1 bibi bibi 1254 Feb 14 13:06 bibi</pre></p>
+<ul>
+<li>Le fichier appartient à l'user <code>bibi</code></li>
+<li>Le fichier appartient au groupe <code>bibi</code></li>
+<li>Le nom du fichier est <code>bibi</code></li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir par exemple la feuille sur la commande <code>ls -ilah</code>
+</div>
+</div>
+
+
+<div id="outline-container-1.2" class="outline-4">
+<h4 id="sec-1.2"><span class="section-number-4">1.2</span> question n° 2 </h4>
+<div class="outline-text-4" id="text-1.2">
+<p>Dans la sortie de <code>ls -l</code> suivante, que signifie le deuxième <code>bibi</code> ? <pre>drwxr-xr-x 1 bibi bibi 1254 Feb 14 13:06 bibi</pre></p>
+<ul>
+<li>Le fichier appartient au groupe <code>bibi</code></li>
+<li>Le fichier appartient à l'user <code>bibi</code></li>
+<li>Le nom du fichier est <code>bibi</code></li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir par exemple la feuille sur la commande <code>ls -ilah</code>
+</div>
+</div>
+
+
+<div id="outline-container-1.3" class="outline-4">
+<h4 id="sec-1.3"><span class="section-number-4">1.3</span> question n° 3 </h4>
+<div class="outline-text-4" id="text-1.3">
+<p>Dans la sortie de <code>ls -l</code> suivante, que signifie le troisième <code>bibi</code> ? <pre>drwxr-xr-x 1 bibi bibi 1254 Feb 14 13:06 bibi</pre></p>
+<ul>
+<li>Le nom du fichier est <code>bibi</code></li>
+<li>Le fichier appartient au groupe <code>bibi</code></li>
+<li>Le fichier appartient à l'user <code>bibi</code></li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir par exemple la feuille sur la commande <code>ls -ilah</code>
+</div>
+</div>
+
+
+<div id="outline-container-1.4" class="outline-4">
+<h4 id="sec-1.4"><span class="section-number-4">1.4</span> question n° 4 </h4>
+<div class="outline-text-4" id="text-1.4">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Le fichier nommé <code>ficher1</code> est-il nommé par un autre répertoire ?</p>
+<ul>
+<li>Oui</li>
+<li>Non</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le fichier nommé <code>fichier1</code> est nommé 3 fois par des répertoires (3 liens). Ce fichier a 193 comme numéro d'inode, et il n'est nommé que 2 fois par le répertoire courant (avec les noms <code>fichier1</code> et <code>fichier4</code>). Le fichier nommé <code>fichier1</code> doit donc être nommé une 3e fois par un autre répertoire. Remarque : les fichiers nommés <code>fichier6</code> et <code>fichier7</code> dont on a caché le numéro d'inode sont des fichiers différents car ils n'ont pas la même taille (4 octets au lieu de 8).
+</div>
+</div>
+
+
+<div id="outline-container-1.5" class="outline-4">
+<h4 id="sec-1.5"><span class="section-number-4">1.5</span> question n° 5 </h4>
+<div class="outline-text-4" id="text-1.5">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Les fichiers nommés <code>ficher6</code> et <code>fichier7</code> sont ils égaux ?</p>
+<ul>
+<li>Non</li>
+<li>Oui</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Comme le fichier nommé <code>fichier6</code> a un seul lien qui le nomme, il ne peut pas être nommé une seconde fois, donc le fichier nommé <code>fichier7</code> est un autre fichier.
+</div>
+</div>
+
+
+<div id="outline-container-1.6" class="outline-4">
+<h4 id="sec-1.6"><span class="section-number-4">1.6</span> question n° 6 </h4>
+<div class="outline-text-4" id="text-1.6">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Les fichiers nommés <code>ficher1</code> et <code>fichier6</code> ont ils le même contenu ?</p>
+<ul>
+<li>Non</li>
+<li>Oui</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le contenu des fichiers nommés <code>ficher1</code> et <code>fichier6</code> n'ont pas la même taille, ils ne peuvent donc pas être égaux. Le contenu de <code>fichier1</code> pèse 8 octets et le contenu de <code>fichier6</code> pèse 4 octets.
+</div>
+</div>
+
+
+<div id="outline-container-1.7" class="outline-4">
+<h4 id="sec-1.7"><span class="section-number-4">1.7</span> question n° 7 </h4>
+<div class="outline-text-4" id="text-1.7">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Les fichiers nommés <code>ficher6</code> et <code>fichier7</code> ont ils le même contenu ?</p>
+<ul>
+<li>On ne peut pas savoir</li>
+<li>Non</li>
+<li>Oui</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Rien ne permet de distinguer les contenus de ces deux fichiers (par ailleurs, ces fichiers ne sont pas égaux car ils sont chacun nommés une seule fois).
+</div>
+</div>
+
+
+<div id="outline-container-1.8" class="outline-4">
+<h4 id="sec-1.8"><span class="section-number-4">1.8</span> question n° 8 </h4>
+<div class="outline-text-4" id="text-1.8">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Les fichiers nommés <code>ficher1</code> et <code>fichier4</code> sont ils égaux ?</p>
+<ul>
+<li>Oui</li>
+<li>Non</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les fichiers ont le même numéro d'inode (193), ils sont donc égaux (ils font partie du même système de fichiers puisqu'ils se trouvent dans le même répertoire).
+</div>
+</div>
+
+
+<div id="outline-container-1.9" class="outline-4">
+<h4 id="sec-1.9"><span class="section-number-4">1.9</span> question n° 9 </h4>
+<div class="outline-text-4" id="text-1.9">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Les fichiers nommés <code>ficher1</code> et <code>fichier4</code> ont ils le même contenu ?</p>
+<ul>
+<li>Oui</li>
+<li>Non</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les fichiers ont le même numéro d'inode (193), ils sont donc égaux et ont donc le même contenu.
+</div>
+</div>
+
+
+<div id="outline-container-1.10" class="outline-4">
+<h4 id="sec-1.10"><span class="section-number-4">1.10</span> question n° 10 </h4>
+<div class="outline-text-4" id="text-1.10">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Combien de répertoires sont nommés par le répertoire courant ?</p>
+<ul>
+<li>4</li>
+<li>0</li>
+<li>1</li>
+<li>2</li>
+<li>3</li>
+<li>5</li>
+<li>6</li>
+<li>7</li>
+<li>8</li>
+<li>9</li>
+<li>10</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Il y a 4 répertoires (fichiers de type <code>d</code>, voir la colonne juste après les numéros d'inode) qui sont nommés par le répertoire courant : <code>.</code> (lui même), <code>..</code> (son parent), <code>fichier5</code> et <code>fichier8</code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.11" class="outline-4">
+<h4 id="sec-1.11"><span class="section-number-4">1.11</span> question n° 11 </h4>
+<div class="outline-text-4" id="text-1.11">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Les fichiers nommés <code>fichier1</code> et <code>fichier2</code> ont ils le même contenu ?</p>
+<ul>
+<li>Non</li>
+<li>Oui</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le fichier nommé <code>fichier2</code> est un lien symbolique, son contenu est un chemin (en l'occurrence <code>fichier1</code>).
+</div>
+</div>
+
+
+<div id="outline-container-1.12" class="outline-4">
+<h4 id="sec-1.12"><span class="section-number-4">1.12</span> question n° 12 </h4>
+<div class="outline-text-4" id="text-1.12">
+<p>La commande <code>ls -ila</code> retourne <pre>total 36
+187 drwxr-xr-x  4 alice alice 4096  7 mars  11:34 .
+135 drwxr-xr-x 11 alice alice 4096  7 mars  11:12 ..
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier1
+152 lrwxrwxrwx  1 alice alice    8  7 mars  11:38 fichier2 -> fichier1
+161 -rw-r--r--  1 alice alice    8  7 mars  11:42 fichier3
+193 -rw-r--r--  3 alice alice    8  7 mars  11:34 fichier4
+188 drwxr-xr-x  2 alice alice 4096  7 mars  11:39 fichier5
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier6
+??? -rw-r--r--  1 alice alice    4  7 mars  11:42 fichier7
+180 drwxr-xr-x  2 alice alice 4096  7 mars  11:45 fichier8 </pre> Le fichier nommé <code>fichier1</code> a-t-il été crée avant ou après le fichier nommé <code>fichier2</code> ?</p>
+<ul>
+<li>On ne peut pas savoir</li>
+<li>Avant</li>
+<li>Après</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> La date indiquée est la date de dernière modification, pas la date de création. Pour afficher la date de création, on peut lire le <code>man</code> de la commande <code>ls</code> et voir qu'il aurait fallu ajouter l'option <code>--time=birth</code> (birth signifie naissance en anglais). On peut aussi utiliser la commande <code>stat</code>.
+</div>
+</div>
+
+
+
+
+</div>
+<div id="postamble">
+</div>
+</div>
+</body>
+</html>
+

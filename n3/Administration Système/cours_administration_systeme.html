@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administration Système — Cours Complet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --yellow: #e3b341;
+    --code-bg: #161b22;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding-bottom: 2rem;
+  }
+
+  #sidebar .logo {
+    padding: 1.2rem 1.2rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+  #sidebar .logo span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+  #sidebar .logo strong {
+    font-size: 0.95rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  #sidebar nav a {
+    display: block;
+    padding: 0.3rem 1.2rem 0.3rem 1.5rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: color 0.15s, background 0.15s;
+    border-left: 2px solid transparent;
+  }
+  #sidebar nav a:hover, #sidebar nav a.active {
+    color: var(--accent);
+    background: rgba(88,166,255,0.07);
+    border-left-color: var(--accent);
+  }
+  #sidebar nav .section-header {
+    padding: 0.9rem 1.2rem 0.2rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* ── Main ── */
+  #main {
+    margin-left: 260px;
+    min-height: 100vh;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1f2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 4rem 3rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(88,166,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent2);
+    border: 1px solid var(--accent2);
+    border-radius: 3px;
+    padding: 0.15rem 0.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.08em;
+  }
+  .hero h1 {
+    font-size: 2.4rem;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero p {
+    color: var(--muted);
+    max-width: 600px;
+    font-size: 0.95rem;
+  }
+  .hero .tags {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .hero .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.2rem 0.6rem;
+    color: var(--muted);
+  }
+
+  /* ── Content ── */
+  #content {
+    max-width: 900px;
+    padding: 2.5rem 3rem;
+    margin: 0 auto;
+  }
+
+  /* ── Sections ── */
+  .chapter {
+    margin-bottom: 4rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .chapter-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    border-radius: 3px;
+    padding: 0.15rem 0.5rem;
+    white-space: nowrap;
+  }
+  .chapter h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 1.8rem 0 0.7rem;
+  }
+  h3::before {
+    content: '▸ ';
+    color: var(--accent);
+    font-size: 0.8em;
+  }
+
+  h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent4);
+    margin: 1.2rem 0 0.4rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  p { margin-bottom: 0.8rem; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Code ── */
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82em;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.1em 0.35em;
+    color: var(--accent5);
+  }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem 1.4rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    position: relative;
+  }
+  pre::before {
+    content: attr(data-label);
+    position: absolute;
+    top: 0.4rem; right: 0.8rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--accent2);
+    font-size: 0.83rem;
+    line-height: 1.6;
+  }
+  pre code .comment { color: var(--muted); font-style: italic; }
+  pre code .cmd { color: var(--accent); }
+  pre code .flag { color: var(--accent4); }
+  pre code .arg { color: var(--accent5); }
+
+  /* ── Lists ── */
+  ul, ol {
+    padding-left: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  li { margin-bottom: 0.3rem; }
+  li > ul { margin-top: 0.3rem; margin-bottom: 0.3rem; }
+
+  /* ── Callouts ── */
+  .callout {
+    border-left: 3px solid;
+    padding: 0.9rem 1.2rem;
+    border-radius: 0 6px 6px 0;
+    margin: 1rem 0;
+  }
+  .callout.info { border-color: var(--accent); background: rgba(88,166,255,0.06); }
+  .callout.warn { border-color: var(--yellow); background: rgba(227,179,65,0.06); }
+  .callout.danger { border-color: var(--accent3); background: rgba(247,129,102,0.06); }
+  .callout.tip { border-color: var(--accent2); background: rgba(63,185,80,0.06); }
+  .callout strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; letter-spacing: 0.05em; }
+  .callout.info strong { color: var(--accent); }
+  .callout.warn strong { color: var(--yellow); }
+  .callout.danger strong { color: var(--accent3); }
+  .callout.tip strong { color: var(--accent2); }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.87rem;
+  }
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.6rem 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface); }
+
+  /* ── Key concept boxes ── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.8rem;
+    margin: 1rem 0;
+  }
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+  }
+  .concept-card .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .concept-card p { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+  /* ── Perm table ── */
+  .perm-demo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9rem;
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.8rem 1.2rem;
+    margin: 0.5rem 0;
+    letter-spacing: 0.05em;
+  }
+  .perm-type { color: var(--accent3); }
+  .perm-u { color: var(--accent); }
+  .perm-g { color: var(--accent2); }
+  .perm-o { color: var(--yellow); }
+
+  /* ── TOC progress ── */
+  .toc-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.1s;
+    z-index: 200;
+    width: 0%;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    #sidebar { display: none; }
+    #main { margin-left: 0; }
+    #content { padding: 1.5rem; }
+    .hero { padding: 2rem 1.5rem; }
+    .hero h1 { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toc-progress" id="progress"></div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="logo">
+    <span>L2 Informatique · USPN</span>
+    <strong>Administration Système</strong>
+  </div>
+  <nav>
+    <div class="section-header">Introduction</div>
+    <a href="#intro">1. Intro & Shell</a>
+    <a href="#man">2. Le Manuel (man)</a>
+
+    <div class="section-header">Fichiers</div>
+    <a href="#arbo">3. Arborescence</a>
+    <a href="#types">4. Types de fichiers</a>
+    <a href="#fs">5. Systèmes de fichiers</a>
+    <a href="#inode">6. Inodes</a>
+    <a href="#blockdev">7. Périphériques bloc</a>
+
+    <div class="section-header">Utilisateurs</div>
+    <a href="#users">8. Users & Groupes</a>
+    <a href="#perms">9. Permissions</a>
+    <a href="#iaa">10. Identification/Auth</a>
+
+    <div class="section-header">Réseau & SSH</div>
+    <a href="#network">11. Concepts réseau</a>
+    <a href="#ssh">12. SSH</a>
+    <a href="#dns">13. DNS</a>
+
+    <div class="section-header">Outils</div>
+    <a href="#text">14. Manipulation texte</a>
+    <a href="#process">15. Processus</a>
+    <a href="#packages">16. Paquets (apt/dpkg)</a>
+    <a href="#git">17. Git</a>
+
+    <div class="section-header">Révisions</div>
+    <a href="#dualites">18. Dualités clés</a>
+    <a href="#configs">19. Fichiers de config</a>
+    <a href="#exam">20. Programme examen</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge">COURS COMPLET</div>
+    <h1>Administration <em>Système</em></h1>
+    <p>Synthèse complète du cours d'administration système Unix/Linux — arborescence, filesystem, users, SSH, réseau, Git, et plus.</p>
+    <div class="tags">
+      <span class="tag">Unix/Linux</span>
+      <span class="tag">Shell</span>
+      <span class="tag">Filesystem</span>
+      <span class="tag">SSH</span>
+      <span class="tag">Permissions</span>
+      <span class="tag">Git</span>
+      <span class="tag">DNS</span>
+      <span class="tag">nginx</span>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- ──────────────── CHAPITRE 1 ──────────────── -->
+    <section class="chapter" id="intro">
+      <div class="chapter-header">
+        <span class="chapter-num">01</span>
+        <h2>Introduction & Shell</h2>
+      </div>
+
+      <h3>Qu'est-ce que l'administration système ?</h3>
+      <p>L'expression est polysémique :</p>
+      <ul>
+        <li>Être <strong>root</strong> sur sa propre machine et l'administrer.</li>
+        <li>Administrer des stations de travail, des services (mail, web, annuaires...) ou un réseau local.</li>
+        <li>Un <strong>métier</strong> à part entière (avec des usagers à gérer et une dimension politique réelle : autonomie, subordination, rapport au collectif).</li>
+      </ul>
+
+      <h3>Le Shell</h3>
+      <p>Le shell est simultanément :</p>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="label">Interface noyau</div>
+          <p>Une coquille (shell) qui entoure le noyau (kernel) — comme dans une noix.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">REPL</div>
+          <p>Read–Eval–Print Loop : interpréteur de commandes interactif.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Langage de prog.</div>
+          <p>Un langage de script complet (<code>#!/bin/bash</code>).</p>
+        </div>
+      </div>
+
+      <p>Variantes principales : <code>bash</code>, <code>zsh</code>, <code>dash</code>, <code>ksh</code>, <code>csh</code>, <code>busybox ash</code>…</p>
+
+      <h3>Pourquoi l'anglais ?</h3>
+      <p>La quasi-totalité de la documentation est en anglais, et les noms de commandes viennent de l'anglais :</p>
+
+      <table>
+        <tr><th>Commande</th><th>Signification</th><th>Commande</th><th>Signification</th></tr>
+        <tr><td><code>cp</code></td><td>CoPy</td><td><code>rm</code></td><td>ReMove</td></tr>
+        <tr><td><code>mv</code></td><td>MoVe</td><td><code>ls</code></td><td>LiSt directory</td></tr>
+        <tr><td><code>cd</code></td><td>Change Directory</td><td><code>pwd</code></td><td>Print Working Dir.</td></tr>
+        <tr><td><code>mkdir</code></td><td>MaKe DIRectory</td><td><code>mkfs</code></td><td>MaKe FileSystem</td></tr>
+        <tr><td><code>tar</code></td><td>Tape ARchiver</td><td><code>lsblk</code></td><td>LiSt BLocK devices</td></tr>
+        <tr><td><code>/etc</code></td><td>Editable Text Config.</td><td><code>/usr</code></td><td>UNIX System Resources</td></tr>
+      </table>
+
+      <h3>Évolutions technologiques à connaître</h3>
+      <p>Le monde Unix évolue en permanence — mieux vaut comprendre les <em>concepts</em> que retenir la syntaxe :</p>
+      <ul>
+        <li>Adressage disque : CHS → <strong>LBA</strong></li>
+        <li>Partitionnement : MBR → <strong>GPT</strong></li>
+        <li>Amorçage : BIOS → <strong>UEFI</strong></li>
+        <li>Init : sysV init → <strong>systemd</strong></li>
+        <li>Réseau : <code>ifconfig/netstat</code> → <strong><code>ip/ss</code></strong></li>
+        <li>Firewall : iptables → <strong>nftables</strong></li>
+        <li>Encodage : ISO-8859 → <strong>UTF-8</strong></li>
+        <li>IP : IPv4 → <strong>IPv6</strong></li>
+      </ul>
+
+      <div class="callout info">
+        <strong>💡 Principe fondamental</strong>
+        Il est plus important de comprendre les <strong>concepts</strong> (fichier, port, processus, encapsulation, masque…) que la syntaxe d'un outil particulier, afin de pouvoir s'adapter aux évolutions.
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 2 ──────────────── -->
+    <section class="chapter" id="man">
+      <div class="chapter-header">
+        <span class="chapter-num">02</span>
+        <h2>Le Manuel — <code>man</code></h2>
+      </div>
+
+      <h3>Usage de base</h3>
+      <pre data-label="SHELL"><code><span class="cmd">man</span> <span class="arg">&lt;programme&gt;</span>      <span class="comment"># manuel d'une commande</span>
+<span class="cmd">man</span> <span class="arg">5 passwd</span>        <span class="comment"># section 5 (fichiers de config)</span>
+<span class="cmd">man -k</span> <span class="arg">&lt;mot_clef&gt;</span>   <span class="comment"># chercher un mot clef (= apropos)</span>
+<span class="cmd">man -a</span> <span class="arg">random</span>       <span class="comment"># toutes les sections disponibles</span></code></pre>
+
+      <h3>Sections du manuel</h3>
+      <table>
+        <tr><th>Section</th><th>Contenu</th></tr>
+        <tr><td>1</td><td>Programmes exécutables</td></tr>
+        <tr><td>2</td><td>Appels système</td></tr>
+        <tr><td>3</td><td>Bibliothèques</td></tr>
+        <tr><td>4</td><td>Fichiers spéciaux (<code>/dev/</code>)</td></tr>
+        <tr><td>5</td><td>Fichiers de configuration</td></tr>
+        <tr><td>7</td><td>Notions générales</td></tr>
+        <tr><td>8</td><td>Commandes root</td></tr>
+      </table>
+
+      <h3>Navigation dans <code>less</code></h3>
+      <table>
+        <tr><th>Touche</th><th>Action</th></tr>
+        <tr><td><code>g / G</code></td><td>Début / Fin</td></tr>
+        <tr><td><code>Espace</code></td><td>Page suivante</td></tr>
+        <tr><td><code>q</code></td><td>Quitter</td></tr>
+        <tr><td><code>/motif</code></td><td>Rechercher</td></tr>
+        <tr><td><code>n / N</code></td><td>Occurrence suivante / précédente</td></tr>
+      </table>
+
+      <div class="callout tip">
+        <strong>ASTUCE EXAMEN</strong>
+        Comprendre la différence <code>man passwd</code> (section 1, la commande) vs <code>man 5 passwd</code> (section 5, le fichier de configuration) — c'est une question classique.
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 3 ──────────────── -->
+    <section class="chapter" id="arbo">
+      <div class="chapter-header">
+        <span class="chapter-num">03</span>
+        <h2>Arborescence des répertoires</h2>
+      </div>
+
+      <h3>Modèle en 4 couches (vue d'ensemble)</h3>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="label">Couche 1 — Arborescence</div>
+          <p>Navigation, liens, droits. Commandes : <code>ls</code>, <code>cd</code>, <code>cp</code>, <code>mv</code>, <code>find</code>…</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Couche 2 — Filesystem</div>
+          <p>Inodes, montage. Commandes : <code>mkfs</code>, <code>mount</code>, <code>stat</code>, <code>df</code>…</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Couche 3 — Block devices</div>
+          <p>Disques, partitions, LVM, LUKS. Commandes : <code>lsblk</code>, <code>parted</code>, <code>cryptsetup</code>…</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Couche 4 — Matériel</div>
+          <p>Le disque physique réel (SSD, HDD, clef USB…).</p>
+        </div>
+      </div>
+
+      <h3>Filesystem Hierarchy Standard (FHS)</h3>
+      <p>Définit la structure standard de l'arborescence Unix. Consulter avec <code>man 7 hier</code> ou <code>man 7 file-hierarchy</code>.</p>
+
+      <table>
+        <tr><th>Répertoire</th><th>Contenu</th></tr>
+        <tr><td><code>/</code></td><td>Racine</td></tr>
+        <tr><td><code>/etc</code></td><td>Fichiers de configuration système</td></tr>
+        <tr><td><code>/home</code></td><td>Répertoires personnels des utilisateurs</td></tr>
+        <tr><td><code>/root</code></td><td>HOME de root</td></tr>
+        <tr><td><code>/dev</code></td><td>Fichiers de périphériques</td></tr>
+        <tr><td><code>/tmp</code></td><td>Fichiers temporaires</td></tr>
+        <tr><td><code>/run</code></td><td>Sockets, PID files (volatil)</td></tr>
+        <tr><td><code>/usr</code></td><td>UNIX System Resources</td></tr>
+        <tr><td><code>/var</code></td><td>Données variables (logs, mail…)</td></tr>
+        <tr><td><code>/proc</code></td><td>Pseudo-fs, infos processus</td></tr>
+      </table>
+
+      <h3>Chemins absolus vs relatifs</h3>
+      <ul>
+        <li><strong>Absolu</strong> : commence par <code>/</code> — ex. <code>/home/ziya/tp.pdf</code></li>
+        <li><strong>Relatif</strong> : par rapport au répertoire courant — ex. <code>../docs/tp.pdf</code></li>
+        <li><code>.</code> = répertoire courant, <code>..</code> = parent, <code>~</code> = HOME de l'user</li>
+      </ul>
+
+      <h3>Commandes de navigation</h3>
+      <pre data-label="SHELL"><code><span class="cmd">cd</span> <span class="arg">/tmp</span>                   <span class="comment"># aller dans /tmp</span>
+<span class="cmd">cd</span> <span class="arg">..</span>                    <span class="comment"># remonter d'un niveau</span>
+<span class="cmd">cd</span> <span class="arg">~</span>                     <span class="comment"># aller dans son HOME</span>
+<span class="cmd">pwd</span>                       <span class="comment"># afficher le répertoire courant</span>
+<span class="cmd">ls</span> <span class="flag">-ilah</span> <span class="arg">/etc</span>           <span class="comment"># lister avec inodes, tailles lisibles</span>
+<span class="cmd">tree</span> <span class="arg">/etc/ssh</span>            <span class="comment"># vue arborescente</span>
+<span class="cmd">find</span> <span class="arg">/var</span> <span class="flag">-name</span> <span class="arg">"*.log"</span> <span class="comment"># chercher fichiers .log</span>
+<span class="cmd">find</span> <span class="arg">.</span> <span class="flag">-type</span> <span class="arg">f</span> <span class="flag">-empty</span>   <span class="comment"># fichiers réguliers vides</span>
+<span class="cmd">find</span> <span class="arg">/home</span> <span class="flag">-perm</span> <span class="arg">/o+w</span>  <span class="comment"># fichiers modifiables par "other"</span></code></pre>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 4 ──────────────── -->
+    <section class="chapter" id="types">
+      <div class="chapter-header">
+        <span class="chapter-num">04</span>
+        <h2>Types de fichiers Unix</h2>
+      </div>
+
+      <p><strong>Presque tout est fichier</strong> sous Unix — les fichiers sont une interface uniforme pour lire, écrire et contrôler l'accès à toute ressource.</p>
+
+      <h3>Les 7 types</h3>
+      <table>
+        <tr><th>Caractère</th><th>Type</th><th>Description</th></tr>
+        <tr><td><code>-</code></td><td>Fichier régulier</td><td>Texte, binaire, PDF, image…</td></tr>
+        <tr><td><code>d</code></td><td>Répertoire</td><td>Contient des paires (nom, inode)</td></tr>
+        <tr><td><code>l</code></td><td>Lien symbolique</td><td>Pointeur vers un chemin (raccourci)</td></tr>
+        <tr><td><code>p</code></td><td>Tube nommé</td><td>IPC unidirectionnel</td></tr>
+        <tr><td><code>s</code></td><td>Socket</td><td>IPC bidirectionnel</td></tr>
+        <tr><td><code>b</code></td><td>Périphérique bloc</td><td>Disque, partition, clef USB…</td></tr>
+        <tr><td><code>c</code></td><td>Périphérique caractère</td><td>Souris, terminal, mémoire…</td></tr>
+      </table>
+
+      <h3>Fichiers spéciaux utiles dans <code>/dev/</code></h3>
+      <table>
+        <tr><th>Fichier</th><th>Comportement</th></tr>
+        <tr><td><code>/dev/null</code></td><td>Absorbe tout ce qu'on lui écrit</td></tr>
+        <tr><td><code>/dev/zero</code></td><td>Génère des octets nuls à l'infini</td></tr>
+        <tr><td><code>/dev/random</code></td><td>Octets aléatoires (entropie matérielle)</td></tr>
+        <tr><td><code>/dev/urandom</code></td><td>Aléatoire pseudo (plus rapide)</td></tr>
+        <tr><td><code>/dev/full</code></td><td>Simule un disque plein</td></tr>
+      </table>
+
+      <h3>Liens symboliques vs liens physiques</h3>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="label">Lien symbolique (ln -s)</div>
+          <p>Fichier contenant un chemin. Si la cible est supprimée → <strong>lien cassé</strong> (broken link). Analogue d'un raccourci Windows.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Lien physique (cp -l ou ln)</div>
+          <p>Nouvelle entrée de répertoire pointant vers le <strong>même inode</strong>. Le fichier n'est supprimé que quand le nombre de liens tombe à 0.</p>
+        </div>
+      </div>
+
+      <pre data-label="SHELL"><code><span class="cmd">ln</span> <span class="flag">-s</span> <span class="arg">/etc/nginx/sites-available/mon_site /etc/nginx/sites-enabled/mon_site</span>
+<span class="comment"># Lien symbolique — activer/désactiver une config en créant/supprimant le lien</span>
+
+<span class="cmd">cp</span> <span class="flag">-l</span> <span class="arg">source dest</span>   <span class="comment"># lien physique (même inode)</span>
+<span class="cmd">readlink</span> <span class="arg">lien</span>         <span class="comment"># afficher la cible d'un lien symbolique</span>
+<span class="cmd">file</span> <span class="arg">document.pdf</span>   <span class="comment"># déterminer le type par magic number</span></code></pre>
+
+      <div class="callout warn">
+        <strong>⚠️ Examen</strong>
+        Savoir expliquer la différence entre <code>cp</code> (copie → nouvel inode), <code>cp -l</code> / <code>ln</code> (lien physique → même inode) et <code>ln -s</code> (lien symbolique → nouveau fichier pointant vers un chemin).
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 5 ──────────────── -->
+    <section class="chapter" id="fs">
+      <div class="chapter-header">
+        <span class="chapter-num">05</span>
+        <h2>Systèmes de fichiers</h2>
+      </div>
+
+      <h3>Le montage</h3>
+      <p>L'arborescence Unix est un <strong>assemblage de filesystems montés les uns sur les autres</strong>. À la base il n'existe que <code>/</code>. On monte des filesystems sur des répertoires existants de façon récursive.</p>
+
+      <pre data-label="SHELL"><code><span class="cmd">mount</span>                           <span class="comment"># lister les fs montés</span>
+<span class="cmd">findmnt</span>                         <span class="comment"># vue arborescente des montages</span>
+<span class="cmd">mount</span> <span class="arg">/dev/sdb1 /mnt/usb</span>       <span class="comment"># monter une clef USB</span>
+<span class="cmd">umount</span> <span class="arg">/mnt/usb</span>               <span class="comment"># démonter</span>
+<span class="cmd">lsof</span> <span class="arg">/mnt/usb</span>                 <span class="comment"># voir qui utilise le fs (avant umount)</span></code></pre>
+
+      <p>La configuration des montages permanents est dans <code>/etc/fstab</code>.</p>
+
+      <h3>Créer et vérifier un filesystem</h3>
+      <pre data-label="SHELL"><code><span class="cmd">mkfs</span> <span class="flag">-t</span> <span class="arg">ext4 /dev/sdb1</span>    <span class="comment"># formater en ext4</span>
+<span class="cmd">fsck</span> <span class="arg">/dev/sdb1</span>            <span class="comment"># vérifier l'intégrité</span>
+<span class="cmd">df</span> <span class="flag">-h</span>                      <span class="comment"># espace disque des fs montés</span>
+<span class="cmd">df</span> <span class="flag">-i</span>                      <span class="comment"># inodes utilisés/libres</span>
+<span class="cmd">du</span> <span class="flag">-sh</span> <span class="arg">~</span>                   <span class="comment"># taille du répertoire HOME</span></code></pre>
+
+      <div class="callout info">
+        <strong>Types de filesystems courants</strong>
+        <code>ext4</code> (Linux standard), <code>btrfs</code>, <code>xfs</code>, <code>vfat/fat32</code> (clefs USB/Windows), <code>tmpfs</code> (RAM), <code>sshfs</code> (distant via SSH), <code>iso9660</code> (CD-ROM).
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 6 ──────────────── -->
+    <section class="chapter" id="inode">
+      <div class="chapter-header">
+        <span class="chapter-num">06</span>
+        <h2>Inodes</h2>
+      </div>
+
+      <h3>Qu'est-ce qu'un inode ?</h3>
+      <ul>
+        <li><strong>1 fichier = 1 inode</strong> (identifiant unique dans le filesystem).</li>
+        <li>L'inode contient les <em>métadonnées</em> du fichier — mais <strong>pas son nom</strong>.</li>
+        <li>Le nom est une info du <em>répertoire</em> (qui stocke des paires <em>nom → numéro d'inode</em>).</li>
+        <li>Un même inode peut avoir plusieurs noms (liens physiques).</li>
+      </ul>
+
+      <h3>Attributs d'un inode (visibles avec <code>ls -l</code> et <code>stat</code>)</h3>
+      <table>
+        <tr><th>Attribut</th><th>Description</th></tr>
+        <tr><td>type</td><td>-, d, l, c, b, s, p</td></tr>
+        <tr><td>permissions</td><td>12 bits (9 rwx + setuid/setgid/sticky)</td></tr>
+        <tr><td>Nlinks</td><td>Nombre de liens physiques</td></tr>
+        <tr><td>uid / gid</td><td>User et groupe propriétaires</td></tr>
+        <tr><td>taille</td><td>En octets</td></tr>
+        <tr><td>atime</td><td>Dernier accès en lecture</td></tr>
+        <tr><td>mtime</td><td>Dernière modification du <em>contenu</em></td></tr>
+        <tr><td>ctime</td><td>Dernière modification de l'<em>inode</em></td></tr>
+        <tr><td>btime</td><td>Date de création</td></tr>
+        <tr><td>pointeurs</td><td>Vers les blocs de données</td></tr>
+      </table>
+
+      <pre data-label="SHELL"><code><span class="cmd">stat</span> <span class="arg">fichier.txt</span>     <span class="comment"># afficher tous les attributs d'inode</span>
+<span class="cmd">ls</span> <span class="flag">-i</span> <span class="arg">fichier.txt</span>   <span class="comment"># afficher le numéro d'inode</span></code></pre>
+
+      <h3>Contenu d'un répertoire</h3>
+      <p>Un répertoire est un fichier de type <code>d</code> dont le contenu est une liste de <strong>liens</strong> (paires <em>nom de fichier → inode</em>). Supprimer un fichier avec <code>rm</code> supprime l'entrée du répertoire et décrémente Nlinks ; l'inode (et les données) ne sont libérés que quand Nlinks = 0.</p>
+
+      <div class="callout tip">
+        <strong>Récapitulatif des opérations sur inodes</strong>
+        <code>cp f1 f2</code> → nouvel inode | <code>cp -l f1 f2</code> = <code>ln f1 f2</code> → même inode, Nlinks++ | <code>ln -s f1 f2</code> → nouvel inode de type <code>l</code> | <code>mv</code> → renomme l'entrée (même inode) | <code>rm</code> → supprime entrée, Nlinks--
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 7 ──────────────── -->
+    <section class="chapter" id="blockdev">
+      <div class="chapter-header">
+        <span class="chapter-num">07</span>
+        <h2>Périphériques en mode bloc</h2>
+      </div>
+
+      <h3>Concept central : le DAG des block devices</h3>
+      <p>Disques, partitions, volumes LVM, volumes chiffrés LUKS, RAID, images ISO… ne sont que des <strong>block devices obtenus les uns à partir des autres</strong> en formant un DAG (graphe acyclique orienté). <code>lsblk</code> affiche ce DAG.</p>
+
+      <pre data-label="SHELL"><code><span class="cmd">lsblk</span>             <span class="comment"># vue arborescente des block devices</span>
+<span class="cmd">lsblk</span> <span class="flag">-f</span>          <span class="comment"># avec les filesystems</span></code></pre>
+
+      <h3>Partitionnement</h3>
+      <pre data-label="SHELL"><code><span class="cmd">parted</span> <span class="arg">/dev/sda</span>       <span class="comment"># outil interactif de partitionnement</span>
+<span class="comment"># actions : mklabel (gpt ou msdos), mkpart</span>
+<span class="comment"># Alternatives : fdisk, cfdisk, gparted (GUI)</span></code></pre>
+
+      <p>Types de tables de partitions :</p>
+      <ul>
+        <li><strong>MBR (msdos)</strong> : max 4 partitions primaires, max 2 To.</li>
+        <li><strong>GPT</strong> : partitions illimitées, grands disques, répétition de la table en fin.</li>
+      </ul>
+
+      <h3>Périphériques boucle (loop devices)</h3>
+      <pre data-label="SHELL"><code><span class="cmd">losetup</span> <span class="flag">-f</span> <span class="arg">image.img</span>   <span class="comment"># promouvoir un fichier en block device</span>
+<span class="cmd">losetup</span> <span class="flag">-l</span>             <span class="comment"># lister les loop devices actifs</span>
+<span class="cmd">losetup</span> <span class="flag">-d</span> <span class="arg">/dev/loop0</span> <span class="comment"># détacher</span></code></pre>
+
+      <h3>Chiffrement LUKS (cryptsetup)</h3>
+      <pre data-label="SHELL"><code><span class="cmd">cryptsetup luksFormat</span> <span class="arg">/dev/sdb1</span>        <span class="comment"># installer LUKS sur la partition</span>
+<span class="cmd">cryptsetup open</span> <span class="arg">/dev/sdb1 nom_ouvert</span>  <span class="comment"># déchiffrer → /dev/mapper/nom_ouvert</span>
+<span class="cmd">cryptsetup close</span> <span class="arg">nom_ouvert</span>          <span class="comment"># fermer</span></code></pre>
+
+      <h3>LVM — Logical Volume Manager</h3>
+      <p>Permet de fusionner/redécouper des block devices, faire des snapshots, redimensionner à chaud. Les volumes apparaissent dans <code>/dev/mapper/</code>.</p>
+      <pre data-label="SHELL"><code><span class="comment"># Autocomplétion : pv[TAB], vg[TAB], lv[TAB]</span>
+<span class="cmd">pvcreate</span> <span class="arg">/dev/sdb1</span>      <span class="comment"># créer un Physical Volume</span>
+<span class="cmd">vgcreate</span> <span class="arg">myvg /dev/sdb1</span> <span class="comment"># créer un Volume Group</span>
+<span class="cmd">lvcreate</span> <span class="flag">-L</span> <span class="arg">10G myvg</span>    <span class="comment"># créer un Logical Volume de 10G</span></code></pre>
+
+      <h3>RAID (mdadm)</h3>
+      <p>Combine plusieurs block devices pour améliorer performances et/ou tolérance aux pannes. RAID0 (striping), RAID1 (mirroring), RAID5/6 (parité).</p>
+
+      <div class="callout warn">
+        <strong>⚠️ Empilement logique</strong>
+        L'ordre d'empilement est important. Exemple typique d'un disque chiffré :
+        disque physique → partition → <strong>LUKS</strong> → <strong>LVM</strong> → <code>mkfs</code> → <code>mount</code>.
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 8 ──────────────── -->
+    <section class="chapter" id="users">
+      <div class="chapter-header">
+        <span class="chapter-num">08</span>
+        <h2>Utilisateurs &amp; Groupes</h2>
+      </div>
+
+      <h3>Fichiers système</h3>
+      <table>
+        <tr><th>Fichier</th><th>Contenu</th></tr>
+        <tr><td><code>/etc/passwd</code></td><td>Comptes utilisateurs : login, UID, GID, HOME, shell</td></tr>
+        <tr><td><code>/etc/shadow</code></td><td>Mots de passe hachés + politique d'expiration</td></tr>
+        <tr><td><code>/etc/group</code></td><td>Groupes et membres</td></tr>
+        <tr><td><code>/etc/gshadow</code></td><td>Mots de passe de groupes</td></tr>
+      </table>
+
+      <h3>Commandes de gestion</h3>
+      <pre data-label="SHELL"><code><span class="cmd">adduser</span> <span class="arg">alice</span>                <span class="comment"># créer l'user alice (interactif)</span>
+<span class="cmd">adduser</span> <span class="arg">alice sudo</span>           <span class="comment"># ajouter alice au groupe sudo</span>
+<span class="cmd">deluser</span> <span class="arg">alice</span>                <span class="comment"># supprimer l'user alice</span>
+<span class="cmd">addgroup</span> <span class="arg">devteam</span>             <span class="comment"># créer le groupe devteam</span>
+<span class="cmd">usermod</span> <span class="flag">-aG</span> <span class="arg">devteam alice</span>    <span class="comment"># ajouter alice à devteam</span>
+<span class="cmd">chage</span> <span class="arg">alice</span>                  <span class="comment"># gérer l'expiration du mot de passe</span>
+<span class="cmd">id</span>                            <span class="comment"># afficher son UID, GID, groupes</span>
+<span class="cmd">who</span> / <span class="cmd">w</span>                      <span class="comment"># utilisateurs connectés</span></code></pre>
+
+      <h3>Concepts clés</h3>
+      <ul>
+        <li><strong>root</strong> (UID 0) a tous les droits — le super-user.</li>
+        <li>L'<strong>UID est la référence</strong> (stocké dans les inodes, les processus). Le nom n'est qu'un alias dans <code>/etc/passwd</code>.</li>
+        <li>Un user ne correspond pas forcément à une personne — beaucoup de services tournent sous un user système dédié (ex. <code>www-data</code> pour nginx).</li>
+        <li>Les users système ont un UID &lt; 1000 (conventionnel).</li>
+        <li>Attention au champ de commentaires de <code>/etc/passwd</code> (champ 5) — il peut contenir des infos personnelles ajoutées à l'insu de l'utilisateur.</li>
+      </ul>
+
+      <h3>sudo, su, runuser</h3>
+      <pre data-label="SHELL"><code><span class="cmd">sudo</span> <span class="arg">commande</span>          <span class="comment"># exécuter en tant que root</span>
+<span class="cmd">su</span> <span class="flag">-</span> <span class="arg">alice</span>            <span class="comment"># changer d'user (avec son environnement)</span>
+<span class="cmd">runuser</span> <span class="flag">-u</span> <span class="arg">www-data -- commande</span>   <span class="comment"># exécuter en tant qu'user moins privilégié</span></code></pre>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 9 ──────────────── -->
+    <section class="chapter" id="perms">
+      <div class="chapter-header">
+        <span class="chapter-num">09</span>
+        <h2>Permissions</h2>
+      </div>
+
+      <h3>Lecture d'une sortie <code>ls -l</code></h3>
+      <div class="perm-demo">
+        <span class="perm-type">-</span><span class="perm-u">rwx</span><span class="perm-g">r-x</span><span class="perm-o">r--</span>  2  alice  devteam  4096  ...
+      </div>
+      <table>
+        <tr><th>Position</th><th>Signification</th></tr>
+        <tr><td><span style="color:var(--accent3)">1er char</span></td><td>Type du fichier (<code>-</code>, <code>d</code>, <code>l</code>…)</td></tr>
+        <tr><td><span style="color:var(--accent)">chars 2-4</span></td><td>Permissions du <strong>user</strong> propriétaire (u)</td></tr>
+        <tr><td><span style="color:var(--accent2)">chars 5-7</span></td><td>Permissions du <strong>groupe</strong> propriétaire (g)</td></tr>
+        <tr><td><span style="color:var(--yellow)">chars 8-10</span></td><td>Permissions des <strong>autres</strong> (o)</td></tr>
+        <tr><td>2e colonne</td><td>Nombre de <strong>liens physiques</strong> (Nlinks)</td></tr>
+      </table>
+
+      <h3>Modifier les permissions</h3>
+      <pre data-label="SHELL"><code><span class="comment"># Notation symbolique (modification partielle)</span>
+<span class="cmd">chmod</span> <span class="arg">u+x script.sh</span>         <span class="comment"># ajouter exécution au user</span>
+<span class="cmd">chmod</span> <span class="arg">ug+x,o-x script.sh</span>    <span class="comment"># user+group exec, other retire</span>
+<span class="cmd">chmod</span> <span class="arg">a=r fichier</span>           <span class="comment"># tout le monde : lecture seule</span>
+
+<span class="comment"># Notation octale (écrasement complet)</span>
+<span class="cmd">chmod</span> <span class="arg">750 repertoire</span>  <span class="comment"># rwxr-x--- (u=7, g=5, o=0)</span>
+<span class="cmd">chmod</span> <span class="arg">644 fichier</span>     <span class="comment"># rw-r--r-- (u=6, g=4, o=4)</span>
+<span class="cmd">chmod</span> <span class="arg">600 ~/.ssh/id_rsa</span>  <span class="comment"># clef privée SSH : rw------- obligatoire</span></code></pre>
+
+      <h3>Correspondance octal ↔ symboles</h3>
+      <table>
+        <tr><th>Octal</th><th>Binaire</th><th>Symboles</th></tr>
+        <tr><td>7</td><td>111</td><td>rwx</td></tr>
+        <tr><td>6</td><td>110</td><td>rw-</td></tr>
+        <tr><td>5</td><td>101</td><td>r-x</td></tr>
+        <tr><td>4</td><td>100</td><td>r--</td></tr>
+        <tr><td>0</td><td>000</td><td>---</td></tr>
+      </table>
+
+      <h3>Signification des permissions sur les répertoires</h3>
+      <table>
+        <tr><th>Permission</th><th>Sur un répertoire, signifie…</th></tr>
+        <tr><td><code>r</code></td><td>Lire la liste des noms (faire <code>ls</code>)</td></tr>
+        <tr><td><code>w</code></td><td>Ajouter ou supprimer des liens (créer/effacer fichiers)</td></tr>
+        <tr><td><code>x</code></td><td>Traverser le répertoire (accéder aux inodes par nom)</td></tr>
+      </table>
+
+      <div class="callout info">
+        <strong>Traverser les répertoires</strong>
+        Pour accéder à un fichier via son chemin absolu, <strong>tous</strong> les répertoires du chemin doivent avoir le bit <code>x</code> pour l'utilisateur courant.
+      </div>
+
+      <h3>Permissions spéciales (SST)</h3>
+      <table>
+        <tr><th>Bit</th><th>Sur fichier</th><th>Sur répertoire</th><th>Exemple</th></tr>
+        <tr><td><strong>setuid</strong></td><td>S'exécute avec les droits du <em>propriétaire</em></td><td>—</td><td><code>passwd</code>, <code>sudo</code></td></tr>
+        <tr><td><strong>setgid</strong></td><td>S'exécute avec les droits du <em>groupe</em></td><td>Nouveaux fichiers héritent du groupe</td><td>Site web <code>www-data</code></td></tr>
+        <tr><td><strong>sticky</strong></td><td>—</td><td>Seul le propriétaire peut supprimer ses fichiers</td><td><code>/tmp</code></td></tr>
+      </table>
+
+      <pre data-label="SHELL"><code><span class="cmd">chmod</span> <span class="arg">700 ~/.ssh</span>         <span class="comment"># répertoire .ssh : personne d'autre ne doit y accéder</span>
+<span class="cmd">chmod</span> <span class="arg">600 ~/.ssh/id_rsa</span>  <span class="comment"># clef privée trop lisible = SSH refuse de l'utiliser !</span>
+<span class="cmd">chown</span> <span class="arg">alice:devteam fichier</span>  <span class="comment"># changer user ET groupe propriétaire</span>
+<span class="cmd">chgrp</span> <span class="arg">devteam fichier</span>       <span class="comment"># changer seulement le groupe</span></code></pre>
+
+      <h3>ACL (Access Control Lists)</h3>
+      <p>Permettent des permissions plus fines que les 3 entités standard (user, group, other). Ce sont des attributs étendus stockés dans l'inode.</p>
+      <pre data-label="SHELL"><code><span class="cmd">setfacl</span> <span class="flag">-m</span> <span class="arg">u:bob:rx fichier</span>   <span class="comment"># donner r-x à bob</span>
+<span class="cmd">getfacl</span> <span class="arg">fichier</span>               <span class="comment"># afficher les ACL</span></code></pre>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 10 ──────────────── -->
+    <section class="chapter" id="iaa">
+      <div class="chapter-header">
+        <span class="chapter-num">10</span>
+        <h2>Identification, Authentification, Autorisation</h2>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="label">Identification</div>
+          <p>Déclarer son identité. <em>Qui êtes-vous ?</em></p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Authentification</div>
+          <p>Prouver son identité. <em>Êtes-vous bien qui vous dites être ?</em></p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Autorisation</div>
+          <p>Obtenir des droits selon son identité vérifiée. <em>Qu'avez-vous le droit de faire ?</em></p>
+        </div>
+      </div>
+
+      <h3>Exemples concrets</h3>
+
+      <h4>SSH (client → serveur)</h4>
+      <ul>
+        <li><strong>Identification</strong> : donner le nom d'user distant (<code>ssh alice@serveur</code> ou option <code>User</code> dans <code>~/.ssh/config</code>).</li>
+        <li><strong>Authentification</strong> : fournir le mot de passe <em>ou</em> prouver la possession de la clef privée correspondant à une clef publique dans <code>~/.ssh/authorized_keys</code>.</li>
+        <li><strong>Autorisation</strong> : obtenir un shell (défini dans <code>/etc/passwd</code>), éventuellement restreint via <code>authorized_keys</code>.</li>
+      </ul>
+
+      <h4>sudo</h4>
+      <ul>
+        <li><strong>Identification</strong> : implicite — c'est l'user propriétaire du processus qui lance <code>sudo</code>.</li>
+        <li><strong>Authentification</strong> : saisir son propre mot de passe.</li>
+        <li><strong>Autorisation</strong> : si l'user est dans les sudoers (définis dans <code>/etc/sudoers</code>), la commande est exécutée en tant que root.</li>
+      </ul>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 11 ──────────────── -->
+    <section class="chapter" id="network">
+      <div class="chapter-header">
+        <span class="chapter-num">11</span>
+        <h2>Concepts Réseau</h2>
+      </div>
+
+      <h3>Client / Serveur / Proxy / Pair</h3>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="label">Client</div>
+          <p>Processus qui demande un service. Ex. Firefox, <code>wget</code>, la commande <code>ssh</code>.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Serveur</div>
+          <p>Processus qui attend et répond. Ex. nginx, sshd. Plusieurs serveurs peuvent tourner sur un même hôte sur des ports différents.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Proxy (mandataire)</div>
+          <p>Relais côté client. Ex. proxy SOCKS SSH (<code>DynamicForward</code>).</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Reverse-proxy</div>
+          <p>Relais côté serveur. nginx est souvent utilisé comme reverse-proxy + load balancer.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Pair (P2P)</div>
+          <p>Communication symétrique entre pairs.</p>
+        </div>
+      </div>
+
+      <h3>Commandes réseau essentielles</h3>
+      <pre data-label="SHELL"><code><span class="cmd">ip address</span>                <span class="comment"># interfaces et adresses IP</span>
+<span class="cmd">ip route</span>                  <span class="comment"># table de routage</span>
+<span class="cmd">ss</span> <span class="flag">-tl</span>                    <span class="comment"># ports TCP en écoute</span>
+<span class="cmd">ss</span> <span class="flag">-tln</span>                   <span class="comment"># avec numéros (pas de résolution)</span>
+<span class="cmd">ping</span> <span class="arg">google.com</span>           <span class="comment"># tester l'accessibilité</span>
+<span class="cmd">nmap</span> <span class="arg">192.168.1.1</span>         <span class="comment"># scanner les ports ouverts</span>
+<span class="cmd">traceroute</span> <span class="arg">google.com</span>     <span class="comment"># route des paquets</span>
+<span class="cmd">socat</span> <span class="arg">TCP:hote:port -</span>    <span class="comment"># connexion TCP brute</span></code></pre>
+
+      <h3>Encapsulation</h3>
+      <p>Les protocoles réseau s'encapsulent les uns dans les autres (HTTP dans TCP dans IP dans Ethernet). SSH crée des <strong>tunnels</strong> permettant d'encapsuler d'autres protocoles dans une connexion SSH chiffrée.</p>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 12 ──────────────── -->
+    <section class="chapter" id="ssh">
+      <div class="chapter-header">
+        <span class="chapter-num">12</span>
+        <h2>SSH — Secure Shell</h2>
+      </div>
+
+      <h3>Arborescence côté client</h3>
+      <pre data-label="FICHIERS"><code>/etc/ssh/ssh_config          <span class="comment"># config système (tous les users)</span>
+~/.ssh/
+  config                     <span class="comment"># config personnelle (blocs Host)</span>
+  id_ed25519                 <span class="comment"># clef privée (600 obligatoire !)</span>
+  id_ed25519.pub             <span class="comment"># clef publique</span>
+  known_hosts                <span class="comment"># fingerprints des serveurs connus</span></code></pre>
+
+      <h3>Arborescence côté serveur</h3>
+      <pre data-label="FICHIERS"><code>/etc/ssh/sshd_config         <span class="comment"># config du serveur</span>
+/etc/ssh/ssh_host_*_key      <span class="comment"># clefs d'hôte (identité du serveur)</span>
+/etc/motd                    <span class="comment"># message affiché à la connexion</span>
+~/.ssh/authorized_keys       <span class="comment"># clefs publiques autorisées à se connecter</span>
+/var/log/auth.log            <span class="comment"># journal des connexions</span></code></pre>
+
+      <h3>Commandes SSH essentielles</h3>
+      <pre data-label="SHELL"><code><span class="comment"># Connexion</span>
+<span class="cmd">ssh</span> <span class="arg">alice@serveur.example.com</span>
+<span class="cmd">ssh</span> <span class="flag">-p 2222</span> <span class="arg">alice@serveur</span>   <span class="comment"># port non standard</span>
+
+<span class="comment"># Génération de clef</span>
+<span class="cmd">ssh-keygen</span> <span class="flag">-t ed25519</span> <span class="flag">-C</span> <span class="arg">"alice@machine"</span>
+
+<span class="comment"># Copie de la clef publique sur le serveur</span>
+<span class="cmd">ssh-copy-id</span> <span class="arg">alice@serveur</span>
+
+<span class="comment"># Tunnel local (accéder à un port distant localement)</span>
+<span class="cmd">ssh</span> <span class="flag">-L</span> <span class="arg">8080:localhost:80 alice@serveur</span>
+
+<span class="comment"># Tunnel SOCKS (proxy dynamique)</span>
+<span class="cmd">ssh</span> <span class="flag">-D</span> <span class="arg">1080 alice@serveur</span>
+
+<span class="comment"># Copie de fichiers</span>
+<span class="cmd">scp</span> <span class="arg">fichier.txt alice@serveur:/home/alice/</span>
+<span class="cmd">rsync</span> <span class="flag">-av</span> <span class="arg">dossier/ alice@serveur:/backup/</span>
+
+<span class="comment"># Monter un répertoire distant</span>
+<span class="cmd">sshfs</span> <span class="arg">alice@serveur:/home/alice /mnt/distant</span></code></pre>
+
+      <h3>Fichier <code>~/.ssh/config</code></h3>
+      <pre data-label="~/.ssh/config"><code>Host mon_conteneur
+    HostName conteneur.example.com
+    User alice
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519
+    ServerAliveInterval 60</code></pre>
+
+      <div class="callout info">
+        <strong>Clef publique vs clef privée</strong>
+        La <strong>clef privée</strong> reste sur le client, ne se partage jamais. La <strong>clef publique</strong> se dépose sur les serveurs dans <code>~/.ssh/authorized_keys</code>. Le serveur chiffre un défi avec la clef publique ; seul le client possédant la clef privée peut le résoudre.
+      </div>
+
+      <div class="callout danger">
+        <strong>⚠️ Permissions SSH</strong>
+        SSH refusera d'utiliser une clef privée trop permissive : <code>chmod 700 ~/.ssh</code> et <code>chmod 600 ~/.ssh/id_*</code> sont obligatoires.
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 13 ──────────────── -->
+    <section class="chapter" id="dns">
+      <div class="chapter-header">
+        <span class="chapter-num">13</span>
+        <h2>DNS</h2>
+      </div>
+
+      <h3>Principe</h3>
+      <p>Le DNS (Domain Name System) traduit les noms de domaine (<code>example.com</code>) en adresses IP. C'est un système hiérarchique et distribué.</p>
+
+      <h3>Fichiers de configuration réseau</h3>
+      <table>
+        <tr><th>Fichier</th><th>Rôle</th></tr>
+        <tr><td><code>/etc/hostname</code></td><td>Nom de la machine</td></tr>
+        <tr><td><code>/etc/hosts</code></td><td>Résolution locale (DNS local statique)</td></tr>
+        <tr><td><code>/etc/resolv.conf</code></td><td>Serveurs DNS à interroger</td></tr>
+      </table>
+
+      <h3>Types d'enregistrements DNS</h3>
+      <table>
+        <tr><th>Type</th><th>Signification</th></tr>
+        <tr><td><code>A</code></td><td>Nom → IPv4</td></tr>
+        <tr><td><code>AAAA</code></td><td>Nom → IPv6</td></tr>
+        <tr><td><code>CNAME</code></td><td>Alias → autre nom</td></tr>
+        <tr><td><code>MX</code></td><td>Mail eXchanger</td></tr>
+        <tr><td><code>TXT</code></td><td>Texte libre (SPF, DKIM…)</td></tr>
+      </table>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 14 ──────────────── -->
+    <section class="chapter" id="text">
+      <div class="chapter-header">
+        <span class="chapter-num">14</span>
+        <h2>Manipulation de texte &amp; Redirections</h2>
+      </div>
+
+      <h3>Redirections</h3>
+      <table>
+        <tr><th>Opérateur</th><th>Effet</th></tr>
+        <tr><td><code>&lt;</code></td><td>Rediriger stdin depuis un fichier</td></tr>
+        <tr><td><code>&gt;</code></td><td>Rediriger stdout vers un fichier (écrase)</td></tr>
+        <tr><td><code>&gt;&gt;</code></td><td>Ajouter stdout à un fichier</td></tr>
+        <tr><td><code>2&gt;</code></td><td>Rediriger stderr</td></tr>
+        <tr><td><code>2&gt;&amp;1</code></td><td>stderr → stdout</td></tr>
+        <tr><td><code>|</code></td><td>Pipe : stdout d'une cmd → stdin de la suivante</td></tr>
+      </table>
+
+      <h3>Exemples de pipelines (style examen)</h3>
+      <pre data-label="SHELL"><code><span class="comment"># Compter les alias commentés dans .bashrc</span>
+<span class="cmd">cat</span> ~/.bashrc | <span class="cmd">grep</span> <span class="arg">'^\ *#alias'</span> | <span class="cmd">wc</span> <span class="flag">-l</span> > le_nombre_d_alias_commentes.txt
+
+<span class="comment"># Users dont le shell est bash</span>
+<span class="cmd">cat</span> /etc/passwd | <span class="cmd">grep</span> <span class="arg">"^.*:/bin/bash$"</span> | <span class="cmd">cut</span> <span class="flag">-d</span> <span class="arg">':'</span> <span class="flag">-f</span> <span class="arg">1</span>
+
+<span class="comment"># 3 fichiers avec les plus petits numéros d'inode</span>
+<span class="cmd">ls</span> <span class="flag">-i</span> | <span class="cmd">sort</span> <span class="flag">-n</span> | <span class="cmd">head</span> <span class="flag">-n 3</span></code></pre>
+
+      <h3>Commandes de traitement de texte</h3>
+      <table>
+        <tr><th>Commande</th><th>Usage</th></tr>
+        <tr><td><code>grep</code></td><td>Chercher un motif (<code>-v</code> inverser, <code>-i</code> insensible, <code>-c</code> compter)</td></tr>
+        <tr><td><code>cut</code></td><td>Extraire des colonnes (<code>-d':'</code> délimiteur, <code>-f1</code> champ)</td></tr>
+        <tr><td><code>sort</code></td><td>Trier (<code>-n</code> numérique, <code>-r</code> inverse)</td></tr>
+        <tr><td><code>uniq</code></td><td>Éliminer les doublons consécutifs</td></tr>
+        <tr><td><code>wc</code></td><td>Compter (<code>-l</code> lignes, <code>-w</code> mots, <code>-c</code> octets)</td></tr>
+        <tr><td><code>head/tail</code></td><td>Premiers/derniers lignes (<code>-n N</code>)</td></tr>
+        <tr><td><code>tr</code></td><td>Translittérer des caractères</td></tr>
+        <tr><td><code>sed</code></td><td>Substitutions/suppressions de lignes</td></tr>
+        <tr><td><code>awk</code></td><td>Traitement de fichiers en colonnes</td></tr>
+        <tr><td><code>diff</code></td><td>Comparer deux fichiers</td></tr>
+        <tr><td><code>hexdump -C</code></td><td>Afficher en hexadécimal</td></tr>
+      </table>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 15 ──────────────── -->
+    <section class="chapter" id="process">
+      <div class="chapter-header">
+        <span class="chapter-num">15</span>
+        <h2>Processus &amp; Systemd</h2>
+      </div>
+
+      <h3>Gestion des processus</h3>
+      <pre data-label="SHELL"><code><span class="cmd">ps aux</span>                   <span class="comment"># lister tous les processus (BSD)</span>
+<span class="cmd">ps</span> <span class="flag">-eF</span>                   <span class="comment"># lister tous les processus (POSIX)</span>
+<span class="cmd">pstree</span>                   <span class="comment"># vue arborescente (PID 1 = systemd)</span>
+<span class="cmd">htop</span>                     <span class="comment"># moniteur interactif</span>
+<span class="cmd">kill</span> <span class="flag">-15</span> <span class="arg">1234</span>           <span class="comment"># SIGTERM (arrêt propre)</span>
+<span class="cmd">kill</span> <span class="flag">-9</span> <span class="arg">1234</span>            <span class="comment"># SIGKILL (force)</span>
+<span class="cmd">pidof</span> <span class="arg">nginx</span>             <span class="comment"># PIDs d'un processus par nom</span>
+<span class="cmd">lsof</span> <span class="arg">/var/log/syslog</span>   <span class="comment"># qui utilise ce fichier</span></code></pre>
+
+      <h3>Systemd (gestion des services)</h3>
+      <pre data-label="SHELL (root)"><code><span class="cmd">systemctl start</span> <span class="arg">nginx</span>        <span class="comment"># démarrer</span>
+<span class="cmd">systemctl stop</span> <span class="arg">nginx</span>         <span class="comment"># arrêter</span>
+<span class="cmd">systemctl restart</span> <span class="arg">nginx</span>      <span class="comment"># redémarrer</span>
+<span class="cmd">systemctl reload</span> <span class="arg">nginx</span>       <span class="comment"># recharger config sans arrêter</span>
+<span class="cmd">systemctl status</span> <span class="arg">nginx</span>       <span class="comment"># état + fin du journal</span>
+<span class="cmd">systemctl enable</span> <span class="arg">nginx</span>       <span class="comment"># démarrage automatique au boot</span>
+<span class="cmd">systemctl disable</span> <span class="arg">nginx</span>      <span class="comment"># désactiver le démarrage auto</span>
+<span class="cmd">systemctl is-enabled</span> <span class="arg">nginx</span>   <span class="comment"># vérifier si activé</span></code></pre>
+
+      <h3>Séquence de boot</h3>
+      <p>UEFI/BIOS → bootloader (GRUB) → noyau Linux → initramfs → <strong>systemd (PID 1)</strong> → montage des filesystems → services. Tous les processus sont descendants de systemd (PID 1) — arbre de processus.</p>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 16 ──────────────── -->
+    <section class="chapter" id="packages">
+      <div class="chapter-header">
+        <span class="chapter-num">16</span>
+        <h2>Gestion des paquets (Debian/Ubuntu)</h2>
+      </div>
+
+      <h3>apt — gestion à l'échelle de la distribution</h3>
+      <pre data-label="SHELL"><code><span class="cmd">apt update</span>              <span class="comment"># récupérer la liste des paquets</span>
+<span class="cmd">apt upgrade</span>             <span class="comment"># mettre à jour les paquets installés</span>
+<span class="cmd">apt install</span> <span class="arg">nginx</span>      <span class="comment"># installer nginx et ses dépendances</span>
+<span class="cmd">apt remove</span> <span class="arg">nginx</span>       <span class="comment"># désinstaller</span>
+<span class="cmd">apt search</span> <span class="arg">web server</span>  <span class="comment"># chercher un paquet</span>
+<span class="cmd">apt show</span> <span class="arg">nginx</span>         <span class="comment"># descriptif d'un paquet</span></code></pre>
+
+      <h3>dpkg — gestion à l'échelle d'un paquet</h3>
+      <pre data-label="SHELL"><code><span class="cmd">dpkg</span> <span class="flag">-i</span> <span class="arg">paquet.deb</span>      <span class="comment"># installer un .deb téléchargé</span>
+<span class="cmd">dpkg</span> <span class="flag">-L</span> <span class="arg">nginx</span>          <span class="comment"># lister les fichiers d'un paquet installé</span>
+<span class="cmd">dpkg</span> <span class="flag">-S</span> <span class="arg">/usr/sbin/nginx</span> <span class="comment"># quel paquet a fourni ce fichier</span></code></pre>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 17 ──────────────── -->
+    <section class="chapter" id="git">
+      <div class="chapter-header">
+        <span class="chapter-num">17</span>
+        <h2>Git</h2>
+      </div>
+
+      <h3>Les 3 zones</h3>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="label">Worktree (répertoire de travail)</div>
+          <p>Les fichiers tels qu'ils sont sur le disque. C'est là qu'on édite.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Staging area (index)</div>
+          <p>Le "commit en préparation". On y ajoute les modifications à inclure dans le prochain commit.</p>
+        </div>
+        <div class="concept-card">
+          <div class="label">Dépôt local (.git/)</div>
+          <p>Le DAG des commits — l'historique complet. HEAD pointe vers le commit courant.</p>
+        </div>
+      </div>
+
+      <h3>Boucle de base (solo local)</h3>
+      <pre data-label="SHELL"><code><span class="cmd">git init</span>                           <span class="comment"># créer un dépôt</span>
+<span class="cmd">git add</span> <span class="arg">fichier.txt</span>               <span class="comment"># ajouter à la staging area</span>
+<span class="cmd">git add</span> <span class="arg">.</span>                          <span class="comment"># tout ajouter</span>
+<span class="cmd">git commit</span> <span class="flag">-m</span> <span class="arg">"message"</span>          <span class="comment"># créer un commit</span>
+<span class="cmd">git status</span>                         <span class="comment"># état des 3 zones</span>
+<span class="cmd">git diff</span>                           <span class="comment"># worktree vs staging</span>
+<span class="cmd">git diff</span> <span class="flag">--staged</span>                 <span class="comment"># staging vs dernier commit</span>
+<span class="cmd">git log</span> <span class="flag">--graph --oneline --all</span>   <span class="comment"># visualiser le DAG</span></code></pre>
+
+      <h3>Annuler des changements</h3>
+      <pre data-label="SHELL"><code><span class="cmd">git restore</span> <span class="arg">fichier</span>              <span class="comment"># annuler modifs dans worktree</span>
+<span class="cmd">git restore</span> <span class="flag">--staged</span> <span class="arg">fichier</span>    <span class="comment"># retirer de la staging area</span>
+<span class="cmd">git restore</span> <span class="flag">--staged --worktree</span> <span class="arg">.</span>  <span class="comment"># annuler tout</span></code></pre>
+
+      <h3>Branches et remote</h3>
+      <pre data-label="SHELL"><code><span class="cmd">git branch</span> <span class="arg">nouvelle-branche</span>     <span class="comment"># créer une branche</span>
+<span class="cmd">git checkout</span> <span class="arg">nouvelle-branche</span>   <span class="comment"># changer de branche</span>
+<span class="cmd">git merge</span> <span class="arg">branche</span>               <span class="comment"># fusionner</span>
+<span class="cmd">git clone</span> <span class="arg">url</span>                   <span class="comment"># cloner un dépôt distant</span>
+<span class="cmd">git push</span> <span class="arg">origin main</span>           <span class="comment"># pousser vers le remote</span>
+<span class="cmd">git pull</span>                         <span class="comment"># récupérer + merger</span></code></pre>
+
+      <div class="callout info">
+        <strong>Comprendre git, pas mémoriser des formules magiques</strong>
+        Si vous comprenez ce qu'est la staging area, un commit (snapshot), une branche (pointeur sur un commit), un DAG, et un remote, vous pouvez toujours vous en sortir avec un petit nombre de commandes atomiques — plutôt que d'accumuler des formules magiques pour chaque situation.
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 18 ──────────────── -->
+    <section class="chapter" id="dualites">
+      <div class="chapter-header">
+        <span class="chapter-num">18</span>
+        <h2>Dualités clés du cours</h2>
+      </div>
+
+      <p>Le programme d'examen demande explicitement d'être clair sur ces dualités :</p>
+
+      <div class="concept-grid">
+        <div class="concept-card"><div class="label">Relatif / Absolu</div><p>Chemin depuis la racine vs chemin depuis le répertoire courant.</p></div>
+        <div class="concept-card"><div class="label">Mutable / Immutable</div><p>Ex. un commit git est immutable ; un répertoire de travail est mutable.</p></div>
+        <div class="concept-card"><div class="label">Local / Distant</div><p>Fichiers sur la machine courante vs sur un serveur distant (SSH).</p></div>
+        <div class="concept-card"><div class="label">Réel / Virtuel</div><p>Périphérique physique vs loop device, VM vs hôte.</p></div>
+        <div class="concept-card"><div class="label">Client / Serveur</div><p>Qui demande (ssh) vs qui écoute (sshd).</p></div>
+        <div class="concept-card"><div class="label">Stock / Flux</div><p>Fichier régulier (stocké) vs pipe, socket, périphérique caractère (flux).</p></div>
+        <div class="concept-card"><div class="label">Permanent / Temporaire</div><p>Ex. <code>/tmp</code> (volatil au reboot) vs <code>/home</code>.</p></div>
+        <div class="concept-card"><div class="label">Statique / Dynamique</div><p>Fichier HTML statique vs page web générée dynamiquement (CGI, PHP…).</p></div>
+        <div class="concept-card"><div class="label">Identification / Authentification / Autorisation</div><p>Qui / Preuve / Droits.</p></div>
+        <div class="concept-card"><div class="label">Clef publique / Clef privée</div><p>Publique = partageable. Privée = secrète, jamais partagée.</p></div>
+      </div>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 19 ──────────────── -->
+    <section class="chapter" id="configs">
+      <div class="chapter-header">
+        <span class="chapter-num">19</span>
+        <h2>Fichiers de configuration importants</h2>
+      </div>
+
+      <table>
+        <tr><th>Fichier</th><th>Rôle</th></tr>
+        <tr><td><code>/etc/passwd</code></td><td>Comptes utilisateurs</td></tr>
+        <tr><td><code>/etc/shadow</code></td><td>Mots de passe hachés</td></tr>
+        <tr><td><code>/etc/group</code></td><td>Groupes</td></tr>
+        <tr><td><code>/etc/gshadow</code></td><td>Mots de passe de groupes</td></tr>
+        <tr><td><code>/etc/hostname</code></td><td>Nom de la machine</td></tr>
+        <tr><td><code>/etc/hosts</code></td><td>Résolution DNS locale</td></tr>
+        <tr><td><code>/etc/resolv.conf</code></td><td>Serveurs DNS</td></tr>
+        <tr><td><code>/etc/fstab</code></td><td>Montages automatiques au boot</td></tr>
+        <tr><td><code>~/.ssh/config</code></td><td>Configuration client SSH</td></tr>
+        <tr><td><code>~/.ssh/authorized_keys</code></td><td>Clefs autorisées à se connecter</td></tr>
+        <tr><td><code>~/.bashrc</code></td><td>Config du shell bash (non-login)</td></tr>
+        <tr><td><code>~/.inputrc</code></td><td>Config de readline (autocomplétion)</td></tr>
+        <tr><td><code>/etc/nginx/nginx.conf</code></td><td>Config principale nginx</td></tr>
+        <tr><td><code>/etc/nginx/sites-available/</code></td><td>Virtual hosts disponibles</td></tr>
+        <tr><td><code>/etc/nginx/sites-enabled/</code></td><td>Virtual hosts actifs (liens symboliques)</td></tr>
+        <tr><td><code>/etc/sudoers</code></td><td>Politiques sudo</td></tr>
+        <tr><td><code>/proc/</code></td><td>Pseudo-filesystem, infos noyau/processus</td></tr>
+      </table>
+    </section>
+
+    <!-- ──────────────── CHAPITRE 20 ──────────────── -->
+    <section class="chapter" id="exam">
+      <div class="chapter-header">
+        <span class="chapter-num">20</span>
+        <h2>Programme de l'examen</h2>
+      </div>
+
+      <div class="callout danger">
+        <strong>🎯 PARTIE NON NÉGOCIABLE — À maîtriser absolument</strong>
+        Ces points feront l'objet de questions certaines à l'examen.
+      </div>
+
+      <ul>
+        <li>Utilisation du manuel : sections, <code>man -k</code>, différence section 1 vs 5</li>
+        <li>Navigation dans l'arborescence : <code>/</code>, <code>.</code>, <code>..</code>, <code>~</code>, chemins absolus/relatifs</li>
+        <li>Recherche de fichiers avec <code>find</code> (tests <code>-name</code>, <code>-type</code>, <code>-perm</code>, <code>-empty</code>…)</li>
+        <li>Interpréter entièrement la sortie de <code>ls -ila</code> : inode, types, liens, user/groupe, permissions, liens symboliques, fichiers cachés</li>
+        <li>Différence <code>cp</code> / lien physique / lien symbolique</li>
+        <li>Systèmes de fichiers : montage, point de montage, inode vs contenu</li>
+        <li>Block devices : reconnaître, organiser en DAG, construire avec loop/partitionnement/cryptsetup/LVM</li>
+        <li>Permissions : notation symbolique ET octale, chmod, chown ; permissions des répertoires (r/w/x)</li>
+        <li>Processus : séquence de boot, arbre de processus, daemons via systemctl</li>
+        <li>Redirections et pipes : <code>&lt;</code>, <code>&gt;</code>, <code>&gt;&gt;</code>, <code>2&gt;</code>, <code>|</code></li>
+        <li>Fichiers de config vus en cours (cf. chapitre 19)</li>
+        <li>Bases de numération : binaire, octal, hexadécimal</li>
+      </ul>
+
+      <div class="callout info">
+        <strong>Compréhension générale</strong>
+        SSH (tunnels ≠ authentification), clefs de chiffrement, DNS, IPv6, structures arborescence/DAG, encapsulations/tunnels/proxy SOCKS.
+      </div>
+
+      <h3>Rappel des dualités à connaître</h3>
+      <p>Voir chapitre 18 — le programme mentionne explicitement la liste complète.</p>
+    </section>
+
+  </div>
+</div>
+
+<script>
+// Progress bar
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  const pct = (d.scrollTop / (d.scrollHeight - d.clientHeight)) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+});
+
+// Active sidebar link
+const links = document.querySelectorAll('#sidebar nav a');
+const sections = [...document.querySelectorAll('.chapter')];
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`#sidebar nav a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

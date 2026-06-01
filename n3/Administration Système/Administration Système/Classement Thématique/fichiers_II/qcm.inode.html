@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<title>QCM d'administration système : attributs d'inode<br /> (on suppose ici qu'un seul système de fichiers est monté sur l'arborescence)</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+</style>
+<script src="jquery-3.5.0.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="qcm.css" type="text/css" media="projection, screen, tv" />
+<script type="text/javascript">
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">QCM d'administration système : attributs d'inode<br /> (on suppose ici qu'un seul système de fichiers est monté sur l'arborescence)</h1>
+
+
+  <script type="text/javascript">
+    "use strict";
+    var content;
+
+
+    function hasard(a, b) {
+      var r;
+      r = Math.floor(Math.random() * (b - a + 1)) + a;
+      return r;
+    }
+    function pick_question() {
+     $('#board').empty();
+     $('#boardbool').html('');
+     $('#boardbool').removeClass('anime');
+      var list = content.find('.outline-text-4');
+      var n = list.length;
+      var question = $(list.get(hasard(0, n - 1)));
+      question.find("#hint").hide();
+      var ul = question.find('ul');
+      if (ul.length != 1) {
+        $('#board').html('Fin du questionnaire.');
+        return;
+      }
+      ul.find('li:first').addClass('bonneReponse'); /* la première réponse est la bonne */
+      var reponses = ul.find('li').toArray();
+      var i;
+      var r = reponses.length;
+      for (i = r - 1; i > 0; i += -1) {/* on mélange les réponses */
+         var j = hasard(0, i);
+         /* deplacer un li au hasard à la fin */
+         ul.append(reponses[j]);
+         reponses[j] = reponses[i]; /* on n'a plus besoin de reponses[j] */
+      }
+      $('#board').removeClass('qcmactive');
+      $('#board').append(question);
+      $('#board').on('click', 'li', got_answer);
+      $('#board li').addClass('qcmactive');
+
+    }
+
+    function got_answer(e) {
+      $('#board').off('click', 'li', got_answer);
+      $('#board li').removeClass('qcmactive');
+      $('#nbquestions').text(parseFloat($('#nbquestions').text()) + 1);
+      if ($(this).hasClass("bonneReponse")) {
+         $('#nbreponsesjustes').text(parseFloat($('#nbreponsesjustes').text()) + 1);
+         $(this).css('background-color','#7CFC00'); /* vert */
+         $('#boardbool').html('Exact');
+      } else {
+         $(this).css('background-color','#FF4500'); /* rouge */
+         $('#board .bonneReponse').css('border','2pt dashed #7CFC00');
+         $('#boardbool').html('Faux');
+      }
+      $('#board').find("#hint").show();
+    $('#boardbool').addClass('anime');
+      $('#board').one('click',pick_question);
+      $('#board').addClass('qcmactive');
+      return false;
+    }
+
+    $(document).ready(function () {
+      content = $('#outline-container-1'); /* à changer pour un véritable passage de paramètre */
+      if (content.length > 0) {
+        content.before('<div id="score">Score : <span id="nbreponsesjustes">0</span> réponses justes sur <span id="nbquestions">0</span> questions.</div><div id="board"></div><div id="boardbool"></div>');
+        content.hide();
+        pick_question();
+      }
+    });
+  </script>
+
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> questions </h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+
+
+
+<div id="outline-container-1.1" class="outline-4">
+<h4 id="sec-1.1"><span class="section-number-4">1.1</span> question n° 1 </h4>
+<div class="outline-text-4" id="text-1.1">
+<p>La commande <code>ls -ila</code> retourne <pre>total 8
+26361951 drwxr-xr-x 2 user user 4096 juin  24 01:44 .
+26346492 drwxr-xr-x 7 user user 4096 juin  24 00:29 ..
+26345763 -rw-r--r-- 2 user user    0 juin  24 01:44 aze
+26346415 -rw-r--r-- 2 user user    0 juin  24 00:29 bar
+26345763 -rw-r--r-- 2 user user    0 juin  24 01:44 eza
+26346415 -rw-r--r-- 2 user user    0 juin  24 00:29 foo
+26346417 -rw-r--r-- 2 user user    0 juin  24 00:29 hop </pre> Combien de fichiers réguliers sont nommés par le répertoire courant ?</p>
+<ul>
+<li>exactement 3</li>
+<li>au moins 1</li>
+<li>au plus 1</li>
+<li>exactement 1</li>
+<li>au moins 2</li>
+<li>au plus 2</li>
+<li>exactement 2</li>
+<li>au moins 3</li>
+<li>au plus 3</li>
+<li>au moins 4</li>
+<li>au plus 4</li>
+<li>exactement 4</li>
+<li>au moins 5</li>
+<li>au plus 5</li>
+<li>exactement 5</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les fichiers cachés sont affichés.<br /> Un fichier est identifié par son numéro d'inode (première colonne).<br /> Il y a 3 numéros d'inode distincts parmi les fichiers réguliers.
+</div>
+</div>
+
+
+<div id="outline-container-1.2" class="outline-4">
+<h4 id="sec-1.2"><span class="section-number-4">1.2</span> question n° 2 </h4>
+<div class="outline-text-4" id="text-1.2">
+<p>La commande <code>ls -l</code> retourne <pre>total 20
+-rw-r--r-- 2 user user 32 Oct 27 13:12 bar
+-rw-r--r-- 3 user user 32 Oct 27 13:12 foo
+lrwxrwxrwx 1 user user  3 Oct 27 13:12 plop -> bar
+lrwxrwxrwx 1 user user  3 Oct 27 13:12 plouf -> foo
+-rw-r--r-- 3 user user 32 Oct 27 13:12 tata
+-rw-r--r-- 2 user user 32 Oct 27 13:12 titi
+-rw-r--r-- 3 user user 32 Oct 27 13:12 toto </pre> Combien de fichiers réguliers sont nommés par le répertoire courant ?</p>
+<ul>
+<li>au moins 2</li>
+<li>au moins 1</li>
+<li>au plus 1</li>
+<li>exactement 1</li>
+<li>au plus 2</li>
+<li>exactement 2</li>
+<li>au moins 3</li>
+<li>au plus 3</li>
+<li>exactement 3</li>
+<li>au moins 4</li>
+<li>au plus 4</li>
+<li>exactement 4</li>
+<li>au moins 5</li>
+<li>au plus 5</li>
+<li>exactement 5</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> On ne sait pas s'il y a des fichiers cachés<br /> <code>plop</code> et <code>plouf</code> sont des liens symboliques<br /> il y a au moins un fichier avec 2 liens et au moins un fichier avec 3 liens<br /> rien ne permet de savoir si <code>bar</code> et <code>titi</code> sont le même fichier et si <code>foo</code>, <code>tata</code> et <code>toto</code> sont le même fichier.
+</div>
+</div>
+
+
+<div id="outline-container-1.3" class="outline-4">
+<h4 id="sec-1.3"><span class="section-number-4">1.3</span> question n° 3 </h4>
+<div class="outline-text-4" id="text-1.3">
+<p>la commande <code>ls -la</code> retourne <pre>total 8
+drwxr-xr-x 2 user user 4096 Apr 14  1977 .
+drwxr-xr-x 6 user user 4096 Apr 14  1977 ..
+-rw-r--r-- 1 user user    0 Apr 14  1977 bar
+-rw-r--r-- 1 user user    0 Apr 14  1977 foo
+-rw-r--r-- 1 user user    0 Apr 14  1977 hop </pre> Combien de fichiers réguliers sont nommés par le répertoire courant ?</p>
+<ul>
+<li>exactement 3</li>
+<li>2 ou 3</li>
+<li>au moins 1</li>
+<li>au plus 1</li>
+<li>exactement 1</li>
+<li>au moins 2</li>
+<li>au plus 2</li>
+<li>exactement 2</li>
+<li>au moins 3</li>
+<li>au plus 3</li>
+<li>1 ou 2</li>
+<li>entre 1 et 3</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les fichiers cachés sont affichés.<br /> Les 3 noms de fichiers régulier n'ont qu'un lien, ils sont tous différents (sinon le nombre de liens serait au moins 2).
+</div>
+</div>
+
+
+<div id="outline-container-1.4" class="outline-4">
+<h4 id="sec-1.4"><span class="section-number-4">1.4</span> question n° 4 </h4>
+<div class="outline-text-4" id="text-1.4">
+<p>la commande <code>ls -la</code> retourne <pre>total 8
+drwxr-xr-x 2 user user 4096 Apr 14  1977 .
+drwxr-xr-x 6 user user 4096 Apr 14  1977 ..
+-rw-r--r-- 2 user user    0 Apr 14  1977 bar
+-rw-r--r-- 2 user user    0 Apr 14  1977 foo
+-rw-r--r-- 2 user user    0 Apr 14  1977 hop </pre> Combien de fichiers réguliers sont nommés par le répertoire courant ?</p>
+<ul>
+<li>2 ou 3</li>
+<li>au moins 1</li>
+<li>au plus 1</li>
+<li>exactement 1</li>
+<li>au moins 2</li>
+<li>au plus 2</li>
+<li>exactement 2</li>
+<li>au moins 3</li>
+<li>au plus 3</li>
+<li>exactement 3</li>
+<li>1 ou 2</li>
+<li>entre 1 et 3</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les fichiers cachés sont affichés.<br /> Les 3 noms de fichiers ne peuvent pas correspondre à un unique fichier puisque le nombre de liens est 2 (si les 3 noms correspondaient au même fichiers, le nombre de liens serait au moins 3).<br /> Il est possible que deux de ces noms correspondent à un même fichier et que le troisième nom soit lié à un fichier apparaissant dans un autre répertoire.<br /> Il se peut que les 3 noms de fichiers correspondent chacun à un fichier différent, et que chacun soit lié à un fichier apparaissant dans un autre répertoire.
+</div>
+</div>
+
+
+<div id="outline-container-1.5" class="outline-4">
+<h4 id="sec-1.5"><span class="section-number-4">1.5</span> question n° 5 </h4>
+<div class="outline-text-4" id="text-1.5">
+<p>la commande <code>ls -l</code> retourne <pre>total 0
+-rw-r--r-- 2 user user 0 Apr 14  1977 aze
+-rw-rw-r-- 5 user user 0 Apr 14  1977 bar
+-rw-r--r-- 3 user user 0 Apr 14  1977 eza
+-rw-rw-r-- 3 user user 0 Apr 14  1977 foo
+-rw-rw-r-- 3 user user 0 Apr 14  1977 hop </pre> Combien de lignes auront changé si on exécute la commande <code>touch hop ; ls -l</code> ?</p>
+<ul>
+<li>au plus 2</li>
+<li>au moins 1</li>
+<li>au plus 1</li>
+<li>exactement 1</li>
+<li>au moins 2</li>
+<li>exactement 2</li>
+<li>au moins 3</li>
+<li>au plus 3</li>
+<li>exactement 3</li>
+<li>au moins 4</li>
+<li>au plus 4</li>
+<li>exactement 4</li>
+<li>au moins 5</li>
+<li>au plus 5</li>
+<li>exactement 5</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> La commande <code>touch hop</code> va modifier la date de modification du fichier dont un nom est <code>hop</code><br /> Les lignes correspondant à tous les fichiers égaux au fichier dont le nom est <code>hop</code> vont changer de date.<br /> Le seul fichier qui pourraît être égal à <code>hop</code> est <code>foo</code> car c'est le seul qui a les même attributs d'inode que <code>hop</code> (en particulier le même nombre de liens et les mêmes droits).<br /> Il se peut que <code>hop</code> et <code>foo</code> soient différents (on ne connait pas leur numéro d'inode).
+</div>
+</div>
+
+
+<div id="outline-container-1.6" class="outline-4">
+<h4 id="sec-1.6"><span class="section-number-4">1.6</span> question n° 6 </h4>
+<div class="outline-text-4" id="text-1.6">
+<p>la commande <code>ls -l</code> retourne <pre>total 0
+-rw-r--r-- 3 user user 0 Apr 14  1977 aze
+-rw-r--r-- 3 user user 0 Apr 14  1977 bar
+-rw-r--r-- 3 user user 0 Apr 14  1977 eza
+-rw-r--r-- 3 user user 0 Apr 14  1977 foo
+-rw-r--r-- 3 user user 0 Apr 14  1977 hop </pre> Combien de lignes auront changé si on exécute la commande <code>touch hop ; ls -l</code> ?</p>
+<ul>
+<li>au plus 3</li>
+<li>au moins 1</li>
+<li>au plus 1</li>
+<li>exactement 1</li>
+<li>au moins 2</li>
+<li>au plus 2</li>
+<li>exactement 2</li>
+<li>au moins 3</li>
+<li>exactement 3</li>
+<li>au moins 4</li>
+<li>au plus 4</li>
+<li>exactement 4</li>
+<li>au moins 5</li>
+<li>au plus 5</li>
+<li>exactement 5</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> La commande <code>touch hop</code> va modifier la date de modification du fichier dont un nom est <code>hop</code><br /> Les lignes correspondant à tous les fichiers égaux à <code>hop</code> vont changer de date.<br /> Le fichier dont le nom est <code>hop</code> a 3 liens, donc apparaît 3 fois dans l'arborescence, donc au plus 3 fois dans le répertoire courant.<br /> Il se peut que 0, 1 ou 2 autres noms dans ce répertoire correspondent au même fichier que <code>hop</code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.7" class="outline-4">
+<h4 id="sec-1.7"><span class="section-number-4">1.7</span> question n° 7 </h4>
+<div class="outline-text-4" id="text-1.7">
+<p>la commande <code>ls -la</code> retourne <pre>total 16
+drwxr-xr-x ☻ user user 4096 Apr 14  1977 .
+drwxr-xr-x 7 user user 4096 Apr 14  1977 ..
+-rw-r--r-- 1 user user    0 Apr 14  1977 fic1
+-rw-r--r-- 1 user user    0 Apr 14  1977 fic2
+lrwxrwxrwx 1 user user    4 Apr 14  1977 link1 -> fic1
+lrwxrwxrwx 1 user user    4 Apr 14  1977 link2 -> fic2
+drwxr-xr-x 2 user user 4096 Apr 14  1977 rep1
+drwxr-xr-x 2 user user 4096 Apr 14  1977 rep2 </pre> Quel nombre se trouve à la place du symbole ☻ ?</p>
+<ul>
+<li>exactement 4</li>
+<li>au moins 1</li>
+<li>au moins 2</li>
+<li>au moins 3</li>
+<li>au moins 4</li>
+<li>au moins 5</li>
+<li>exactement 1</li>
+<li>exactement 2</li>
+<li>exactement 3</li>
+<li>exactement 5</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le nombre ☻ indique je nombre de fois que le répertoire courant apparaît dans l'arborescence. Le répertoire courant apparaît :<br /> - une fois dans son répertoire parent (avec son nom)<br /> - une fois dans lui-même (en tant que <code>.</code>)<br /> - une fois dans <code>rep1</code> (en tant que <code>..</code>)<br /> - une fois dans <code>rep2</code> (en tant que <code>..</code>)
+</div>
+</div>
+
+
+<div id="outline-container-1.8" class="outline-4">
+<h4 id="sec-1.8"><span class="section-number-4">1.8</span> question n° 8 </h4>
+<div class="outline-text-4" id="text-1.8">
+<p>la commande <code>ls -la</code> retourne <pre>total 16
+drwxr-xr-x 3 user user 4096 Apr 14  1977 .
+drwxr-xr-x 7 user user 4096 Apr 14  1977 ..
+-rw-r--r-- 1 user user    0 Apr 14  1977 fic1
+-rw-r--r-- 1 user user    0 Apr 14  1977 fic2
+lrwxrwxrwx 1 user user    4 Apr 14  1977 link1 -> fic1
+lrwxrwxrwx 1 user user    4 Apr 14  1977 link2 -> fic2
+drwxr-xr-x 2 user user 4096 Apr 14  1977 rep </pre> Combien de sous-répertoires contient le répertoire parent du répertoire courant ?</p>
+<ul>
+<li>exactement 5</li>
+<li>au moins 1</li>
+<li>au moins 2</li>
+<li>au moins 3</li>
+<li>au moins 4</li>
+<li>au moins 5</li>
+<li>exactement 1</li>
+<li>exactement 2</li>
+<li>exactement 3</li>
+<li>exactement 4</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le nombre de liens vers le répertoire parent du répertoire courant est 7.<br /> Le répertoire parent du répertoire courant apparaît :<br /> - une fois dans son répertoire parent (avec son nom)<br /> - une fois dans lui-même (en tant que <code>.</code>)<br /> - une fois dans chacun de ses sous-répertoires (en tant que <code>..</code>)<br /> 7 - 2 = 5
+</div>
+</div>
+
+
+<div id="outline-container-1.9" class="outline-4">
+<h4 id="sec-1.9"><span class="section-number-4">1.9</span> question n° 9 </h4>
+<div class="outline-text-4" id="text-1.9">
+<p>La commande <code>ls -ila | head -n 3</code> retourne <pre>total 68
+2 drwxr-xr-x   18 root root  4096 May 12 15:52 .
+2 drwxr-xr-x   18 root root  4096 May 12 15:52 .. </pre> Quel est le répertoire courant ?</p>
+<ul>
+<li><code>/</code></li>
+<li>le home de l'utilisateur <code>root</code></li>
+<li><code>~</code></li>
+<li>on ne peut pas savoir, il y a plusieurs possibilités</li>
+<li><code>/root</code></li>
+<li><code>/home</code></li>
+<li>cette sitution est impossible</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> <code>head -n 3</code> extrait les 3 premières lignes de la sortie de la commande <code>ls -ila</code><br /> Le répertoire courant (<code>.</code>) et le répertoire parent (<code>..</code>) ont le même numéro d'inode (<code>2</code>) et sont donc égaux, seule la racine <code>/</code> a cette propriété. Remarque : on utilise l'hypothèse qu'un seul système de fichiers est monté sur l'arborescence.
+</div>
+</div>
+
+
+<div id="outline-container-1.10" class="outline-4">
+<h4 id="sec-1.10"><span class="section-number-4">1.10</span> question n° 10 </h4>
+<div class="outline-text-4" id="text-1.10">
+<p>La commande <code>ls -la | head -n 3</code> retourne <pre>total 8
+drwxr-xr-x 2 user user 4096 juin  24 00:29 .
+drwxr-xr-x 4 user user 4096 juin  24 00:29 .. </pre> Combien le répertoire courant nomme-t-il de sous répertoires ?</p>
+<ul>
+<li>aucun</li>
+<li>on peut pas savoir</li>
+<li>au moins 1</li>
+<li>au plus 1</li>
+<li>exactement 1</li>
+<li>au moins 2</li>
+<li>au plus 2</li>
+<li>exactement 2</li>
+<li>au moins 3</li>
+<li>au plus 3</li>
+<li>exactement 3</li>
+<li>au moins 4</li>
+<li>au plus 4</li>
+<li>exactement 4</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> <code>head -n 3</code> extrait les 3 premières lignes de la sortie de la commande <code>ls -la</code><br /> Le répertoire courant (<code>.</code>) apparaît 2 fois dans l'arborescence.<br /> Le répertoire courant apparaît :<br /> - une fois dans son répertoire parent (avec son nom)<br /> - une fois dans lui-même (en tant que <code>.</code>)<br /> - une fois dans chacun de ses sous-répertoires (en tant que <code>..</code>)<br /> 2 - 2 = 0
+</div>
+</div>
+
+
+
+
+</div>
+<div id="postamble">
+</div>
+</div>
+</body>
+</html>
+

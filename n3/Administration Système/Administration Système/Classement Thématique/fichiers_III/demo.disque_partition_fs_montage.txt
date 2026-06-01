@@ -1,0 +1,99 @@
+Cette démo est une version simplifiée de la démo demo.block_devices.txt Elle
+suit le schéma classique : disque - partition - filesystem.
+
+On suppose que vous êtes sur une machine réelle ou Linux est installé. Si ça
+n'est pas le cas et que vous êtes connecté·e à une machine virtuelle, regardez
+plus bas.
+
+  Branchez une clef USB et identifiez le périphérique de type bloc
+  correspondant :
+
+  - soit en regardant les derniers messages du noyau:
+
+      # dmesg
+
+  - soit en regardant les disques de type USB (prendre le disque correspondant à
+    aux premières lignes (les partitions apparaîssent aussi), c'est à dire le
+    plus récent):
+
+      # ls -lt /dev/disk/by-id/usb-*
+
+  (Note : d'après le manuel de la commande ls, l'option -t trie par date de
+  dernière modification, la plus récente en premier)
+
+  On suppose qu'il s'agit du périphérique /dev/sdc
+
+  On crée une table de partition:
+
+    # parted /dev/sdc mklabel gpt
+
+  On crée une partition de 2GiB et une autre avec le reste de l'espace, la
+  première commençant après 2048 secteurs.
+
+    # parted /dev/sdc mkpart primary 2048s 2GiB
+
+    # parted /dev/sdc mkpart primary 2GiB 100%
+
+  On installe un système de ficher de type ext4 dans chaque partition:
+
+    # mkfs -t ext4 /dev/sdc1
+    # mkfs -t ext4 /dev/sdc2
+
+  On monte la 1ere partition sur /mnt
+
+    # mount /dev/sdc1 /mnt/
+
+  Désormais, les fichiers et répertoires écrits sur /mnt seront inscrits sur la
+  clefs USB.
+
+
+Si vous êtes sur une machine virtuelle (fournie par marionnet ou virtualbox), on
+va simuler un disque en promouvant un fichier en un périphérique de type bloc.
+
+
+  On se place dans /tmp pour pas fatiguer le NFS inutilement :
+
+    # cd /tmp
+
+  On crée un fichier /tmp/disque1 rempli de zéros de taille 200MiB. Pour cela,
+  on utilise le fichier spécial /dev/zero qui est un périphérique caractère qui
+  génère une infinité de zéros. On utilise la commande dd car il faut bien
+  s'arrêter à un moment.
+
+    # dd if=/dev/zero of=disque1 bs=1MiB count=200
+    200+0 enregistrements lus
+    200+0 enregistrements écrits
+    209715200 octets (210 MB, 200 MiB) copiés, 0,0894395 s, 2,3 GB/s
+
+
+  Ces fichiers sont des fichiers réguliers, on peut les promouvoir en
+  périphériques de type blocs :
+
+    # losetup -f disque1
+
+    # losetup
+    NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE    DIO LOG-SEC
+    /dev/loop0         0      0         0  0 /tmp/disque1   0     512
+
+  On crée une table de partition:
+
+    # parted /dev/loop0 mklabel gpt
+
+  On crée 2 partitions de 100MiB chacun, la première commençant après 2048
+  secteurs.
+
+    # parted /dev/loop0 mkpart primary 2048s 100MiB
+
+    # parted /dev/loop0 mkpart primary 100MiB 100%
+
+  On installe un système de ficher de typer ext4 dans chaque partition:
+
+    # mkfs -t ext4 /dev/loop0p1
+    # mkfs -t ext4 /dev/loop0p2
+
+  On monte la 1ere partition sur /mnt
+
+    # mount /dev/loop0p1 /mnt/
+
+
+

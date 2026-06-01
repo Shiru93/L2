@@ -1,0 +1,39 @@
+Démo rapide d'utilisation de vim (mode commande)
+------------------------------------------------
+
+Copier le manuel de man dans un fichier temporaire :
+
+  $ man man > /tmp/demo
+
+L'éditer :
+
+  $ vi /tmp/demo
+
+Depuis cet éditeur :
+
+  Descendre avec la lettre "j" sur le paragraphe SYNOPSIS.
+
+  Taper "dap" ("delete around paragraph") pour effacer le paragraphe.
+
+  Taper "/Pro[ENTER]" pour trouver la prochaine occurrence d'un mot contenant "Pro".
+
+  Taper "hh" pour revenir de 2 caractères en arrière.
+
+  Taper "[CTRL]+v" pour passer en mode "bloc visuel".
+  
+  Taper "8j" pour descendre de sorte à sélectionner une colonne de longueur 9.
+
+  Taper "r-" de sorte à remplacer la colonne d'espaces par une colonne de "-".
+
+  Taper "}" pour aller à la fin du paragraphe.
+
+  Taper "dG" pour effacer toute la suite du manuel.
+
+  Taper ":q!" pour quitter sans sauvegarder.
+
+Essayez d'obtenir le même résultat avec votre éditeur graphique (oui y'a une astuce).
+
+Pour débuter sous vim, ouvrez un terminal et tapez :
+
+  $ vimtutor
+

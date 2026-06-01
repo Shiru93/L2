@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<title>QCM d'administration système : le DNS</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+</style>
+<script src="jquery-3.5.0.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="qcm.css" type="text/css" media="projection, screen, tv" />
+<script type="text/javascript">
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">QCM d'administration système : le DNS</h1>
+
+
+  <script type="text/javascript">
+    "use strict";
+    var content;
+
+
+    function hasard(a, b) {
+      var r;
+      r = Math.floor(Math.random() * (b - a + 1)) + a;
+      return r;
+    }
+    function pick_question() {
+     $('#board').empty();
+     $('#boardbool').html('');
+     $('#boardbool').removeClass('anime');
+      var list = content.find('.outline-text-4');
+      var n = list.length;
+      var question = $(list.get(hasard(0, n - 1)));
+      question.find("#hint").hide();
+      var ul = question.find('ul');
+      if (ul.length != 1) {
+        $('#board').html('Fin du questionnaire.');
+        return;
+      }
+      ul.find('li:first').addClass('bonneReponse'); /* la première réponse est la bonne */
+      var reponses = ul.find('li').toArray();
+      var i;
+      var r = reponses.length;
+      for (i = r - 1; i > 0; i += -1) {/* on mélange les réponses */
+         var j = hasard(0, i);
+         /* deplacer un li au hasard à la fin */
+         ul.append(reponses[j]);
+         reponses[j] = reponses[i]; /* on n'a plus besoin de reponses[j] */
+      }
+      $('#board').removeClass('qcmactive');
+      $('#board').append(question);
+      $('#board').on('click', 'li', got_answer);
+      $('#board li').addClass('qcmactive');
+
+    }
+
+    function got_answer(e) {
+      $('#board').off('click', 'li', got_answer);
+      $('#board li').removeClass('qcmactive');
+      $('#nbquestions').text(parseFloat($('#nbquestions').text()) + 1);
+      if ($(this).hasClass("bonneReponse")) {
+         $('#nbreponsesjustes').text(parseFloat($('#nbreponsesjustes').text()) + 1);
+         $(this).css('background-color','#7CFC00'); /* vert */
+         $('#boardbool').html('Exact');
+      } else {
+         $(this).css('background-color','#FF4500'); /* rouge */
+         $('#board .bonneReponse').css('border','2pt dashed #7CFC00');
+         $('#boardbool').html('Faux');
+      }
+      $('#board').find("#hint").show();
+    $('#boardbool').addClass('anime');
+      $('#board').one('click',pick_question);
+      $('#board').addClass('qcmactive');
+      return false;
+    }
+
+    $(document).ready(function () {
+      content = $('#outline-container-1'); /* à changer pour un véritable passage de paramètre */
+      if (content.length > 0) {
+        content.before('<div id="score">Score : <span id="nbreponsesjustes">0</span> réponses justes sur <span id="nbquestions">0</span> questions.</div><div id="board"></div><div id="boardbool"></div>');
+        content.hide();
+        pick_question();
+      }
+    });
+  </script>
+
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> questions </h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+
+
+
+<div id="outline-container-1.1" class="outline-4">
+<h4 id="sec-1.1"><span class="section-number-4">1.1</span> question n° 1 </h4>
+<div class="outline-text-4" id="text-1.1">
+<p>Quel modèle de distribution utilise le DNS ?</p>
+<ul>
+<li>anycast</li>
+<li>unicast</li>
+<li>multicast</li>
+<li>broadcast</li>
+<li>geocast</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Plusieurs serveurs DNS faisant autorité pour une même zone peuvent être répartis sur la planète, avec la même adresse IP. C'est en particulier le cas des serveurs racine.
+</div>
+</div>
+
+
+<div id="outline-container-1.2" class="outline-4">
+<h4 id="sec-1.2"><span class="section-number-4">1.2</span> question n° 2 </h4>
+<div class="outline-text-4" id="text-1.2">
+<p>Quel protocole de transport est le plus fréquemment utilisé par le DNS ?</p>
+<ul>
+<li>UDP</li>
+<li>TCP</li>
+<li>IPv4</li>
+<li>IPv6</li>
+<li>Ethernet</li>
+<li>HTTP</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les requêtes se font par UDP sur le port 53. En général les réponses aussi, sauf si leur taille dépasse 512 octets, auquel cas, TCP sera utilisé. Voir <a href="https://fr.wikipedia.org/wiki/Domain_Name_System#D%C3%A9tails_du_protocole">https://fr.wikipedia.org/wiki/Domain_Name_System#D%C3%A9tails_du_protocole</a>
+</div>
+</div>
+
+
+<div id="outline-container-1.3" class="outline-4">
+<h4 id="sec-1.3"><span class="section-number-4">1.3</span> question n° 3 </h4>
+<div class="outline-text-4" id="text-1.3">
+<p>Le fichier de configuration <code>/etc/resolv.conf</code> contient une liste de serveurs faisant autorité ?</p>
+<ul>
+<li>Faux</li>
+<li>Vrai</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Il ne faut pas confondre resolver DNS et serveurs faisant autorité.
+</div>
+</div>
+
+
+<div id="outline-container-1.4" class="outline-4">
+<h4 id="sec-1.4"><span class="section-number-4">1.4</span> question n° 4 </h4>
+<div class="outline-text-4" id="text-1.4">
+<p>Dans quel fichier de configuration se trouvent les résolveurs DNS à utiliser ?</p>
+<ul>
+<li><code>/etc/resolv.conf</code></li>
+<li><code>/etc/hosts</code></li>
+<li><code>/etc/hostname</code></li>
+<li><code>/etc/dnsmasq.conf</code></li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> <code>man -k --section=5 resolver</code>
+</div>
+</div>
+
+
+<div id="outline-container-1.5" class="outline-4">
+<h4 id="sec-1.5"><span class="section-number-4">1.5</span> question n° 5 </h4>
+<div class="outline-text-4" id="text-1.5">
+<p>Quel fichier de configuration permet d'attribuer soi-même des noms à des machines sur le réseau ?</p>
+<ul>
+<li><code>/etc/hosts</code></li>
+<li><code>/etc/resolv.conf</code></li>
+<li><code>/etc/hostname</code></li>
+<li><code>/etc/dnsmasq.conf</code></li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les correspondances <code>nom → IP</code> inscrites dans ce fichier ont priorité sur la résolution DNS. Ça peut être utile pour faire des tests sur une machine de tests distante à qui on a pas encore attribué le nom de domaine.
+</div>
+</div>
+
+
+<div id="outline-container-1.6" class="outline-4">
+<h4 id="sec-1.6"><span class="section-number-4">1.6</span> question n° 6 </h4>
+<div class="outline-text-4" id="text-1.6">
+<p>Les résolveurs DNS et les serveurs faisant autorité sont consultés selon le même protocole applicatif ?</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> En particulier, la commande <code>dig</code> permet de poser des questions à des resolveurs et à des serveurs faisant autorité (utiliser <code>@&lt;serveur&gt;</code> permet de spécifier à quel serveur on s'addresse).
+</div>
+</div>
+
+
+<div id="outline-container-1.7" class="outline-4">
+<h4 id="sec-1.7"><span class="section-number-4">1.7</span> question n° 7 </h4>
+<div class="outline-text-4" id="text-1.7">
+<p>Quel logiciel est un serveur DNS ?</p>
+<ul>
+<li>BIND 9</li>
+<li>Apache 2</li>
+<li>nginx</li>
+<li>postfix</li>
+<li>dig</li>
+<li>hostnamectl</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Remarque : BIND peut servir en tant que serveur faisant autorité ou en tant que résolveur (et pour info, dig et hostnamectl sont des commandes, apache et nginx sont des serveurs web, postfix est un serveur mail).
+</div>
+</div>
+
+
+<div id="outline-container-1.8" class="outline-4">
+<h4 id="sec-1.8"><span class="section-number-4">1.8</span> question n° 8 </h4>
+<div class="outline-text-4" id="text-1.8">
+<p>Le DNS est organisé en arborescence dont la racine est notée par <code>.</code></p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir <a href="https://fr.wikipedia.org/wiki/Domain_Name_System#Hi%C3%A9rarchie_du_DNS">https://fr.wikipedia.org/wiki/Domain_Name_System#Hi%C3%A9rarchie_du_DNS</a>
+</div>
+</div>
+
+
+<div id="outline-container-1.9" class="outline-4">
+<h4 id="sec-1.9"><span class="section-number-4">1.9</span> question n° 9 </h4>
+<div class="outline-text-4" id="text-1.9">
+<p><img src="baran.png"><br /> Dans la classification de Paul Baran déssinée plus haut, on peut dire que l'achitecture DNS est</p>
+<ul>
+<li>décentralisée</li>
+<li>centralisée</li>
+<li>distribuée</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Il y a bien un centre (la racine), mais elle est très peu consultée, l'information est répartie sur toute l'arborescence DNS.
+</div>
+</div>
+
+
+<div id="outline-container-1.10" class="outline-4">
+<h4 id="sec-1.10"><span class="section-number-4">1.10</span> question n° 10 </h4>
+<div class="outline-text-4" id="text-1.10">
+<p>Le TLD national autrichien héberge certains de ses serveurs faisant autorité sur sa zone à l'université de Vienne ?</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> La commande <code>dig +short NS at.</code> répond avec une liste contenant <code>ns1.univie.ac.at.</code>, une visite sur <a href="http://univie.ac.at">http://univie.ac.at</a> permet de voir qu'il s'agit de l'université de Vienne.
+</div>
+</div>
+
+
+<div id="outline-container-1.11" class="outline-4">
+<h4 id="sec-1.11"><span class="section-number-4">1.11</span> question n° 11 </h4>
+<div class="outline-text-4" id="text-1.11">
+<p>Quel type d'enregistrement du DNS permet d'indiquer l'adresse IPv4 d'une machine ?</p>
+<ul>
+<li>A</li>
+<li>AAAA</li>
+<li>CNAME</li>
+<li>SOA</li>
+<li>NS</li>
+<li>TXT</li>
+<li>MX</li>
+<li>CAA</li>
+<li>PTR</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir la page <a href="https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS">https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS</a>
+</div>
+</div>
+
+
+<div id="outline-container-1.12" class="outline-4">
+<h4 id="sec-1.12"><span class="section-number-4">1.12</span> question n° 12 </h4>
+<div class="outline-text-4" id="text-1.12">
+<p>Quel type d'enregistrement du DNS permet d'indiquer l'adresse IPv6 d'une machine ?</p>
+<ul>
+<li>AAAA</li>
+<li>A</li>
+<li>CNAME</li>
+<li>SOA</li>
+<li>NS</li>
+<li>TXT</li>
+<li>MX</li>
+<li>CAA</li>
+<li>PTR</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir la page <a href="https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS">https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS</a>
+</div>
+</div>
+
+
+<div id="outline-container-1.13" class="outline-4">
+<h4 id="sec-1.13"><span class="section-number-4">1.13</span> question n° 13 </h4>
+<div class="outline-text-4" id="text-1.13">
+<p>Quel type d'enregistrement du DNS sert de raccourci vers un autre nom de domaine ?</p>
+<ul>
+<li>CNAME</li>
+<li>AAAA</li>
+<li>A</li>
+<li>SOA</li>
+<li>NS</li>
+<li>TXT</li>
+<li>MX</li>
+<li>CAA</li>
+<li>PTR</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir la page <a href="https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS">https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS</a>
+</div>
+</div>
+
+
+<div id="outline-container-1.14" class="outline-4">
+<h4 id="sec-1.14"><span class="section-number-4">1.14</span> question n° 14 </h4>
+<div class="outline-text-4" id="text-1.14">
+<p>Quel type d'enregistrement du DNS permet de déléguer une zone ?</p>
+<ul>
+<li>NS</li>
+<li>AAAA</li>
+<li>A</li>
+<li>CNAME</li>
+<li>SOA</li>
+<li>TXT</li>
+<li>MX</li>
+<li>CAA</li>
+<li>PTR</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir la page <a href="https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS">https://fr.wikipedia.org/wiki/Domain_Name_System#Principaux_enregistrements_DNS</a>
+</div>
+</div>
+
+
+<div id="outline-container-1.15" class="outline-4">
+<h4 id="sec-1.15"><span class="section-number-4">1.15</span> question n° 15 </h4>
+<div class="outline-text-4" id="text-1.15">
+<p>Combien de champs contient un enregistrement DNS typique d'un fichier de zone typique ?</p>
+<ul>
+<li>5</li>
+<li>0</li>
+<li>1</li>
+<li>2</li>
+<li>3</li>
+<li>4</li>
+<li>6</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> On peut distinguer :<br /> 1. Le nom de domaine (par exemple <code>sysadmin.netlib.re.</code>)<br /> 2. Le TTL (time to live : nombre de secondes qu'un resolveur DNS doit garder l'enregistrement en cache)<br /> 3. La classe (en général <code>IN</code> pour l'arborescence dont la racine est pilotée par l'ICANN)<br /> 4. Le type d'enregistrement (<code>A</code>, <code>AAAA</code>, <code>CNAME</code>, <code>NS</code>, <code>CAA</code>, ...)<br /> 5. Le contenu (une IPv4 pour le type <code>A</code>, une IPv6 pour le type <code>AAAA</code>, un nom de domaine pour le type <code>CNAME</code>, etc)<br /> 
+</div>
+</div>
+
+
+<div id="outline-container-1.16" class="outline-4">
+<h4 id="sec-1.16"><span class="section-number-4">1.16</span> question n° 16 </h4>
+<div class="outline-text-4" id="text-1.16">
+<p>Peut-on associer plusieurs adresses IPv4 à un seul nom de domaine ?</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Cette possibilité permet par exemple de répartir la charge d'un service entre plusieurs machines de réseaux différents, voir <a href="https://fr.wikipedia.org/wiki/DNS_round-robin">https://fr.wikipedia.org/wiki/DNS_round-robin</a>
+</div>
+</div>
+
+
+<div id="outline-container-1.17" class="outline-4">
+<h4 id="sec-1.17"><span class="section-number-4">1.17</span> question n° 17 </h4>
+<div class="outline-text-4" id="text-1.17">
+<p>le DNS est antérieur au mail (SMTP) ?</p>
+<ul>
+<li>Faux</li>
+<li>Vrai</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le DNS apparaît en 1983 (RFC 882). Le permier mail échangé entre deux machines date de 1966, le protocole SMTP a été formalisé dans la RFC 821 en 1982, voir <a href="https://fr.wikipedia.org/wiki/Courrier_%C3%A9lectronique#Origines">https://fr.wikipedia.org/wiki/Courrier_%C3%A9lectronique#Origines</a>.
+</div>
+</div>
+
+
+<div id="outline-container-1.18" class="outline-4">
+<h4 id="sec-1.18"><span class="section-number-4">1.18</span> question n° 18 </h4>
+<div class="outline-text-4" id="text-1.18">
+<p>le DNS est antérieur au web (HTTP) ?</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le DNS apparaît en 1983 (RFC 882). Le web a été annoncé en 1991, le protocole HTTP1.0 est défini dans la RFC 1945 en 1996, voir <a href="https://fr.wikipedia.org/wiki/World_Wide_Web#Histoire">https://fr.wikipedia.org/wiki/World_Wide_Web#Histoire</a>
+</div>
+</div>
+
+
+
+
+</div>
+<div id="postamble">
+</div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>partage de liens</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet" href="../style.css" type="text/css" />
+
+<link rel="stylesheet" href="../local.css" type="text/css" />
+
+
+
+
+<link rel="alternate" type="application/x-wiki" title="Edit this page" href="/wiki/ikiwiki.cgi?do=edit&amp;page=partage_de_liens" />
+
+
+
+
+
+
+
+</head>
+<body>
+
+<div class="page">
+
+<div class="pageheader">
+<div class="header">
+<span>
+
+
+<span class="parentlinks">
+
+<a href="../">Wiki sysadmin 2526</a>/ 
+
+</span>
+
+
+<span class="title">
+partage de liens
+
+</span>
+</span>
+
+
+<form method="get" action="/wiki/ikiwiki.cgi" id="searchform">
+<div>
+<input type="text" id="searchbox" name="P" value="" size="16"
+  placeholder="search" />
+</div>
+</form>
+
+
+
+</div>
+
+
+<div class="actions">
+<ul>
+
+<li><a href="/wiki/ikiwiki.cgi?do=edit&amp;page=partage_de_liens" rel="nofollow">Edit</a></li>
+
+
+<li><a href="../recentchanges/">RecentChanges</a></li>
+
+
+
+
+<li><a rel="nofollow" href="/wiki/ikiwiki.cgi?do=prefs">Preferences</a></li>
+
+
+
+
+<li><span class="createlink"><a href="/wiki/ikiwiki.cgi?do=create&amp;from=partage_de_liens&amp;page=Discussion" rel="nofollow">?</a>Discussion</span></li>
+
+
+</ul>
+</div>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+<div id="pagebody">
+
+<div id="content" role="main">
+<p>On partage ici des liens en rapport avec l'administration système. Certains liens ont été récupérés des années précédentes, n'hésitez-pas à contribuer !</p>
+
+<div class="toc">
+	<ol>
+		<li class="L2"><a href="#index1h2">Logiciel libre</a>
+		</li>
+		<li class="L2"><a href="#index2h2">Shell</a>
+		</li>
+		<li class="L2"><a href="#index3h2">Présentations et tutos sur vim</a>
+		</li>
+		<li class="L2"><a href="#index4h2">Liens complémentaires sur le DNS</a>
+		</li>
+		<li class="L2"><a href="#index5h2">S'entrainer</a>
+		</li>
+	</ol>
+</div>
+
+
+<h2><a name="index1h2"></a>Logiciel libre</h2>
+
+<ul>
+<li>vidéo marrante un peu datée sur les produits de Big Billou : <a href="https://www.youtube.com/watch?v=r-x5gootjII">le pacte des gnous</a></li>
+<li>contrat social de Debian : <a href="https://www.debian.org/social_contract.fr.html">https://www.debian.org/social_contract.fr.html</a></li>
+</ul>
+
+
+<h2><a name="index2h2"></a>Shell</h2>
+
+<ul>
+<li>une page de blog qui propose quelques bonnes pratiques pour rédiger un script shell : <a href="https://sharats.me/posts/shell-script-best-practices/">https://sharats.me/posts/shell-script-best-practices/</a></li>
+<li>la page du cours « Initiation à l'environnement Unix » de Pierre Rousselin : <a href="https://www.math.univ-paris13.fr/~rousselin/ieunix/">https://www.math.univ-paris13.fr/~rousselin/ieunix/</a></li>
+</ul>
+
+
+<h2><a name="index3h2"></a>Présentations et tutos sur vim</h2>
+
+<ul>
+<li><a href="https://www.emaxilde.net/posts/2017/02/22/vi-l-editeur-de-texte-atypique.html">Vi : l'éditeur de texte atypique</a></li>
+<li><a href="https://www.barbarianmeetscoding.com/blog/boost-your-coding-fu-with-vscode-and-vim">il est possible d'utiliser vim dans visual studio code</a>
+
+<ul>
+<li><a href="https://github.com/VSCodeVim/Vim">https://github.com/VSCodeVim/Vim</a></li>
+<li><a href="https://github.com/asvetliakov/vscode-neovim">https://github.com/asvetliakov/vscode-neovim</a> (pour neovim)</li>
+</ul>
+</li>
+<li><a href="https://www.vimgolf.com/">Vim golf</a> : des challenges à faire avec <code>vim</code> en tapant le moins de touches possibles (il faut soumettre votre solution pour voir celles des autres et apprendre)</li>
+<li>Tutoriels vidéo
+
+<ul>
+<li><a href="https://linuxconfig.org/vim-tutorial">https://linuxconfig.org/vim-tutorial</a></li>
+<li><a href="http://derekwyatt.org/vim/tutorials">http://derekwyatt.org/vim/tutorials</a></li>
+</ul>
+</li>
+<li>La grammaire de vim <a href="https://learnxinyminutes.com/docs/fr-fr/vim-fr/">https://learnxinyminutes.com/docs/fr-fr/vim-fr/</a> (comprendre que <code>dap</code> signifie <code>delete around paragraph</code> et pouvoir créer ses combinaisons)</li>
+<li>Une page de rassemblement d’enthousiastes francophones de <code>vim</code> <a href="https://tuppervim.org/">https://tuppervim.org/</a>, avec en bas de page moults liens vers davantage de tutoriels, exemples de fichiers de conf’, et autres.</li>
+</ul>
+
+
+<h2><a name="index4h2"></a>Liens complémentaires sur le DNS</h2>
+
+<ul>
+<li>expérimentations avec un nom de domaine jetable pour comprendre, entre autres, le TTL (en anglais) : <a href="https://messwithdns.net/">https://messwithdns.net/</a></li>
+<li>quizz sur les enregistrements DNS (en anglais) : <a href="https://questions.wizardzines.com/dns-records.html">https://questions.wizardzines.com/dns-records.html</a></li>
+<li>quizz sur le DNS (en anglais) : <a href="https://questions.wizardzines.com/dns">https://questions.wizardzines.com/dns</a></li>
+<li>trois vidéos introductives avec leurs slides : <a href="https://www.iletaitunefoisinternet.fr/post/1-dns-bortzmeyer/">https://www.iletaitunefoisinternet.fr/post/1-dns-bortzmeyer/</a></li>
+<li>Illustration du DNS : <a href="https://whc.ca/wp-content/themes/whc/images/blog/etapes-resolution-dns.svg">https://whc.ca/wp-content/themes/whc/images/blog/etapes-resolution-dns.svg</a>
+
+<ul>
+<li><strong>ATTENTION</strong> : l'image est trompeuse. Pour les points 3.3, 3.4, 3.5, le résolveur demande toujours « quelle est l'IP de exemple.ca », les serveurs faisant autorité répondent en fonction de leur connaissance. Mais si jamais il y avait un enregistrement permettant de répondre directement à la question au niveau du serveur racine, celui-ci la donnerait directement. Aussi, les différents serveurs faisant autorité ne sont pas fondamentalement différents, qu'ils soient racine, de TLD ou autre. Ainsi, le résolveur ne peut pas poser de questions différentes selon le type de serveur faisant autorité (puisque ce type n'existe pas).</li>
+</ul>
+</li>
+</ul>
+
+
+<h2><a name="index5h2"></a>S'entrainer</h2>
+
+<ul>
+<li>des quizz instructifs (sur les permissions, le DNS, etc) : <a href="https://questions.wizardzines.com/">https://questions.wizardzines.com/</a></li>
+</ul>
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+<div id="footer" class="pagefooter" role="contentinfo">
+
+<div id="pageinfo">
+
+
+
+
+
+
+<div id="backlinks">
+
+Links:
+
+
+<a href="../">index</a>
+
+
+</div>
+
+
+
+
+
+
+<div class="pagedate">
+Last edited <span class="date">Sun Jan  4 20:53:34 2026</span>
+<!-- Created <span class="date dt-published">Wed Sep 17 23:23:23 2025</span> -->
+</div>
+
+</div>
+
+
+<!-- from Wiki sysadmin 2526 -->
+</div>
+
+</div>
+<script src="../ikiwiki/ikiwiki.js" type="text/javascript" charset="utf-8"></script>
+<script src="../ikiwiki/toggle.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

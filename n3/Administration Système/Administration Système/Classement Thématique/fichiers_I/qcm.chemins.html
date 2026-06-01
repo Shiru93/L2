@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<title>QCM d'administration système : les chemins</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<style type="text/css">
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+</style>
+<script src="jquery-3.5.0.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="qcm.css" type="text/css" media="projection, screen, tv" />
+<script type="text/javascript">
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">QCM d'administration système : les chemins</h1>
+
+
+  <script type="text/javascript">
+    "use strict";
+    var content;
+
+
+    function hasard(a, b) {
+      var r;
+      r = Math.floor(Math.random() * (b - a + 1)) + a;
+      return r;
+    }
+    function pick_question() {
+     $('#board').empty();
+     $('#boardbool').html('');
+     $('#boardbool').removeClass('anime');
+      var list = content.find('.outline-text-4');
+      var n = list.length;
+      var question = $(list.get(hasard(0, n - 1)));
+      question.find("#hint").hide();
+      var ul = question.find('ul');
+      if (ul.length != 1) {
+        $('#board').html('Fin du questionnaire.');
+        return;
+      }
+      ul.find('li:first').addClass('bonneReponse'); /* la première réponse est la bonne */
+      var reponses = ul.find('li').toArray();
+      var i;
+      var r = reponses.length;
+      for (i = r - 1; i > 0; i += -1) {/* on mélange les réponses */
+         var j = hasard(0, i);
+         /* deplacer un li au hasard à la fin */
+         ul.append(reponses[j]);
+         reponses[j] = reponses[i]; /* on n'a plus besoin de reponses[j] */
+      }
+      $('#board').removeClass('qcmactive');
+      $('#board').append(question);
+      $('#board').on('click', 'li', got_answer);
+      $('#board li').addClass('qcmactive');
+
+    }
+
+    function got_answer(e) {
+      $('#board').off('click', 'li', got_answer);
+      $('#board li').removeClass('qcmactive');
+      $('#nbquestions').text(parseFloat($('#nbquestions').text()) + 1);
+      if ($(this).hasClass("bonneReponse")) {
+         $('#nbreponsesjustes').text(parseFloat($('#nbreponsesjustes').text()) + 1);
+         $(this).css('background-color','#7CFC00'); /* vert */
+         $('#boardbool').html('Exact');
+      } else {
+         $(this).css('background-color','#FF4500'); /* rouge */
+         $('#board .bonneReponse').css('border','2pt dashed #7CFC00');
+         $('#boardbool').html('Faux');
+      }
+      $('#board').find("#hint").show();
+    $('#boardbool').addClass('anime');
+      $('#board').one('click',pick_question);
+      $('#board').addClass('qcmactive');
+      return false;
+    }
+
+    $(document).ready(function () {
+      content = $('#outline-container-1'); /* à changer pour un véritable passage de paramètre */
+      if (content.length > 0) {
+        content.before('<div id="score">Score : <span id="nbreponsesjustes">0</span> réponses justes sur <span id="nbquestions">0</span> questions.</div><div id="board"></div><div id="boardbool"></div>');
+        content.hide();
+        pick_question();
+      }
+    });
+  </script>
+
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> questions </h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+
+
+
+<div id="outline-container-1.1" class="outline-4">
+<h4 id="sec-1.1"><span class="section-number-4">1.1</span> question n° 1 </h4>
+<div class="outline-text-4" id="text-1.1">
+<p>Les chemins <code>/..</code> et <code>.</code> désignent toujours le même répertoire</p>
+<ul>
+<li>Faux</li>
+<li>Vrai</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Par exemple, si le répertoire courant est <code>/home</code>, alors <code>/..</code> (qui vaut <code>/</code>) et <code>/home</code> désignent des répertoires différents.
+</div>
+</div>
+
+
+<div id="outline-container-1.2" class="outline-4">
+<h4 id="sec-1.2"><span class="section-number-4">1.2</span> question n° 2 </h4>
+<div class="outline-text-4" id="text-1.2">
+<p>Les chemins <code>/..</code> et <code>.</code> peuvent désigner le même répertoire</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Si le répertoire courant est <code>/</code>, alors c'est le cas.
+</div>
+</div>
+
+
+<div id="outline-container-1.3" class="outline-4">
+<h4 id="sec-1.3"><span class="section-number-4">1.3</span> question n° 3 </h4>
+<div class="outline-text-4" id="text-1.3">
+<p>Les chemins <code>/..</code> et <code>.</code> désignent le même répertoire</p>
+<ul>
+<li>On ne peut pas savoir</li>
+<li>Faux</li>
+<li>Vrai</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Ça dépend du répertoire courant. Si le répertoire courant est <code>/</code> alors <code>/..</code> et <code>.</code> désignent tous les deux le répertoire <code>/</code>, mais si le répertoire courant est <code>/home</code>, alors <code>/..</code> (qui vaut <code>/</code>) et <code>/home</code> désignent des répertoires différents.
+</div>
+</div>
+
+
+<div id="outline-container-1.4" class="outline-4">
+<h4 id="sec-1.4"><span class="section-number-4">1.4</span> question n° 4 </h4>
+<div class="outline-text-4" id="text-1.4">
+<p>Le répertoire courant est <code>/</code>. Les chemins <code>/..</code> et <code>.</code> désignent le même répertoire</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le répertoire parent de <code>/</code> est <code>/</code> lui-même, si le répertoire courant est <code>/</code>, alors <code>.</code> designe aussi <code>/</code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.5" class="outline-4">
+<h4 id="sec-1.5"><span class="section-number-4">1.5</span> question n° 5 </h4>
+<div class="outline-text-4" id="text-1.5">
+<p>Les chemins <code>../</code> et <code>/..</code> désignent toujours le même répertoire</p>
+<ul>
+<li>Faux</li>
+<li>Vrai</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Par exemple, si le répertoire courant est <code>/etc/apt/</code> alors <code>../</code> désigne <code>/etc/</code> alors que <code>/..</code> désigne <code>/</code>. Attention, un exemple de chemin de profondeur 1 comme <code>/home</code> ne fonctionne pas comme contre-exemple car dans ce cas <code>../</code> désigne aussi <code>/</code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.6" class="outline-4">
+<h4 id="sec-1.6"><span class="section-number-4">1.6</span> question n° 6 </h4>
+<div class="outline-text-4" id="text-1.6">
+<p>Les chemins <code>./</code> et <code>/.</code> désignent toujours le même répertoire</p>
+<ul>
+<li>Faux</li>
+<li>Vrai</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Par exemple, si le répertoire courant est <code>/home</code>, alors <code>./</code> (qui vaut <code>/home</code> et <code>/.</code> (qui vaut <code>/</code>) sont différents.
+</div>
+</div>
+
+
+<div id="outline-container-1.7" class="outline-4">
+<h4 id="sec-1.7"><span class="section-number-4">1.7</span> question n° 7 </h4>
+<div class="outline-text-4" id="text-1.7">
+<p>Les chemins <code>./..</code> et <code>../.</code> désignent toujours le même répertoire</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Faire du sur place puis remonter revient au même que remonter puis faire du sur place.
+</div>
+</div>
+
+
+<div id="outline-container-1.8" class="outline-4">
+<h4 id="sec-1.8"><span class="section-number-4">1.8</span> question n° 8 </h4>
+<div class="outline-text-4" id="text-1.8">
+<p>Les chemins <code>~/.ssh/</code> et <code>/home/user/.ssh/</code> désignent toujours le même répertoire</p>
+<ul>
+<li>Faux</li>
+<li>Vrai</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le <code> ~ </code> est remplacé par le <code>HOME</code> de l'user courant. Le <code>HOME</code> de l'user <code>root</code> est <code>/root</code> pas <code>/home/root</code>. Aussi, on peut modifier la variable <code>HOME</code> comme on veut, ce qui modifie le <code> ~ </code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.9" class="outline-4">
+<h4 id="sec-1.9"><span class="section-number-4">1.9</span> question n° 9 </h4>
+<div class="outline-text-4" id="text-1.9">
+<p>Les chemins <code>~</code> et <code> ${HOME} </code> désignent toujours le même répertoire</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir <code>man bash</code> puis <code>/Développement du tilde</code> (le <code>/</code> permet de faire une recherche de motif)
+</div>
+</div>
+
+
+<div id="outline-container-1.10" class="outline-4">
+<h4 id="sec-1.10"><span class="section-number-4">1.10</span> question n° 10 </h4>
+<div class="outline-text-4" id="text-1.10">
+<p>Les chemins <code>/~</code> et <code> /${HOME} </code> désignent toujours le même répertoire</p>
+<ul>
+<li>Faux</li>
+<li>Vrai</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Pour être remplacé par la valeur de la variable <code>HOME</code>, le tilde doit être au début du chemin et ne doit pas être protégé (par des guillemets). Voir <code>man bash</code> puis <code>/Développement du tilde</code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.11" class="outline-4">
+<h4 id="sec-1.11"><span class="section-number-4">1.11</span> question n° 11 </h4>
+<div class="outline-text-4" id="text-1.11">
+<p>Le chemin <code>~</code> est un chemin absolu ?</p>
+<ul>
+<li>On ne peut pas savoir</li>
+<li>Vrai</li>
+<li>Faux</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Le chemin <code>~</code> dépend de la variable <code> ${HOME} </code> du shell courant. Il se pourrait (bien que ça soit invraissemblable), que la valeur de cette variable soit un chemin relatif.
+</div>
+</div>
+
+
+<div id="outline-container-1.12" class="outline-4">
+<h4 id="sec-1.12"><span class="section-number-4">1.12</span> question n° 12 </h4>
+<div class="outline-text-4" id="text-1.12">
+<p>Les fichiers de configuration du système se trouvent dans le répertoire <code>/etc</code> ?</p>
+<ul>
+<li>Vrai</li>
+<li>Faux</li>
+<li>On ne peut pas savoir</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Voir <code>man 7 file-hierarchy</code> ou <code> man 7 hier </code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.13" class="outline-4">
+<h4 id="sec-1.13"><span class="section-number-4">1.13</span> question n° 13 </h4>
+<div class="outline-text-4" id="text-1.13">
+<p>Les fichiers de configuration du système se trouvent dans le répertoire <code>./etc</code> ?</p>
+<ul>
+<li>On ne peut pas savoir</li>
+<li>Faux</li>
+<li>Vrai</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les fichiers de configuration du système se trouvent dans le répertoire <code>/etc</code> qui est égal à <code>./etc</code> seulement si le répertoire courant est <code>/</code>.
+</div>
+</div>
+
+
+<div id="outline-container-1.14" class="outline-4">
+<h4 id="sec-1.14"><span class="section-number-4">1.14</span> question n° 14 </h4>
+<div class="outline-text-4" id="text-1.14">
+<p>Les fichiers de configuration du système se trouvent dans le répertoire <code>~/etc</code> ?</p>
+<ul>
+<li>On ne peut pas savoir</li>
+<li>Faux</li>
+<li>Vrai</li>
+</ul>
+<div id='hint'>
+<b>Indication :</b> Les fichiers de configuration du système se trouvent dans le répertoire <code>/etc</code> qui est égal à <code>~/etc</code> seulement si le <code>HOME</code> de l'user courant est <code>/</code>.
+</div>
+</div>
+
+
+
+
+</div>
+<div id="postamble">
+</div>
+</div>
+</body>
+</html>
+
