@@ -2,6 +2,7 @@
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Iterator;
 
 public class FilteredContainer<K, E> extends Object implements Iterable<E> {
     private final K cle;
@@ -18,7 +19,7 @@ public class FilteredContainer<K, E> extends Object implements Iterable<E> {
         elements = new HashSet<>();
     }
 
-    public FilteredContainer(K cle, Collection<? extends E> desObjets){
+    public FilteredContainer(K cle, Collection<? extends ObjetZork> desObjets){
         if(cle == null || desObjets == null || desObjets.contains(null)){
             throw new NullPointerException();
         }
@@ -51,11 +52,11 @@ public class FilteredContainer<K, E> extends Object implements Iterable<E> {
     }
 
     public void add(E elt){
-        if(!this.ouvert)
-            throw new IllegalStateException();
-
         if(elt == null)
             throw new NullPointerException();
+
+        if(!this.ouvert)
+            throw new IllegalStateException();
 
         if(!this.elements.contains(elt)) 
             this.elements.add(elt);
@@ -71,13 +72,6 @@ public class FilteredContainer<K, E> extends Object implements Iterable<E> {
     public boolean contains(Object obj){
         if(!ouvert || obj == null) return false;
         return elements.contains(obj);
-
-        for(E elt : elements){
-            if(elt.equals(obj))
-                return true;
-        }
-
-        return false;
     }
 
     public int size(){
@@ -102,7 +96,20 @@ public class FilteredContainer<K, E> extends Object implements Iterable<E> {
         return count;
     }
 
+    @Override
     public Iterator<E> iterator(){
-        return this.iterator();
+        if(!ouvert) return new EmptyIterator<>();
+        if(size() == 2){
+            Iterator<E> it = elements.iterator();
+            E premier = it.next();
+            E second = it.next();
+            return new PairIterator<>(premier, second);
+        }
+
+        return elements.iterator();
+    }
+
+    protected Iterator<E> iteratorInterne() {
+        return elements.iterator(); // accès direct sans vérif isOpen
     }
 }
